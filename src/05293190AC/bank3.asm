@@ -6761,7 +6761,8 @@ L35A42:
 ;---------------------------------------------------------------------------------------------------
 ; DiagWriteRamByte ($35A4C)
 ;
-; SCI diagnostic service: stores one received byte into the RAM buffer at $F8700-$F87FF.
+; SCI diagnostic service: stores one received byte into the RAM buffer at $F8700-$F87FF, only after
+; the RAM access has been unlocked (DiagRamFlags bit 0).
 ;---------------------------------------------------------------------------------------------------
 DiagWriteRamByte:
         LDAA    #$F1
@@ -10335,9 +10336,9 @@ L39636:
         LBCC    L395CC
 L3963E:
         LDD     >EngineRpm,Z
-        CPD     >AcCutRpmHigh
+        CPD     >AcRelayRpmHigh
         BCC     L395CC
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         BCC     L39670
         BRSET   >AcFlags,Z,#$80,L39670                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRCLR   >ControlFlags943,Z,#$01,L39670           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it

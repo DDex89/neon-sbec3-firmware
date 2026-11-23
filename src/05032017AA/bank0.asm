@@ -921,8 +921,8 @@ BusTempFlagMin:
         dc.b    $7F                                      ; Bus temperature flag: without the latch, BusTemp at or above this value (fan off) clears FanBusFlags bit 0
 IacLowRpm:
         dc.b    $0F,$A0                                  ; Segment rpm below which the low-rpm branch of IdleTargetControl applies
-AcCutRpmLow:
-        dc.b    $AB,$E0                                  ; A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)
+AcRelayRpmLow:
+        dc.b    $AB,$E0                                  ; A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below
 IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of IdleTargetControl runs
 IacEventTimerInit:
@@ -935,8 +935,8 @@ AcCutCoolantOn:
         dc.b    $F9                                      ; A/C cut-out (AcCutLogic): coolant at or above which the A/C is cut
 AcCutCoolantOff:
         dc.b    $F8                                      ; A/C cut-out: coolant below which it is allowed again
-AcCutRpmHigh:
-        dc.b    $BB,$80                                  ; A/C logic: engine rpm above which the A/C is cut (FF00 = off)
+AcRelayRpmHigh:
+        dc.b    $BB,$80                                  ; A/C clutch relay (AcCutLogic): engine rpm (word) at or above which ControlFlags943 bit 0 (relay on) is set without the idle step; $FF00 = never
 AcCycleBattTempMin:
         dc.b    $8A                                      ; A/C clutch: battery temperature above this value for the short cycle-time check
 AcCycleBattTempMax:
@@ -2415,7 +2415,7 @@ DecelRampStepTimeDown:
 DecelRampStepDown:
         dc.b    $01                                      ; Decel fuel reduction: step down of DecelFuelRamp
 O2TrimAvgFilter:
-        dc.b    $1A                                      ; Filter weight of the short-term trim averages $0727/O2TrimAvg2 (O2TrimAverage)
+        dc.b    $1A                                      ; Filter weight of the short-term trim averages O2TrimAvgCount/O2TrimAvg2 (O2TrimAverage)
 
 ;---------------------------------------------------------------------------------------------------
 ; DecelBaroMapOffset ($10FC): 2D table, 3 points, unsigned
@@ -3024,7 +3024,7 @@ RefuelBlendDelayStop2:
         dc.b    $00,$00                                  ; As RefuelBlendDelayStop with the sensor reading lower
         dc.b    $00
 RefuelBlendFuel:
-        dc.b    $00,$00                                  ; Refuel check: fuel used (word) over which the learned ethanol value is blended to the new reading
+        dc.b    $00,$00                                  ; Refuel check: fuel used (FlexLearnFuelSum, word) during which the learned ethanol value is blended towards the new reading; at or above it the blend ends
 
 ;---------------------------------------------------------------------------------------------------
 ; FlexLearnBlend ($1901): 2D table, 1 points, unsigned
@@ -3697,7 +3697,7 @@ O2SlowMax:
 O2SlowEnableCoolant:
         dc.b    $FF                                      ; Coolant at or above which the slow-term delay O2SlowDelay counts down
 O2SlowPurgeRampMin:
-        dc.b    $FF                                      ; Purge ramp below this value reloads the slow-term periods ($0712/O2SlowPeriod2)
+        dc.b    $FF                                      ; Purge ramp below this value reloads the slow-term periods (ClosedLoop712/O2SlowPeriod2)
 O2PurgeRampMax:
         dc.b    $FF                                      ; Closed-loop manager: purge ramp above this value holds the integrators
         dc.b    $01,$80,$FF,$51,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -3733,10 +3733,10 @@ O2LearnRpmMax:
 O2LearnRpmHyst:
         dc.b    $03                                      ; Long-term learning: rpm hysteresis of O2LearnRpmMax (O2InactiveFlags bit 1)
 O2PulseWidthMin:
-        dc.b    $00,$96                                  ; Closed-loop timing: fuel pulse widths ($0780/FuelPulseBank2, word) at or above this value for closed-loop entry
+        dc.b    $00,$96                                  ; Closed-loop timing: fuel pulse widths (FuelPulseBank1/FuelPulseBank2, word) at or above this value for closed-loop entry
         dc.b    $14,$0A
 O2LearnRate:
-        dc.b    $1A                                      ; Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/O2LearnTimer2) per pass
+        dc.b    $1A                                      ; Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer (O2CellWork) per pass
 O2LearnRateWot:
         dc.b    $1A                                      ; As O2LearnRate at WOT
 O2AdaptMax:
@@ -4735,7 +4735,7 @@ EventSparkStepUp:
 EventSparkInit:
         dc.b    $00                                      ; Event spark value at the start of an event
 EventSparkPeriodInit:
-        dc.b    $00                                      ; Event spark: start value of the period counters $0862/EventSparkPeriodB
+        dc.b    $00                                      ; Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB
 EventSparkCountMax:
         dc.b    $04                                      ; Event spark: upper limit of EventSparkCount2 and EventSparkCount
         dc.b    $02,$4D,$01,$03,$00,$00,$04,$00,$00,$00,$00,$00,$00,$01,$4D,$00
@@ -6247,7 +6247,7 @@ IdleStepCloseFactor:
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleCloseTimerRpm ($30A9): 2D table, 2 points, unsigned
 ; On throttle closing at low speed: dashpot timer (DashpotTimer, DashpotTimer2) against engine and segment rpm
-; x: rpm8, y: raw (units: docs/en/calibration.md)
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm; SegmentRpm
 ; Read at $2D466, $2D4A4
 ;---------------------------------------------------------------------------------------------------
@@ -6869,7 +6869,7 @@ IdleMapAcAdder:
 ;---------------------------------------------------------------------------------------------------
 ; ThrottleCloseTimerRpmMoving ($3341): 2D table, 1 points, unsigned
 ; As ThrottleCloseTimerRpm above vehicle speed $2AF2 (DashpotTimerMoving)
-; x: rpm8, y: raw (units: docs/en/calibration.md)
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm; SegmentRpm
 ; Read at $2D458, $2D492
 ;---------------------------------------------------------------------------------------------------
@@ -7088,7 +7088,7 @@ IacDecelHoldCount:
 IacDecelRefOffset:
         dc.b    $02,$00                                  ; Decel reference: offset subtracted from the latched rpm
 IacDecelTargetMax:
-        dc.b    $1C,$20                                  ; Decel reference: used only while the idle target is below this value
+        dc.b    $1C,$20                                  ; Decel reference (IacRollingControl): upper limit of the idle target used for it (the smaller of this value and IdleTarget is taken)
 IacRollTargetAdder:
         dc.b    $17,$70                                  ; Rolling: idle target plus this value
 IacRollTargetAdder2:
@@ -7253,7 +7253,7 @@ SpeedCtlAdaptStepUp:
 SpeedCtlAdaptStepDown:
         dc.b    $02                                      ; Speed control gain adaptation: gain decrease per step
 SpeedCtlAdaptGainMax:
-        dc.b    $10                                      ; Speed control gain adaptation: upper limit of the learned gains ($0190/SpeedCtlGainHigh)
+        dc.b    $10                                      ; Speed control gain adaptation: upper limit of the learned gains (SpeedCtlGainLow, SpeedCtlGainHigh)
 SpeedCtlAdaptGainMin:
         dc.b    $EF                                      ; Speed control gain adaptation: lower (signed) limit of the learned gains
 SpeedCtlVacuumMax:
@@ -8373,7 +8373,7 @@ PnSwitchThrottleMin:
 PnSwitchMapFactor:
         dc.b    $8A                                      ; P/N switch monitor: MAP above baro × this / 256 (engine under load)
 PnSwitchCount:
-        dc.b    $0D                                      ; P/N switch monitor: counts ($0665/PnSwitchCounter) of the switch reading in gear or in P/N before the result
+        dc.b    $0D                                      ; P/N switch monitor: counts (PnSwitch665/PnSwitchCounter) of the switch reading in gear or in P/N before the result
 PnSwitchStartSpeedMax:
         dc.b    $00                                      ; P/N switch monitor: vehicle speed at or below this value for the key-on check
 
@@ -8440,7 +8440,7 @@ BrakeSwThrottleMin:
 BrakeSwDriveTime:
         dc.b    $40                                      ; Brake switch monitor: time (BrakeSwDriveTimer) of brake-on driving per count
 BrakeSwSeenTime:
-        dc.b    $03                                      ; Brake switch monitor: time ($066B/BrakeSwSeenTimer) each switch state must be seen to pass
+        dc.b    $03                                      ; Brake switch monitor: time (BrakeSwitch66B/BrakeSwSeenTimer) each switch state must be seen to pass
 MisfireOptions:
         dc.b    $04                                      ; Misfire monitor option byte (bit 7: $0624 bit 4 handling; bit 4: segment time start values; bit 3: deviation curve)
 MisfireMapChangeMax:
@@ -9058,23 +9058,23 @@ EgrMonResultMax:
 EgrMonFailCount:
         dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
 FuelSysTooLeanHyst:
-        dc.b    $03                                      ; Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set
+        dc.b    $03                                      ; Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the lean limit (FuelSysLimit2) once the lean state is set
 FuelSysTooRichHyst:
-        dc.b    $03                                      ; Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set
+        dc.b    $03                                      ; Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the rich limit (FuelSysLimit) once the rich state is set
 FuelSysTooLeanCount:
-        dc.b    $FE                                      ; Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)
+        dc.b    $FE                                      ; Fuel system monitor: lean-condition counts (FuelSysCount3/FuelSysTooLeanCount2) before the lean flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)
 FuelSysTooRichCount:
-        dc.b    $FE                                      ; Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)
+        dc.b    $FE                                      ; Fuel system monitor: rich-condition counts before the rich flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)
 FuelSysTooLeanFaultCount:
-        dc.b    $FE                                      ; Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result
+        dc.b    $FE                                      ; Fuel system monitor: lean counts (FuelSysCount1/FuelSysTooLeanFaults) before the lean result
 FuelSysTooRichFaultCount:
-        dc.b    $FE                                      ; Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result
+        dc.b    $FE                                      ; Fuel system monitor: rich counts (FuelSysCount1/FuelSysTooRichFaults) before the rich result
 O2MemChangeHold:
-        dc.b    $06                                      ; Long-term memory cell selection: hold time ($05A5/O2MemChangeHold2) after the trim is cleared on a cell change
+        dc.b    $06                                      ; Long-term memory cell selection: hold time (FuelSys5A5/O2MemChangeHold2) after the trim is cleared on a cell change
 FuelSysDelay:
-        dc.b    $0C                                      ; Fuel system monitor: delay ($05A7/FuelSysDelay2) after the enable conditions return
+        dc.b    $0C                                      ; Fuel system monitor: delay (FuelSysDelay1/FuelSysDelay2) after the enable conditions return
 FuelSysCellMin:
-        dc.b    $A9                                      ; Fuel system monitor: learned purge cells ($6A/PurgeCellTrim2) at or below this (signed) value count as saturated
+        dc.b    $A9                                      ; Fuel system monitor: learned purge cells (PurgeCellTrim1/PurgeCellTrim2) at or below this (signed) value count as saturated
 
 ;---------------------------------------------------------------------------------------------------
 ; FuelSysLimit ($55A6): 3D table, 5 rows x 5 columns, unsigned
@@ -9152,7 +9152,7 @@ O2MonStableTime:
 O2MonRestartDelay:
         dc.b    $04                                      ; O2 sensor monitor at idle: delay (O2MonRestartTimer) loaded when the test conditions start again
 O2MonSensorReadyMin:
-        dc.b    $0B                                      ; O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value
+        dc.b    $0B                                      ; O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value
 O2MonPurgeOffTime:
         dc.b    $32                                      ; O2 sensor monitor at idle: purge-off time (O2MonPurgeOffTimer) needed when purge is not finished
         dc.b    $8E,$8A,$8E,$8A,$02,$02,$01,$01
@@ -9406,7 +9406,7 @@ ExpectedMapFieldDuty:
 ;---------------------------------------------------------------------------------------------------
 ; ExpectedMap ($5720): 3D table, 9 rows x 9 columns, unsigned
 ; Expected MAP against throttle (rows) and engine rpm (columns); additions for coolant, field duty, A/C
-; columns: rpm8, rows: pos256, values: kpa (units: docs/en/calibration.md)
+; columns: rpm32, rows: pos256, values: kpa (units: docs/en/calibration.md)
 ; Inputs: result of Lookup2D x EngineRpm
 ; Read at $21A06
 ;---------------------------------------------------------------------------------------------------
@@ -9465,13 +9465,13 @@ MonSteadyRateMax:
 MonSteadyThrottleDelta:
         dc.b    $02                                      ; Steady-state condition: throttle change below this value
 MonSteadyRpmMin:
-        dc.b    $12                                      ; Steady-state condition: engine rpm above this value
-MonSteadyRpmMax:
-        dc.b    $21                                      ; Steady-state condition (P1390): engine rpm at or below this value
-MonSteadyRpmBand:
-        dc.b    $1E                                      ; Steady-state condition: rpm band start
-MonSteadyRpmCeiling:
-        dc.b    $7D                                      ; Cam/crank relation monitor (CamCrankRelation): engine rpm below this value
+        dc.b    $12                                      ; Steady-state condition (CamCrankRelation, P1390): first rpm window, engine rpm above this value
+MonSteadyRpmHighMin:
+        dc.b    $21                                      ; Steady-state condition: second rpm window, engine rpm above this value (with vehicle speed at most MonSteadySpeedMax)
+MonSteadyRpmLowMax:
+        dc.b    $1E                                      ; Steady-state condition: first rpm window, engine rpm below this value
+MonSteadyRpmHighMax:
+        dc.b    $7D                                      ; Steady-state condition: second rpm window, engine rpm below this value
 MonSteadySpeedMax:
         dc.b    $C8                                      ; Steady-state condition: vehicle speed at or below this value
 CamCrankOffsetMin:
@@ -9539,14 +9539,14 @@ MapLimpFromThrottle:
         dc.b    0,0, 7,32, 25,65, 40,97, 52,105          ; x, y
 
 VssCheckCount:
-        dc.b    $12                                      ; Vehicle speed sensor monitor (VssMonitor): counts ($065D/VssCheckCounter) before the result changes
+        dc.b    $12                                      ; Vehicle speed sensor monitor (VssMonitor): counts (Vss65D/VssCheckCounter) before the result changes
 VssCheckCoolantMin:
         dc.b    $B6                                      ; Vehicle speed sensor check (VssMonitor, P0500) runs above this coolant temperature
 
 ;---------------------------------------------------------------------------------------------------
 ; VssCheckVacuumRpm ($57CD): 2D table, 2 points, unsigned
 ; Vehicle speed sensor check (VssMonitor, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm)
-; x: rpm8, y: raw (units: docs/en/calibration.md)
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $239DA
 ;---------------------------------------------------------------------------------------------------
@@ -9703,7 +9703,7 @@ EgrCircuitEdgeMargin:
 EgrCircuitDutyMargin:
         dc.b    $05                                      ; EGR solenoid circuit check: margin around the commanded duty (PWMA) for the on/off sample window
 EgrCircuitCount:
-        dc.b    $FF                                      ; EGR solenoid circuit check: wrong-level counts ($058A/EgrCircuitCount2) before the fault
+        dc.b    $FF                                      ; EGR solenoid circuit check: wrong-level counts (EgrPosition58A, reached through Y) before the fault
 PurgeCircuitFlowMax:
         dc.b    $66                                      ; Purge solenoid check: measured flow (PurgeFlowMeasured) at or above this value with the valve closed is a fault
 PurgeCircuitErrorMax:
@@ -10538,7 +10538,7 @@ BitCollectMaps:
 
         dc.b    $00,$0D,$BB,$A0,$00,$00,$1A,$CB,$C0,$00
 VssPeriodMin:
-        dc.b    $1E                                      ; Vehicle speed (CalcVehicleSpeed): speed period / 2 below this value takes the high-speed branch
+        dc.b    $1E                                      ; Vehicle speed (CalcVehicleSpeed): with VssPulseIndex / 2 at or above this value the pulse data are stored (VssStore); below it the branch that runs every fourth main-loop pass is taken
 PwmPeriodC18:
         dc.b    $3F                                      ; PWM period of output C18 (Options0333 bit 6): Reset stores value x 250 into PwmC18Period, which PwmC18PeriodCalc uses with the duty PwmC18Duty (in %)
 PurgePwmPeriod:
@@ -10564,7 +10564,7 @@ SciErrorCount:
 SciRxIndexMax:
         dc.b    $0F                                      ; Serial receive: largest receive index (SciRxIndex)
 CamFaultClearSwitch:
-        dc.b    $00                                      ; CamFaultClear: when not zero the counts $018D/CamFaultCount2 are cleared every 0.19 s pass
+        dc.b    $00                                      ; CamFaultClear: when not zero the counts CamFault18D/CamFaultCount2 are cleared every 0.19 s pass
         dc.b    $FF,$FF,$01,$04,$02,$05,$04,$00,$08,$01,$10,$02,$20,$03,$04,$03
         dc.b    $08,$04,$10,$05,$20,$06,$01,$01,$02,$02,$03,$05,$01,$04,$03,$05
         dc.b    $02,$06,$01,$04,$02,$06

@@ -8188,7 +8188,7 @@ L1584C:
         LBCC    L157A8
 L15854:
         LDD     >EngineRpm,Z
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         BCC     L15888
         BRSET   >AcFlags,Z,#$80,L15888                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRCLR   >IoCfg1FL,Z,#$01,L15888
@@ -18888,7 +18888,7 @@ L1CC0A:
 ;---------------------------------------------------------------------------------------------------
 SurgeControl:
         CLRB
-        BRCLR   >Options0337,#$04,L1CEA0                 ; bit 2: selects a branch in CalcFuelPulse
+        BRCLR   >Options0337,#$04,L1CEA0                 ; bit 2: part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)
         BRCLR   >SparkFlags,Z,#$20,L1CEA0                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >VehicleSpeed,Z
         CMPA    >SurgeSpeedMin

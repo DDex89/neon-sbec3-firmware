@@ -12259,7 +12259,7 @@
  </XDFFLAG>
  <XDFFLAG uniqueid="0x249" flags="0x0">
   <title>Options0337 bit $04</title>
-  <description>selects a branch in CalcFuelPulse. Option byte (global configuration); bits used are listed with their names where known $0323 mask $04</description>
+  <description>part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse). Option byte (global configuration); bits used are listed with their names where known $0323 mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x04</mask>
@@ -12571,8 +12571,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x26B" flags="0x0">
-  <title>AcCutRpmLow</title>
-  <description>A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off) $0416</description>
+  <title>AcRelayRpmLow</title>
+  <description>A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below $0416</description>
   <CATEGORYMEM index="0" category="21" />
   <EMBEDDEDDATA mmedaddress="0x416" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -14038,7 +14038,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2E6" flags="0x0">
   <title>EventSparkPeriodInit</title>
-  <description>Event spark: start value of the period counters $0862/EventSparkPeriodB $1D45</description>
+  <description>Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB $1D45</description>
   <CATEGORYMEM index="0" category="18" />
   <EMBEDDEDDATA mmedaddress="0x1D45" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -14722,7 +14722,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x31F" flags="0x0">
   <title>O2MonSensorReadyMin</title>
-  <description>O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value $2553</description>
+  <description>O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value $2553</description>
   <CATEGORYMEM index="0" category="7" />
   <EMBEDDEDDATA mmedaddress="0x2553" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

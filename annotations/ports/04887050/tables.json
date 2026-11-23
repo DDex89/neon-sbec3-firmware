@@ -1278,8 +1278,8 @@
    "category": "Idle"
   },
   "0404": {
-   "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)",
+   "name": "AcRelayRpmLow",
+   "desc": "A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
@@ -1861,7 +1861,7 @@
   },
   "1D2D": {
    "name": "EventSparkPeriodInit",
-   "desc": "Event spark: start value of the period counters $0862/EventSparkPeriodB",
+   "desc": "Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB",
    "category": "Other",
    "size": 1
   },
@@ -2499,7 +2499,7 @@
   },
   "2539": {
    "name": "O2MonSensorReadyMin",
-   "desc": "O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value",
+   "desc": "O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value",
    "category": "Diagnostics",
    "size": 1
   },

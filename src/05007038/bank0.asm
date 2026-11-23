@@ -479,8 +479,8 @@ Tab2D_04F8:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 IacLowRpm:
         dc.b    $0F,$A0                                  ; Segment rpm below which the low-rpm branch of IdleTargetControl applies
-AcCutRpmLow:
-        dc.b    $CC,$E8                                  ; A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)
+AcRelayRpmLow:
+        dc.b    $CC,$E8                                  ; A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below
 IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of IdleTargetControl runs
 IacEventTimerInit:
@@ -2244,7 +2244,7 @@ O2SlowMax:
 O2SlowEnableCoolant:
         dc.b    $CD                                      ; Coolant at or above which the slow-term delay O2SlowDelay counts down
 O2SlowPurgeRampMin:
-        dc.b    $00                                      ; Purge ramp below this value reloads the slow-term periods ($0712/O2SlowPeriod2)
+        dc.b    $00                                      ; Purge ramp below this value reloads the slow-term periods (ClosedLoop712/O2SlowPeriod2)
 O2PurgeRampMax:
         dc.b    $80                                      ; Closed-loop manager: purge ramp above this value holds the integrators
         dc.b    $01,$80,$FF,$13,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
@@ -2280,10 +2280,10 @@ O2LearnRpmMax:
 O2LearnRpmHyst:
         dc.b    $03                                      ; Long-term learning: rpm hysteresis of O2LearnRpmMax (O2InactiveFlags bit 1)
 O2PulseWidthMin:
-        dc.b    $01,$13                                  ; Closed-loop timing: fuel pulse widths ($0780/FuelPulseBank2, word) at or above this value for closed-loop entry
+        dc.b    $01,$13                                  ; Closed-loop timing: fuel pulse widths (FuelPulseBank1/FuelPulseBank2, word) at or above this value for closed-loop entry
         dc.b    $09,$09
 O2LearnRate:
-        dc.b    $09                                      ; Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/O2LearnTimer2) per pass
+        dc.b    $09                                      ; Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer (O2CellWork) per pass
 O2LearnRateWotFlex:
         dc.b    $08                                      ; As O2LearnRateWot with the flex fuel flag
 O2AdaptMax:
@@ -2850,7 +2850,7 @@ EventSparkStepUp:
 EventSparkInit:
         dc.b    $00                                      ; Event spark value at the start of an event
 EventSparkPeriodInit:
-        dc.b    $00                                      ; Event spark: start value of the period counters $0862/EventSparkPeriodB
+        dc.b    $00                                      ; Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB
 EventSparkCountMax:
         dc.b    $06                                      ; Event spark: upper limit of EventSparkCount2 and EventSparkCount
         dc.b    $06
@@ -5351,23 +5351,23 @@ EgrMonFailCount:
         dc.b    $03                                      ; EGR flow monitor: failed tests before the fault
         dc.b    $03
 FuelSysTooLeanHyst:
-        dc.b    $03                                      ; Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set
+        dc.b    $03                                      ; Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the lean limit (FuelSysLimit2) once the lean state is set
 FuelSysTooRichHyst:
-        dc.b    $04                                      ; Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set
+        dc.b    $04                                      ; Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the rich limit (FuelSysLimit) once the rich state is set
 FuelSysTooLeanCount:
-        dc.b    $32                                      ; Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)
+        dc.b    $32                                      ; Fuel system monitor: lean-condition counts (FuelSysCount3/FuelSysTooLeanCount2) before the lean flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)
 FuelSysTooRichCount:
-        dc.b    $32                                      ; Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)
+        dc.b    $32                                      ; Fuel system monitor: rich-condition counts before the rich flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)
 FuelSysTooLeanFaultCount:
-        dc.b    $32                                      ; Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result
+        dc.b    $32                                      ; Fuel system monitor: lean counts (FuelSysCount1/FuelSysTooLeanFaults) before the lean result
 FuelSysTooRichFaultCount:
-        dc.b    $32                                      ; Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result
+        dc.b    $32                                      ; Fuel system monitor: rich counts (FuelSysCount1/FuelSysTooRichFaults) before the rich result
 O2MemChangeHold:
-        dc.b    $05                                      ; Long-term memory cell selection: hold time ($05A5/O2MemChangeHold2) after the trim is cleared on a cell change
+        dc.b    $05                                      ; Long-term memory cell selection: hold time (FuelSys5A5/O2MemChangeHold2) after the trim is cleared on a cell change
 FuelSysDelay:
-        dc.b    $02                                      ; Fuel system monitor: delay ($05A7/FuelSysDelay2) after the enable conditions return
+        dc.b    $02                                      ; Fuel system monitor: delay (FuelSysDelay1/FuelSysDelay2) after the enable conditions return
 FuelSysCellMin:
-        dc.b    $9A                                      ; Fuel system monitor: learned purge cells ($6A/PurgeCellTrim2) at or below this (signed) value count as saturated
+        dc.b    $9A                                      ; Fuel system monitor: learned purge cells (PurgeCellTrim1/PurgeCellTrim2) at or below this (signed) value count as saturated
 
 ;---------------------------------------------------------------------------------------------------
 ; Tab2D_2B14 ($2B14): 2D table, 1 points, unsigned
@@ -5412,7 +5412,7 @@ O2MonStableTime:
 O2MonRestartDelay:
         dc.b    $07                                      ; O2 sensor monitor at idle: delay (O2MonRestartTimer) loaded when the test conditions start again
 O2MonSensorReadyMin:
-        dc.b    $11                                      ; O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value
+        dc.b    $11                                      ; O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value
 O2MonPurgeOffTime:
         dc.b    $14                                      ; O2 sensor monitor at idle: purge-off time (O2MonPurgeOffTimer) needed when purge is not finished
         dc.b    $88,$7A,$00,$00,$04,$00,$01
@@ -7926,7 +7926,7 @@ L057AE:
         BRSET   >AcFlags,Z,#$80,L058B2                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L057E0:
         LDD     >SegmentRpm,Z
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         LBCC    L05958
         BRSET   >IdleFlags3,Z,#$08,L05958                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRSET   >IdleFlags6,Z,#$02,L0584C                ; bit 1: gear-step idle air step applied (IdleTargetControl)
@@ -11921,7 +11921,7 @@ L0834A:
         LDAA    $0C13
         STAA    $04B7,Z
 L08352:
-        BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRA     L08372
 L08358:
         LDAA    $04B7,Z
@@ -11931,7 +11931,7 @@ L08358:
         STAA    $04B7,Z
 L0836A:
         BCLR    >FuelModeFlags,Z,#$40                    ; bit 6: first fuel event calculation done (FuelEventCalc)
-        BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
 L08372:
         RTS
 
@@ -12740,7 +12740,7 @@ L08AF6:
         ADDE    >Scratch4,Z
         LDAA    <SriMileage,Z
         BNE     L08B3E
-        BRSET   >FuelModeFlags,Z,#$20,L08B3E             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L08B3E             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRSET   >FaultSet05,Z,#$08,L08B3E
         STE     >FanSoakFlags,Z
         LDAA    <SriMileageLow,Z
@@ -13837,12 +13837,12 @@ CalcFuelPulse:
         STAA    >Temp4F0,Z
         LDAA    >PartThrottleFuelMapOffset
         LDAB    >PartThrottleFuelK
-        BRCLR   >FuelModeFlags,Z,#$20,L09626             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L09626             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDAA    >WotFuelMapOffset
         LDAB    >WotFuelK
         BRA     L09642
 L09626:
-        BRCLR   >Options0337,#$04,L09642                 ; bit 2: selects a branch in CalcFuelPulse
+        BRCLR   >Options0337,#$04,L09642                 ; bit 2: part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)
         TDE
         LDAA    >Map,Z
         CMPA    $059D
@@ -13869,7 +13869,7 @@ L0964E:
         LSRE
         STE     >LookupResult,Z
         LDAA    >Temp4F0,Z
-        BRSET   >FuelModeFlags,Z,#$20,L0967E             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L0967E             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDX     #PartThrottleFuel
@@ -13897,7 +13897,7 @@ L096B0:
         TED
         LSRD
         STD     >CalcFuel432,Z
-        BRCLR   >FuelModeFlags,Z,#$20,L096CE             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L096CE             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRCLR   >FuelModeFlags,Z,#$01,L096CE             ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         LDAA    >WotTimeEnrich,Z
         BEQ     L096CE
@@ -17623,7 +17623,7 @@ L0B9CE:
         CLR     >ClosedLoop740,Z
         CLR     >ClosedLoop741,Z
 L0B9F8:
-        BRCLR   >FuelModeFlags,Z,#$20,L0BA0E             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L0BA0E             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <FanSoakFlags,Z,#$F0                     ; bit 7: fan soak time over (FanSoakTimeMax, FanControl); bit 6: fan soak condition met (FanControl); bit 5: fan after-run: temperature at or above the on threshold (FanControl); bit 4: fan after-run: temperature below the off threshold (FanControl)
@@ -17934,7 +17934,7 @@ L0BD4E:
         CMPA    >O2MapMin
         BLS     L0BD6C
         LDAB    >O2DecelHold
-        BRSET   >FuelModeFlags,Z,#$20,L0BD6C             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L0BD6C             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         TST     >DecelFuelFactor,Z
         BEQ     L0BD7A
 L0BD6C:
@@ -19163,7 +19163,7 @@ L0C962:
         LDAB    >O2LearnRateWotFlex
 L0C970:
         CLRA
-        BRSET   >FuelModeFlags,Z,#$20,L0CA54             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L0CA54             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDY     <Scratch4,Z
         CPY     #$8071
         BEQ     L0C98E

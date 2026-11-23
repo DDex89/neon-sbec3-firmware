@@ -1736,8 +1736,8 @@
    "category": "Idle"
   },
   "0508": {
-   "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)",
+   "name": "AcRelayRpmLow",
+   "desc": "A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
@@ -2595,7 +2595,7 @@
   },
   "1537": {
    "name": "O2SlowPurgeRampMin",
-   "desc": "Purge ramp below this value reloads the slow-term periods ($0712/O2SlowPeriod2)",
+   "desc": "Purge ramp below this value reloads the slow-term periods (ClosedLoop712/O2SlowPeriod2)",
    "category": "Closed loop",
    "size": 1
   },
@@ -2709,13 +2709,13 @@
   },
   "155B": {
    "name": "O2PulseWidthMin",
-   "desc": "Closed-loop timing: fuel pulse widths ($0780/FuelPulseBank2, word) at or above this value for closed-loop entry",
+   "desc": "Closed-loop timing: fuel pulse widths (FuelPulseBank1/FuelPulseBank2, word) at or above this value for closed-loop entry",
    "category": "Closed loop",
    "size": 2
   },
   "155F": {
    "name": "O2LearnRate",
-   "desc": "Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/O2LearnTimer2) per pass",
+   "desc": "Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer (O2CellWork) per pass",
    "category": "Closed loop",
    "size": 1
   },
@@ -3018,7 +3018,7 @@
   },
   "1BDE": {
    "name": "EventSparkPeriodInit",
-   "desc": "Event spark: start value of the period counters $0862/EventSparkPeriodB",
+   "desc": "Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB",
    "category": "Other",
    "size": 1
   },
@@ -4335,55 +4335,55 @@
   },
   "2B0B": {
    "name": "FuelSysTooLeanHyst",
-   "desc": "Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
+   "desc": "Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the lean limit (FuelSysLimit2) once the lean state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "2B0C": {
    "name": "FuelSysTooRichHyst",
-   "desc": "Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
+   "desc": "Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the rich limit (FuelSysLimit) once the rich state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "2B0D": {
    "name": "FuelSysTooLeanCount",
-   "desc": "Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)",
+   "desc": "Fuel system monitor: lean-condition counts (FuelSysCount3/FuelSysTooLeanCount2) before the lean flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "2B0E": {
    "name": "FuelSysTooRichCount",
-   "desc": "Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)",
+   "desc": "Fuel system monitor: rich-condition counts before the rich flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "2B0F": {
    "name": "FuelSysTooLeanFaultCount",
-   "desc": "Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result",
+   "desc": "Fuel system monitor: lean counts (FuelSysCount1/FuelSysTooLeanFaults) before the lean result",
    "category": "Diagnostics",
    "size": 1
   },
   "2B10": {
    "name": "FuelSysTooRichFaultCount",
-   "desc": "Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result",
+   "desc": "Fuel system monitor: rich counts (FuelSysCount1/FuelSysTooRichFaults) before the rich result",
    "category": "Diagnostics",
    "size": 1
   },
   "2B11": {
    "name": "O2MemChangeHold",
-   "desc": "Long-term memory cell selection: hold time ($05A5/O2MemChangeHold2) after the trim is cleared on a cell change",
+   "desc": "Long-term memory cell selection: hold time (FuelSys5A5/O2MemChangeHold2) after the trim is cleared on a cell change",
    "category": "Closed loop",
    "size": 1
   },
   "2B12": {
    "name": "FuelSysDelay",
-   "desc": "Fuel system monitor: delay ($05A7/FuelSysDelay2) after the enable conditions return",
+   "desc": "Fuel system monitor: delay (FuelSysDelay1/FuelSysDelay2) after the enable conditions return",
    "category": "Diagnostics",
    "size": 1
   },
   "2B13": {
    "name": "FuelSysCellMin",
-   "desc": "Fuel system monitor: learned purge cells ($6A/PurgeCellTrim2) at or below this (signed) value count as saturated",
+   "desc": "Fuel system monitor: learned purge cells (PurgeCellTrim1/PurgeCellTrim2) at or below this (signed) value count as saturated",
    "category": "Diagnostics",
    "size": 1
   },
@@ -4445,7 +4445,7 @@
   },
   "2B3F": {
    "name": "O2MonSensorReadyMin",
-   "desc": "O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value",
+   "desc": "O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value",
    "category": "Diagnostics",
    "size": 1
   },

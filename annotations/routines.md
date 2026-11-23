@@ -8,7 +8,7 @@ Reset entry (vector 0). Sets SK = ZK = $F, SP = $8FFE, Z = $F8000 (RAM base), EK
 extended addresses read the calibration in bank 0. Then: SYNCR = $7F80 (16.78 MHz), SIMCR,
 SRAM at $FF8000, PIT period 7 x 4 / 32768 Hz = 0.854 ms on level 3 vector $38, software watchdog
 (SYPCR = $94), chip selects (CSBOOT/CS0 = flash, CS2 = 2 KB external device at $F9000), ports E/F,
-GPT (ICR = $B340: level 3, vectors $40-$4B), counts the reset causes from RSR into $08/ResetCountsHltPow, and
+GPT (ICR = $B340: level 3, vectors $40-$4B), counts the reset causes from RSR, one nibble each, into ResetCountsExtSw and ResetCountsHltPow, and
 continues with the module and RAM initialisation before entering MainLoop.
 
 ## 0DC36 MainLoop
@@ -18,8 +18,8 @@ every 2^(n+1) passes), then a second fixed list. It then waits for LoopTickCount
 calling MeasureLoopTime, clears the counter and starts again.
 
 ## 0C000 MainLoopCounters
-Increments MainLoopCounter. Every 256 passes (3.06 s) increments the saturating Count3s and
-decrements FlexLearnStartCoolantValue; every 16 passes (191 ms) increments the saturating Count191ms. Stores in
+Increments MainLoopCounter. Every 256 passes (3.06 s) increments the saturating Count3s and, while
+the engine turns, copies it to RunTime and counts FlexLearnStartCoolantValue down to zero; every 16 passes (191 ms) increments the saturating Count191ms. Stores in
 MainLoopPhaseMask a mask of the trailing one bits of the counter: bit n is set once every
 2^(n+1) passes, so routines test it to run at a slower rate.
 
@@ -27,19 +27,22 @@ MainLoopPhaseMask a mask of the trailing one bits of the counter: bit n is set o
 Periodic interrupt, every 0.854 ms. Increments PitTickCounter and LoopTickCounter (the main-loop
 pacing) and runs work selected by the low bits of PitTickCounter: odd ticks every 1.71 ms; ticks
 2 mod 4 start the next ADC conversion sequence (ADCTL1 = $24); ticks 4 mod 8 call IacStepperDrive.
-Every 24 ticks (20.5 ms) one of two routines chosen by calibration bit $032E.2 runs.
+Every 24 ticks (20.5 ms) CcdTransmit runs, or PciPitTick with Options032E bit 2. Every tick it also
+drives the generator field PWM (IoDriver6E bit 13) with Options0338 bit 1 and calls FanPwmOutputCheck
+with Options0334 bit 4. While O2HeaterSample is set the handler does nothing (the counters stop).
 
 ## 080B4 UnexpectedInterrupt
 Common tail of the handlers for interrupts that should never occur (IRQ1, IRQ3, IRQ5-7, GPT OC1,
 GPT PAOV). Each handler first disables its own source, then passes a bit in D; the bit is ORed
-into UnexpectedIrqFlags and two words of the interrupted stack frame are saved at $02/UnexpectedIrqStack6.
+into UnexpectedIrqFlags and two words of the interrupted stack frame are saved in UnexpectedIrqStack4 and UnexpectedIrqStack6.
 
 ## 0C420 KickWatchdogs
 Services both watchdogs: toggles PORTC bit 5 (external watchdog) and writes $55/$AA to SWSR
-(software watchdog of the SIM).
+(software watchdog of the SIM); it does not return itself but falls through into ServiceWatchdog.
 
 ## 35A4C DiagWriteRamByte
-SCI diagnostic service: stores one received byte into the RAM buffer at $F8700-$F87FF.
+SCI diagnostic service: stores one received byte into the RAM buffer at $F8700-$F87FF, only after
+the RAM access has been unlocked (DiagRamFlags bit 0).
 
 ## 35A98 DiagRunRamCode
 SCI diagnostic service: checks the downloaded RAM routine (length byte, checksum, last word
@@ -74,7 +77,7 @@ is the signed value of PartThrottleFuel or WotFuel (rows by MAP through the scal
 by the high byte of EngineRpm). BaroFuelAdder is added at the end; the result goes to FuelPulse and Temp4F6.
 
 ## 1105E ScaleByFraction
-E = E * (1 + A / 256), saturating at $FFFF.
+E = E * (1 + A / 256), saturating at $FFFF; the result is also stored in LookupResult.
 
 ## 246A0 FaultListAdd
 Called by ReportFault with the fault row index in A. The list of stored faults is $0142-FaultListLast

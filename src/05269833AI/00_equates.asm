@@ -1444,7 +1444,7 @@ FuelModeFlags2   equ $0770        ; $F8770
 FuelModeFlags    equ $0771        ; $F8771
 ;                 bit 7: idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1
 ;                 bit 6: first fuel event calculation done (FuelEventCalc)
-;                 bit 5: WOT delay running (DetectWot, WotFlagTimer)
+;                 bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
 ;                 bit 4: crank pulse taken from the coolant table (FuelEventCalc)
 ;                 bit 3: per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)
 ;                 bit 2: vehicle speed above the warm-up fuel speed limit (WarmupFuel)

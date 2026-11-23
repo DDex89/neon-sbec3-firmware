@@ -2292,7 +2292,7 @@
    "name": "ThrottleCloseTimerRpm",
    "category": "Idle",
    "desc": "On throttle closing at low speed: dashpot timer (DashpotTimer, DashpotTimer2) against engine and segment rpm",
-   "x": "rpm8",
+   "x": "rpm32",
    "y": "raw",
    "auto": false
   },
@@ -2639,7 +2639,7 @@
    "name": "ThrottleCloseTimerRpmMoving",
    "category": "Idle",
    "desc": "As ThrottleCloseTimerRpm above vehicle speed $2AF2 (DashpotTimerMoving)",
-   "x": "rpm8",
+   "x": "rpm32",
    "y": "raw",
    "auto": false
   },
@@ -3057,7 +3057,7 @@
    "name": "DiagTimerRpm",
    "category": "Diagnostics",
    "desc": "Timer DiagTimer527 of DiagModeTimer loaded against engine rpm",
-   "x": "rpm8",
+   "x": "rpm32",
    "y": "raw",
    "auto": false
   },
@@ -3189,7 +3189,7 @@
    "name": "ExpectedMap",
    "category": "Diagnostics",
    "desc": "Expected MAP against throttle (rows) and engine rpm (columns); additions for coolant, field duty, A/C",
-   "x": "rpm8",
+   "x": "rpm32",
    "y": "pos256",
    "z": "kpa",
    "auto": false
@@ -3222,7 +3222,7 @@
    "name": "VssCheckVacuumRpm",
    "category": "Diagnostics",
    "desc": "Vehicle speed sensor check (VssMonitor, P0500): manifold vacuum limit against engine rpm (closed throttle, P/N, warm)",
-   "x": "rpm8",
+   "x": "rpm32",
    "y": "raw",
    "auto": false
   },
@@ -4724,8 +4724,8 @@
    "category": "Idle"
   },
   "05EA": {
-   "name": "AcCutRpmLow",
-   "desc": "A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)",
+   "name": "AcRelayRpmLow",
+   "desc": "A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
@@ -4769,8 +4769,8 @@
    "category": "A/C"
   },
   "05F2": {
-   "name": "AcCutRpmHigh",
-   "desc": "A/C logic: engine rpm above which the A/C is cut (FF00 = off)",
+   "name": "AcRelayRpmHigh",
+   "desc": "A/C clutch relay (AcCutLogic): engine rpm (word) at or above which ControlFlags943 bit 0 (relay on) is set without the idle step; $FF00 = never",
    "unit": "rpmw",
    "size": 2,
    "category": "A/C"
@@ -5938,7 +5938,7 @@
   },
   "0E93": {
    "name": "O2TrimAvgFilter",
-   "desc": "Filter weight of the short-term trim averages $0727/O2TrimAvg2 (O2TrimAverage)",
+   "desc": "Filter weight of the short-term trim averages O2TrimAvgCount/O2TrimAvg2 (O2TrimAverage)",
    "category": "Closed loop",
    "size": 1
   },
@@ -6259,7 +6259,7 @@
   },
   "1460": {
    "name": "RefuelBlendFuel",
-   "desc": "Refuel check: fuel used (word) over which the learned ethanol value is blended to the new reading",
+   "desc": "Refuel check: fuel used (FlexLearnFuelSum, word) during which the learned ethanol value is blended towards the new reading; at or above it the blend ends",
    "category": "Fuel",
    "size": 2
   },
@@ -6880,7 +6880,7 @@
   },
   "18CE": {
    "name": "O2SlowPurgeRampMin",
-   "desc": "Purge ramp below this value reloads the slow-term periods ($0712/O2SlowPeriod2)",
+   "desc": "Purge ramp below this value reloads the slow-term periods (ClosedLoop712/O2SlowPeriod2)",
    "category": "Closed loop",
    "size": 1
   },
@@ -6994,13 +6994,13 @@
   },
   "18F2": {
    "name": "O2PulseWidthMin",
-   "desc": "Closed-loop timing: fuel pulse widths ($0780/FuelPulseBank2, word) at or above this value for closed-loop entry",
+   "desc": "Closed-loop timing: fuel pulse widths (FuelPulseBank1/FuelPulseBank2, word) at or above this value for closed-loop entry",
    "category": "Closed loop",
    "size": 2
   },
   "18F6": {
    "name": "O2LearnRate",
-   "desc": "Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/O2LearnTimer2) per pass",
+   "desc": "Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer (O2CellWork) per pass",
    "category": "Closed loop",
    "size": 1
   },
@@ -8113,7 +8113,7 @@
   },
   "2066": {
    "name": "EventSparkPeriodInit",
-   "desc": "Event spark: start value of the period counters $0862/EventSparkPeriodB",
+   "desc": "Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB",
    "category": "Other",
    "size": 1
   },
@@ -9451,7 +9451,7 @@
   },
   "2AE9": {
    "name": "IacDecelTargetMax",
-   "desc": "Decel reference: used only while the idle target is below this value",
+   "desc": "Decel reference (IacRollingControl): upper limit of the idle target used for it (the smaller of this value and IdleTarget is taken)",
    "unit": "rpmw",
    "size": 2,
    "category": "Idle"
@@ -9641,7 +9641,7 @@
   },
   "2B89": {
    "name": "SpeedCtlAdaptGainMax",
-   "desc": "Speed control gain adaptation: upper limit of the learned gains ($0190/SpeedCtlGainHigh)",
+   "desc": "Speed control gain adaptation: upper limit of the learned gains (SpeedCtlGainLow, SpeedCtlGainHigh)",
    "category": "Speed control",
    "size": 1
   },
@@ -10876,55 +10876,55 @@
   },
   "318A": {
    "name": "FuelSysTooLeanHyst",
-   "desc": "Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set",
+   "desc": "Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the lean limit (FuelSysLimit2) once the lean state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "318B": {
    "name": "FuelSysTooRichHyst",
-   "desc": "Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set",
+   "desc": "Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the rich limit (FuelSysLimit) once the rich state is set",
    "category": "Diagnostics",
    "size": 1
   },
   "318C": {
    "name": "FuelSysTooLeanCount",
-   "desc": "Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)",
+   "desc": "Fuel system monitor: lean-condition counts (FuelSysCount3/FuelSysTooLeanCount2) before the lean flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "318D": {
    "name": "FuelSysTooRichCount",
-   "desc": "Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)",
+   "desc": "Fuel system monitor: rich-condition counts before the rich flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt)",
    "category": "Diagnostics",
    "size": 1
   },
   "318E": {
    "name": "FuelSysTooLeanFaultCount",
-   "desc": "Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result",
+   "desc": "Fuel system monitor: lean counts (FuelSysCount1/FuelSysTooLeanFaults) before the lean result",
    "category": "Diagnostics",
    "size": 1
   },
   "318F": {
    "name": "FuelSysTooRichFaultCount",
-   "desc": "Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result",
+   "desc": "Fuel system monitor: rich counts (FuelSysCount1/FuelSysTooRichFaults) before the rich result",
    "category": "Diagnostics",
    "size": 1
   },
   "3190": {
    "name": "O2MemChangeHold",
-   "desc": "Long-term memory cell selection: hold time ($05A5/O2MemChangeHold2) after the trim is cleared on a cell change",
+   "desc": "Long-term memory cell selection: hold time (FuelSys5A5/O2MemChangeHold2) after the trim is cleared on a cell change",
    "category": "Closed loop",
    "size": 1
   },
   "3191": {
    "name": "FuelSysDelay",
-   "desc": "Fuel system monitor: delay ($05A7/FuelSysDelay2) after the enable conditions return",
+   "desc": "Fuel system monitor: delay (FuelSysDelay1/FuelSysDelay2) after the enable conditions return",
    "category": "Diagnostics",
    "size": 1
   },
   "3192": {
    "name": "FuelSysCellMin",
-   "desc": "Fuel system monitor: learned purge cells ($6A/PurgeCellTrim2) at or below this (signed) value count as saturated",
+   "desc": "Fuel system monitor: learned purge cells (PurgeCellTrim1/PurgeCellTrim2) at or below this (signed) value count as saturated",
    "category": "Diagnostics",
    "size": 1
   },
@@ -10986,7 +10986,7 @@
   },
   "31F7": {
    "name": "O2MonSensorReadyMin",
-   "desc": "O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value",
+   "desc": "O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value",
    "category": "Diagnostics",
    "size": 1
   },
@@ -11614,28 +11614,28 @@
   },
   "3387": {
    "name": "MonSteadyRpmMin",
-   "desc": "Steady-state condition: engine rpm above this value",
+   "desc": "Steady-state condition (CamCrankRelation, P1390): first rpm window, engine rpm above this value",
    "unit": "rpm32",
    "category": "Diagnostics",
    "size": 1
   },
   "3388": {
-   "name": "MonSteadyRpmMax",
-   "desc": "Steady-state condition (P1390): engine rpm at or below this value",
+   "name": "MonSteadyRpmHighMin",
+   "desc": "Steady-state condition: second rpm window, engine rpm above this value (with vehicle speed at most MonSteadySpeedMax)",
    "unit": "rpm32",
    "category": "Diagnostics",
    "size": 1
   },
   "3389": {
-   "name": "MonSteadyRpmBand",
-   "desc": "Steady-state condition: rpm band start",
+   "name": "MonSteadyRpmLowMax",
+   "desc": "Steady-state condition: first rpm window, engine rpm below this value",
    "unit": "rpm32",
    "category": "Diagnostics",
    "size": 1
   },
   "338A": {
-   "name": "MonSteadyRpmCeiling",
-   "desc": "Cam/crank relation monitor (CamCrankRelation): engine rpm below this value",
+   "name": "MonSteadyRpmHighMax",
+   "desc": "Steady-state condition: second rpm window, engine rpm below this value",
    "unit": "rpm32",
    "category": "Diagnostics",
    "size": 1
@@ -11722,7 +11722,7 @@
   },
   "339B": {
    "name": "PnSwitchCount",
-   "desc": "P/N switch monitor: counts ($0665/PnSwitchCounter) of the switch reading in gear or in P/N before the result",
+   "desc": "P/N switch monitor: counts (PnSwitch665/PnSwitchCounter) of the switch reading in gear or in P/N before the result",
    "category": "Diagnostics",
    "size": 1
   },
@@ -11889,7 +11889,7 @@
   },
   "33C9": {
    "name": "BrakeSwSeenTime",
-   "desc": "Brake switch monitor: time ($066B/BrakeSwSeenTimer) each switch state must be seen to pass",
+   "desc": "Brake switch monitor: time (BrakeSwitch66B/BrakeSwSeenTimer) each switch state must be seen to pass",
    "category": "Diagnostics",
    "size": 1
   },
@@ -11981,7 +11981,7 @@
   },
   "4A76": {
    "name": "VssCheckCount",
-   "desc": "Vehicle speed sensor monitor (VssMonitor): counts ($065D/VssCheckCounter) before the result changes",
+   "desc": "Vehicle speed sensor monitor (VssMonitor): counts (Vss65D/VssCheckCounter) before the result changes",
    "category": "Sensors",
    "size": 1
   },
@@ -12428,7 +12428,7 @@
   },
   "4ADE": {
    "name": "EgrCircuitCount",
-   "desc": "EGR solenoid circuit check: wrong-level counts ($058A/EgrCircuitCount2) before the fault",
+   "desc": "EGR solenoid circuit check: wrong-level counts (EgrPosition58A, reached through Y) before the fault",
    "category": "EGR",
    "size": 1
   },
@@ -12472,7 +12472,7 @@
   },
   "74E5": {
    "name": "VssPeriodMin",
-   "desc": "Vehicle speed (CalcVehicleSpeed): speed period / 2 below this value takes the high-speed branch",
+   "desc": "Vehicle speed (CalcVehicleSpeed): with VssPulseIndex / 2 at or above this value the pulse data are stored (VssStore); below it the branch that runs every fourth main-loop pass is taken",
    "category": "Sensors",
    "size": 1
   },
@@ -12534,7 +12534,7 @@
   },
   "753C": {
    "name": "CamFaultClearSwitch",
-   "desc": "CamFaultClear: when not zero the counts $018D/CamFaultCount2 are cleared every 0.19 s pass",
+   "desc": "CamFaultClear: when not zero the counts CamFault18D/CamFaultCount2 are cleared every 0.19 s pass",
    "category": "Diagnostics",
    "size": 1
   },

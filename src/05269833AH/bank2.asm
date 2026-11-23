@@ -4950,12 +4950,12 @@ CamCrankRelation:
         LDAA    >EngineRpm,Z
         CMPA    >MonSteadyRpmMin
         BLS     L23AB2
-        CMPA    >MonSteadyRpmBand
+        CMPA    >MonSteadyRpmLowMax
         BCS     L23AC8
 L23AB2:
-        CMPA    >MonSteadyRpmMax
+        CMPA    >MonSteadyRpmHighMin
         BLS     L23B0C
-        CMPA    >MonSteadyRpmCeiling
+        CMPA    >MonSteadyRpmHighMax
         BCC     L23B0C
         LDAA    >VehicleSpeed,Z
         CMPA    >MonSteadySpeedMax
@@ -14567,7 +14567,7 @@ L2D400:
         DECA
         STAA    >WotFlagTimer,Z
 L2D41E:
-        BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRA     L2D458
 L2D424:
         LDAA    >VehicleSpeed,Z
@@ -14587,7 +14587,7 @@ L2D44C:
         LDAA    >WotFlagDelay
         STAA    >WotFlagTimer,Z
 L2D454:
-        BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
 L2D458:
         RTS
 

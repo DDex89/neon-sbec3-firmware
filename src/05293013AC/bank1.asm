@@ -4072,7 +4072,7 @@ L12B26:
         LBCC    L12AA0
 L12B2E:
         LDD     >EngineRpm,Z
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         BCC     L12B62
         BRSET   >AcFlags,Z,#$80,L12B62                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRCLR   >IoCfg1FL,Z,#$01,L12B62
@@ -6070,7 +6070,7 @@ L141E0:
 ; Called from: Sub_14000
 ;---------------------------------------------------------------------------------------------------
 CalcBaseSpark:
-        BRSET   >FuelModeFlags,Z,#$20,L14204             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L14204             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDX     #PartThrottleMapScale
         LDAA    >Map,Z
         JSR     Lookup2D
@@ -7198,7 +7198,7 @@ L14D6C:
 ;---------------------------------------------------------------------------------------------------
 SurgeControl:
         CLRB
-        BRCLR   >Options0337,#$04,L15002                 ; bit 2: selects a branch in CalcFuelPulse
+        BRCLR   >Options0337,#$04,L15002                 ; bit 2: part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)
         BRCLR   >SparkFlags,Z,#$20,L15002                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         LDAA    >VehicleSpeed,Z
         CMPA    >SurgeSpeedMin

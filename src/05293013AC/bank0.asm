@@ -403,8 +403,8 @@ Tab2D_0400:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 IacLowRpm:
         dc.b    $0F,$A0                                  ; Segment rpm below which the low-rpm branch of IdleTargetControl applies
-AcCutRpmLow:
-        dc.b    $FF,$00                                  ; A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)
+AcRelayRpmLow:
+        dc.b    $FF,$00                                  ; A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below
         dc.b    $FF
 IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of IdleTargetControl runs
@@ -2959,7 +2959,7 @@ EventSparkStepUp:
 EventSparkInit:
         dc.b    $00                                      ; Event spark value at the start of an event
 EventSparkPeriodInit:
-        dc.b    $00                                      ; Event spark: start value of the period counters $0862/EventSparkPeriodB
+        dc.b    $00                                      ; Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB
 EventSparkCountMax:
         dc.b    $04                                      ; Event spark: upper limit of EventSparkCount2 and EventSparkCount
         dc.b    $01
@@ -4252,7 +4252,7 @@ O2MonStableTime:
 O2MonRestartDelay:
         dc.b    $0D                                      ; O2 sensor monitor at idle: delay (O2MonRestartTimer) loaded when the test conditions start again
 O2MonSensorReadyMin:
-        dc.b    $35                                      ; O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value
+        dc.b    $35                                      ; O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value
         dc.b    $06,$FA,$06,$FA,$06,$FA,$06,$FA,$10,$10,$10,$10,$00,$86,$8A,$86
         dc.b    $8A,$00,$00,$00
 O2MonSettleCount:
@@ -8023,7 +8023,7 @@ L06908:
         LDAA    $0F55
         STAA    $060D,Z
 L06910:
-        BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BSET    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRA     L06930
 L06916:
         LDAA    $060D,Z
@@ -8033,7 +8033,7 @@ L06916:
         STAA    $060D,Z
 L06928:
         BCLR    >FuelModeFlags,Z,#$40                    ; bit 6: first fuel event calculation done (FuelEventCalc)
-        BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BCLR    >FuelModeFlags,Z,#$20                    ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
 L06930:
         RTS
 
@@ -10012,7 +10012,7 @@ CalcFuelPulse:
         STAA    >Temp4F0,Z
         LDAA    >PartThrottleFuelMapOffset
         LDAB    >PartThrottleFuelK
-        BRCLR   >FuelModeFlags,Z,#$20,L07DA2             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L07DA2             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDAA    >WotFuelMapOffset
         LDAB    >WotFuelK
         BRA     L07DBE
@@ -10044,7 +10044,7 @@ L07DCA:
         LSRE
         STE     >LookupResult,Z
         LDAA    >Temp4F0,Z
-        BRSET   >FuelModeFlags,Z,#$20,L07DFA             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L07DFA             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDX     #PartThrottleFuel
@@ -10072,7 +10072,7 @@ L07E2E:
         TED
         LSRD
         STD     >CalcFuel432,Z
-        BRCLR   >FuelModeFlags,Z,#$20,L07E4C             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L07E4C             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRCLR   >FuelModeFlags,Z,#$01,L07E4C             ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         LDAA    >WotTimeEnrich,Z
         BEQ     L07E4C
@@ -15050,7 +15050,7 @@ L0B39C:
         BRSET   >AcFlags,Z,#$80,L0B4CC                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L0B3FC:
         LDD     >SegmentRpm,Z
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         LBCC    L0B57E
         BRSET   >IdleFlags3,Z,#$08,L0B57E                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRSET   >IdleFlags6,Z,#$02,L0B45E                ; bit 1: gear-step idle air step applied (IdleTargetControl)

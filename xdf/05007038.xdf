@@ -13151,7 +13151,7 @@
  </XDFFLAG>
  <XDFFLAG uniqueid="0x278" flags="0x0">
   <title>Options0337 bit $04</title>
-  <description>selects a branch in CalcFuelPulse. Option byte (global configuration); bits used are listed with their names where known $032E mask $04</description>
+  <description>part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse). Option byte (global configuration); bits used are listed with their names where known $032E mask $04</description>
   <CATEGORYMEM index="0" category="19" />
   <EMBEDDEDDATA mmedaddress="0x32E" mmedelementsizebits="8" />
   <mask>0x04</mask>
@@ -13700,8 +13700,8 @@
   </MATH>
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x2B4" flags="0x0">
-  <title>AcCutRpmLow</title>
-  <description>A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off) $0508</description>
+  <title>AcRelayRpmLow</title>
+  <description>A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below $0508</description>
   <CATEGORYMEM index="0" category="21" />
   <EMBEDDEDDATA mmedaddress="0x508" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units>rpm</units>
@@ -15273,7 +15273,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x337" flags="0x0">
   <title>O2SlowPurgeRampMin</title>
-  <description>Purge ramp below this value reloads the slow-term periods ($0712/O2SlowPeriod2) $1537</description>
+  <description>Purge ramp below this value reloads the slow-term periods (ClosedLoop712/O2SlowPeriod2) $1537</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x1537" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -15477,7 +15477,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x348" flags="0x0">
   <title>O2PulseWidthMin</title>
-  <description>Closed-loop timing: fuel pulse widths ($0780/FuelPulseBank2, word) at or above this value for closed-loop entry $155B</description>
+  <description>Closed-loop timing: fuel pulse widths (FuelPulseBank1/FuelPulseBank2, word) at or above this value for closed-loop entry $155B</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x155B" mmedelementsizebits="16" mmedtypeflags="0x00" />
   <units />
@@ -15489,7 +15489,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x349" flags="0x0">
   <title>O2LearnRate</title>
-  <description>Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer ($07B2/O2LearnTimer2) per pass $155F</description>
+  <description>Long-term cell update (O2CellUpdate): learning rate count subtracted from the update timer (O2CellWork) per pass $155F</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x155F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -16005,7 +16005,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x374" flags="0x0">
   <title>EventSparkPeriodInit</title>
-  <description>Event spark: start value of the period counters $0862/EventSparkPeriodB $1BDE</description>
+  <description>Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB $1BDE</description>
   <CATEGORYMEM index="0" category="6" />
   <EMBEDDEDDATA mmedaddress="0x1BDE" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18562,7 +18562,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44C" flags="0x0">
   <title>FuelSysTooLeanHyst</title>
-  <description>Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the rich limit (FuelSysLimit2) once the rich state is set $2B0B</description>
+  <description>Fuel system monitor (FuelSysTooLean1Check, FuelSysTooLean2Check): hysteresis taken off the lean limit (FuelSysLimit2) once the lean state is set $2B0B</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B0B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18574,7 +18574,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44D" flags="0x0">
   <title>FuelSysTooRichHyst</title>
-  <description>Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the lean limit (FuelSysLimit) once the lean state is set $2B0C</description>
+  <description>Fuel system monitor (FuelSysTooRich1Check, FuelSysTooRich2Check): hysteresis added to the rich limit (FuelSysLimit) once the rich state is set $2B0C</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B0C" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18586,7 +18586,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44E" flags="0x0">
   <title>FuelSysTooLeanCount</title>
-  <description>Fuel system monitor: rich-condition counts ($05A3/FuelSysTooLeanCount2) before the rich flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt) $2B0D</description>
+  <description>Fuel system monitor: lean-condition counts (FuelSysCount3/FuelSysTooLeanCount2) before the lean flag (FuelSysTooLean1Adapt, FuelSysTooLean2Adapt) $2B0D</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B0D" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18598,7 +18598,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x44F" flags="0x0">
   <title>FuelSysTooRichCount</title>
-  <description>Fuel system monitor: lean-condition counts before the lean flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt) $2B0E</description>
+  <description>Fuel system monitor: rich-condition counts before the rich flag (FuelSysTooRich1Adapt, FuelSysTooRich2Adapt) $2B0E</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B0E" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18610,7 +18610,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x450" flags="0x0">
   <title>FuelSysTooLeanFaultCount</title>
-  <description>Fuel system monitor: rich counts ($05A1/FuelSysTooLeanFaults) before the rich result $2B0F</description>
+  <description>Fuel system monitor: lean counts (FuelSysCount1/FuelSysTooLeanFaults) before the lean result $2B0F</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B0F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18622,7 +18622,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x451" flags="0x0">
   <title>FuelSysTooRichFaultCount</title>
-  <description>Fuel system monitor: lean counts ($05A1/FuelSysTooRichFaults) before the lean result $2B10</description>
+  <description>Fuel system monitor: rich counts (FuelSysCount1/FuelSysTooRichFaults) before the rich result $2B10</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B10" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18634,7 +18634,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x452" flags="0x0">
   <title>O2MemChangeHold</title>
-  <description>Long-term memory cell selection: hold time ($05A5/O2MemChangeHold2) after the trim is cleared on a cell change $2B11</description>
+  <description>Long-term memory cell selection: hold time (FuelSys5A5/O2MemChangeHold2) after the trim is cleared on a cell change $2B11</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x2B11" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18646,7 +18646,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x453" flags="0x0">
   <title>FuelSysDelay</title>
-  <description>Fuel system monitor: delay ($05A7/FuelSysDelay2) after the enable conditions return $2B12</description>
+  <description>Fuel system monitor: delay (FuelSysDelay1/FuelSysDelay2) after the enable conditions return $2B12</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B12" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18658,7 +18658,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x454" flags="0x0">
   <title>FuelSysCellMin</title>
-  <description>Fuel system monitor: learned purge cells ($6A/PurgeCellTrim2) at or below this (signed) value count as saturated $2B13</description>
+  <description>Fuel system monitor: learned purge cells (PurgeCellTrim1/PurgeCellTrim2) at or below this (signed) value count as saturated $2B13</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B13" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />
@@ -18778,7 +18778,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x45E" flags="0x0">
   <title>O2MonSensorReadyMin</title>
-  <description>O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value $2B3F</description>
+  <description>O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value $2B3F</description>
   <CATEGORYMEM index="0" category="11" />
   <EMBEDDEDDATA mmedaddress="0x2B3F" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

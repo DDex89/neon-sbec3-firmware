@@ -429,7 +429,7 @@ L104C0:
         JSR     Lookup3D
         STAA    <Scratch4,Z
         BRCLR   >ThrottleState,Z,#$80,L1050C             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRSET   >FuelModeFlags,Z,#$20,L10550             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L10550             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         ADDA    >KnockFuel,Z
         BCC     L104EA
         LDAA    #$FF
@@ -514,7 +514,7 @@ L105B2:
 L105BA:
         ANDP    #$FF1F
         LDAA    >DecelRampValue,Z
-        BRCLR   >FuelModeFlags,Z,#$20,L105CC             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L105CC             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         CLRA
         BRA     L105D6
 L105CC:
@@ -1350,7 +1350,7 @@ L10DC4:
         ADDE    >Scratch4,Z
         LDAA    <SriMileage,Z
         BNE     L10E0C
-        BRSET   >FuelModeFlags,Z,#$20,L10E0C             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L10E0C             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRSET   >FaultSet05,Z,#$08,L10E0C
         STE     >Scratch0,Z
         LDAA    <SriMileageLow,Z
@@ -2708,12 +2708,12 @@ CalcFuelPulse:
         STAA    >Temp4F0,Z
         LDAA    >PartThrottleFuelMapOffset
         LDAB    >PartThrottleFuelK
-        BRCLR   >FuelModeFlags,Z,#$20,L11C36             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L11C36             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDAA    >WotFuelMapOffset
         LDAB    >WotFuelK
         BRA     L11C52
 L11C36:
-        BRCLR   >Options0337,#$04,L11C52                 ; bit 2: selects a branch in CalcFuelPulse
+        BRCLR   >Options0337,#$04,L11C52                 ; bit 2: part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)
         TDE
         LDAA    >Map,Z
         CMPA    $086E
@@ -2740,7 +2740,7 @@ L11C5E:
         LSRE
         STE     >LookupResult,Z
         LDAA    >Temp4F0,Z
-        BRSET   >FuelModeFlags,Z,#$20,L11C8E             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L11C8E             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDX     #PartThrottleMapScale
         JSR     Lookup2D
         LDX     #PartThrottleFuel
@@ -2775,7 +2775,7 @@ L11CCE:
         TED
         LSRD
         STD     >CalcFuel432,Z
-        BRCLR   >FuelModeFlags,Z,#$20,L11CEC             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L11CEC             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BRCLR   >FuelModeFlags,Z,#$01,L11CEC             ; bit 0: WOT enrichment delay elapsed: WOT enrichment on (WotEnrichControl)
         LDAA    >WotTimeEnrich,Z
         BEQ     L11CEC
@@ -5423,7 +5423,7 @@ L14B8A:
         CLR     >ClosedLoop740,Z
         CLR     >ClosedLoop741,Z
 L14BB4:
-        BRCLR   >FuelModeFlags,Z,#$20,L14BCA             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRCLR   >FuelModeFlags,Z,#$20,L14BCA             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BSET    >O2ResetFlags,Z,#$03                     ; bit 1: restart closed-loop learning, bank 1 (O2LearnEnable); bit 0: restart closed-loop learning, bank 2 (O2LearnEnable)
         BSET    >O2InactiveFlags,Z,#$C0                  ; bit 7: bank 1 closed loop held open (O2 inactive, diagnostic hold or new-vehicle mileage under O2NewMileageOpenMax); bit 6: bank 2 closed loop held open (as bit 7)
         BSET    <Scratch0,Z,#$F0
@@ -5752,7 +5752,7 @@ L14F26:
 L14F4C:
         BCLR    <Scratch0,Z,#$40
         LDAB    >O2DecelHold
-        BRSET   >FuelModeFlags,Z,#$20,L14F60             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L14F60             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         TST     >DecelFuelFactor,Z
         BEQ     L14F66
 L14F60:
@@ -7039,7 +7039,7 @@ L15C28:
         LDAB    >O2LearnRateWotFlex
 L15C42:
         CLRA
-        BRSET   >FuelModeFlags,Z,#$20,L15D56             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L15D56             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         LDY     <Scratch4,Z
         CPY     #$806A
         BEQ     L15C60
@@ -11548,7 +11548,7 @@ L1A298:
         BRSET   >AcFlags,Z,#$80,L1A3A2                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L1A2CC:
         LDD     >SegmentRpm,Z
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         LBCC    L1A44A
         BRSET   >IdleFlags3,Z,#$08,L1A44A                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRSET   >IdleFlags6,Z,#$02,L1A33A                ; bit 1: gear-step idle air step applied (IdleTargetControl)
@@ -14057,7 +14057,7 @@ CalcBaseSpark:
 L1D264:
         JMP     L1D2F4
 L1D268:
-        BRSET   >FuelModeFlags,Z,#$20,L1D294             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L1D294             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale

@@ -402,8 +402,8 @@ Tab2D_03EE:
         dc.b    $FF,$FF,$FF,$FF,$FF,$FF
 IacLowRpm:
         dc.b    $0F,$A0                                  ; Segment rpm below which the low-rpm branch of IdleTargetControl applies
-AcCutRpmLow:
-        dc.b    $FF,$00                                  ; A/C logic: engine rpm limit used in IdleTargetControl and AcCutLogic (FF00 = off)
+AcRelayRpmLow:
+        dc.b    $FF,$00                                  ; A/C (AcCutLogic, IdleTargetControl): engine rpm (word) below which the relay bit is cleared again when the clutch is not engaged, and below which (SegmentRpm) the idle code applies the A/C idle air step; $FF00 = always below
         dc.b    $86
 IacStartTimeMin:
         dc.b    $02                                      ; Time since start before the event logic of IdleTargetControl runs
@@ -2941,7 +2941,7 @@ EventSparkStepUp:
 EventSparkInit:
         dc.b    $00                                      ; Event spark value at the start of an event
 EventSparkPeriodInit:
-        dc.b    $00                                      ; Event spark: start value of the period counters $0862/EventSparkPeriodB
+        dc.b    $00                                      ; Event spark: start value of the period counters EventSparkPeriodA/EventSparkPeriodB
 EventSparkCountMax:
         dc.b    $04                                      ; Event spark: upper limit of EventSparkCount2 and EventSparkCount
         dc.b    $01,$00
@@ -4217,7 +4217,7 @@ O2MonStableTime:
 O2MonRestartDelay:
         dc.b    $0D                                      ; O2 sensor monitor at idle: delay (O2MonRestartTimer) loaded when the test conditions start again
 O2MonSensorReadyMin:
-        dc.b    $35                                      ; O2 sensor monitor at idle: sensor ready counts ($0A4E/O2SensorReady2) at or above this value
+        dc.b    $35                                      ; O2 sensor monitor at idle: sensor ready counts (O2IdleA4E/O2SensorReady2) at or above this value
         dc.b    $06,$FA,$06,$FA,$06,$FA,$06,$FA,$10,$10,$10,$10,$00,$82,$86,$82
         dc.b    $86,$00,$00,$00
 O2MonSettleCount:
@@ -14810,7 +14810,7 @@ L0B2A2:
         BRSET   >AcFlags,Z,#$80,L0B3D2                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
 L0B302:
         LDD     >SegmentRpm,Z
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         LBCC    L0B484
         BRSET   >IdleFlags3,Z,#$08,L0B484                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRSET   >IdleFlags6,Z,#$02,L0B364                ; bit 1: gear-step idle air step applied (IdleTargetControl)

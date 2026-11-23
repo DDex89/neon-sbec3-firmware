@@ -431,7 +431,7 @@
  "FuelModeFlags": {
   "7": "idle air fuel adder above its lookup value (IacFuelControl); read by Isr_GPT_IC1",
   "6": "first fuel event calculation done (FuelEventCalc)",
-  "5": "WOT delay running (DetectWot, WotFlagTimer)",
+  "5": "WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off",
   "4": "crank pulse taken from the coolant table (FuelEventCalc)",
   "3": "per-event spark/fuel history to be updated (set in Isr_GPT_IC4OC5, cleared by EventTableCheck)",
   "2": "vehicle speed above the warm-up fuel speed limit (WarmupFuel)",
@@ -1015,7 +1015,7 @@
   "5": "speed limiter on (SpeedLimitOn, FuelCutControl)",
   "4": "surge spark control on (SurgeSparkOn)",
   "3": "selects a branch in ReadMap",
-  "2": "selects a branch in CalcFuelPulse",
+  "2": "part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)",
   "1": "selects a branch in CalcBaseSpark",
   "0": "idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect"
  },

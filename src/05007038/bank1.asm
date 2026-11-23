@@ -605,7 +605,7 @@ L106AC:
         LDD     <EngineRpm,Z
         CPD     $050E
         BCC     L1063A
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         BCC     L106DC
         BRSET   >AcFlags,Z,#$80,L106DC                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRCLR   >ControlFlags943,Z,#$01,L106DC           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
@@ -20353,7 +20353,7 @@ L1D6EC:
 ; Called from: Sub_1D526
 ;---------------------------------------------------------------------------------------------------
 CalcBaseSpark:
-        BRSET   >FuelModeFlags,Z,#$20,L1D71A             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
+        BRSET   >FuelModeFlags,Z,#$20,L1D71A             ; bit 5: WOT mode: set by DetectWot once the WOT delay (WotFlagTimer) has passed; selects the WOT fuel constants and tables (CalcFuelPulse) and WOT spark (CalcBaseSpark); closed loop and learning stay off
         BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at CalcBaseD3E (CalcBaseSpark)
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale

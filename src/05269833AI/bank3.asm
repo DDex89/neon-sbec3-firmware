@@ -10018,9 +10018,9 @@ L39636:
         LBCC    L395CC
 L3963E:
         LDD     >EngineRpm,Z
-        CPD     >AcCutRpmHigh
+        CPD     >AcRelayRpmHigh
         BCC     L395CC
-        CPD     >AcCutRpmLow
+        CPD     >AcRelayRpmLow
         BCC     L39670
         BRSET   >AcFlags,Z,#$80,L39670                   ; bit 7: A/C clutch engaged (AcClutchControl); set at reset
         BRCLR   >ControlFlags943,Z,#$01,L39670           ; bit 0: A/C clutch relay on (AcCutLogic); the idle code reads it
