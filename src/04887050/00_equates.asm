@@ -82,6 +82,12 @@ MainLoopPhaseMask equ $010D        ; $F810D
 ;                 bit 0: one pass in 2 (about 24 ms)
 SciLogFlags      equ $010E        ; $F810E
 ControlFlagsC33  equ $010F        ; $F810F
+;                 bit 7: knock learn decay pass armed (KnockLearnDecayFlag)
+;                 bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test
+;                 bit 5: three seconds after key-on passed (RunModeSwitch)
+;                 bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
+;                 bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
+;                 bit 0: MIL lamp check done since the engine started (MilLampUpdate)
 SpeedCtlRpmAvg   equ $0112        ; $F8112
 SpeedCtlThrottleAvg equ $0114        ; $F8114
 SpeedCtlRpmJumpTimer equ $0116        ; $F8116
@@ -123,6 +129,12 @@ MisfireCount2    equ $0234        ; $F8234
 MisfireLoad      equ $023F        ; $F823F
 MisfireTransientHold equ $0241        ; $F8241
 MisfireFlags2    equ $0243        ; $F8243
+;                 bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
+;                 bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
+;                 bit 3: crank period deviation negative (MisfireDeviation)
+;                 bit 2: misfire transient hold running (MisfireSegmentTime)
+;                 bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
+;                 bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
 MisfireFlags4    equ $0245        ; $F8245
 ;                 bit 6: set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation
 MisfireWork628   equ $0246        ; $F8246
@@ -211,6 +223,14 @@ FlexEthanolScaled equ $0343        ; $F8343
 FuelTrimAdjustValue equ $0347        ; $F8347
 MonSteadyRate    equ $034C        ; $F834C
 CrankFlags2      equ $034E        ; $F834E
+;                 bit 7: reference event seen since the last PIT check (Isr_GPT_IC1, HighRpmTimerPit)
+;                 bit 6: EngineRpm reached $1900 (HighRpmTimerPit)
+;                 bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts
+;                 bit 4: timer update due for HighRpmTimer (HighRpmTimerUpdate)
+;                 bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2
+;                 bit 2: timer update due for HighRpmTimer2 (HighRpmTimerUpdate)
+;                 bit 1: engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it
+;                 bit 0: first crank period delta taken (CrankPeriodDelta2)
 HighRpmTimer     equ $0350        ; $F8350
 HighRpmTimer2    equ $0352        ; $F8352
 RefPeriod        equ $0363        ; $F8363
@@ -261,6 +281,12 @@ PurgeDelay       equ $03B7        ; $F83B7
 PurgeRamp        equ $03B9        ; $F83B9
 PurgeStartRamp   equ $03BB        ; $F83BB
 FanFlags         equ $03D9        ; $F83D9
+;                 bit 7: A/C fan stage bit (FanAcStage)
+;                 bit 6: A/C fan stage bit (FanAcStage)
+;                 bit 3: fan idle state: engine idling, idle timer counting (FanIdleState)
+;                 bit 2: vehicle speed below FanWarmupSpeedMax (FanWarmupState)
+;                 bit 1: fan PWM output read back low (FanPwmOutputCheck)
+;                 bit 0: fan PWM output read back high (FanPwmOutputCheck)
 FuelSystemStatusPid equ $03E7        ; $F83E7
 MonStatusBits1   equ $03E9        ; $F83E9
 MonStatusBits2   equ $03EB        ; $F83EB
@@ -446,7 +472,19 @@ SparkFlags       equ $0600        ; $F8600
 ;                 bit 2: tip-in spark retard started (TipInSparkControl)
 ;                 bit 1: tip-in spark retard armed (TipInSparkControl)
 SparkFaultFlags  equ $0601        ; $F8601
+;                 bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
+;                 bit 4: tip-in spark retard finished or blocked (TipInSparkControl)
+;                 bit 1: surge spark correction active (SurgeControl, set with bit 0)
+;                 bit 0: surge spark correction active (SurgeControl, set with bit 1)
 SparkFlags2      equ $0602        ; $F8602
+;                 bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
+;                 bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)
+;                 bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
+;                 bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
+;                 bit 3: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
+;                 bit 2: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
+;                 bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)
+;                 bit 0: EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)
 FlexSparkValue   equ $0603        ; $F8603
 SparkAdvanceD11  equ $0612        ; $F8612
 AfterStartSparkFlags equ $0617        ; $F8617
@@ -482,6 +520,13 @@ ShiftIdleDelay   equ $064A        ; $F864A
 SparkStartTime   equ $0650        ; $F8650
 IdleTarget       equ $0652        ; $F8652
 GearStateFlags   equ $0662        ; $F8662
+;                 bit 7: gear engaged and shift idle delay done (GearStateUpdate)
+;                 bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
+;                 bit 5: bus gear message: not in drive (CcdReceive)
+;                 bit 4: bus gear message: in drive (CcdReceive)
+;                 bit 3: gear message received from the bus (CcdReceive, PciReceive)
+;                 bit 2: set with bit 7 when the shift idle delay ends (GearStateUpdate)
+;                 bit 1: gear idle step duration finished (GearStateUpdate)
 IdleFlags        equ $0664        ; $F8664
 ;                 bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
 ;                 bit 6: set and cleared by IdleRpmTarget, read by idle, closed-loop trim and purge test; meaning not settled

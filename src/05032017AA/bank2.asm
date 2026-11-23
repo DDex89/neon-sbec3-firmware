@@ -669,7 +669,7 @@ L20786:
 L2078A:
         BSET    <Scratch7,Z,#$06
         LDAA    $0638,Z
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L207BE
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L207BE        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MisfireFlags,Z,#$40,L207B2              ; bit 6: misfire record active; cleared with the records (MisfireFaultRecord, ObdFaultAging, ObdClearCodes)
         LDY     #$017E
         LDAB    #$02
@@ -2327,7 +2327,7 @@ AsdRelayCheck:
         BRSET   >IoInputs0,Z,#$04,L21DEC                 ; bit 2: ASD relay output present, probably (AsdRelayCheck, the reference-event code)
         BRA     L21DDA
 L21DC0:
-        BRSET   >CrankFlags2,Z,#$02,L21DEC
+        BRSET   >CrankFlags2,Z,#$02,L21DEC               ; bit 1: engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it
         LDAB    >IoInputs0,Z
         ANDB    #$04
         LDAA    >ControlFlags943,Z
@@ -3811,8 +3811,8 @@ L22DBE:
         BSET    >MonFlags65A,Z,#$04
         LDAA    $49B9
         JSR     ObdFaultReport
-        BSET    >BusReqFlags,Z,#$03
-        BCLR    >GearStateFlags,Z,#$40
+        BSET    >BusReqFlags,Z,#$03                      ; bit 1: bus message bit 6 (CcdReceive); set on a body bus timeout; bit 0: bus message status bits = $80 (CcdReceive); set on a body bus timeout
+        BCLR    >GearStateFlags,Z,#$40                   ; bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
         LDAB    #$80
         STAB    >BusIdleByte,Z
         CLR     >BusMsg52Value,Z
@@ -3836,7 +3836,7 @@ FuelSystemStatus:
         BRCLR   $07B4,Z,#$80,L22E46
         LDAA    #$08
         BRCLR   >MisfireOptions,#$80,L22E28              ; bit 7: MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus
-        BRSET   >MisfireFlags2,Z,#$10,L22E46
+        BRSET   >MisfireFlags2,Z,#$10,L22E46             ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
 L22E28:
         LDAA    #$04
         BRSET   >ThrottleState,Z,#$40,L22E46             ; bit 6: wide-open throttle (DetectWot)
@@ -5407,8 +5407,8 @@ L24108:
 ;---------------------------------------------------------------------------------------------------
 MilLampUpdate:
         BRCLR   >EngineStateFlags,Z,#$80,L2415E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRSET   >ControlFlagsC33,Z,#$01,L2415E
-        BSET    >ControlFlagsC33,Z,#$01
+        BRSET   >ControlFlagsC33,Z,#$01,L2415E           ; bit 0: MIL lamp check done since the engine started (MilLampUpdate)
+        BSET    >ControlFlagsC33,Z,#$01                  ; bit 0: MIL lamp check done since the engine started (MilLampUpdate)
         BRCLR   >FaultListLast,Z,#$FF,L24152
         LDAA    >FaultListInfo1,Z
         CMPA    #$32
@@ -6732,8 +6732,8 @@ L2556A:
         BRSET   >PurgeFlowTestFlags2,Z,#$04,L25730       ; bit 2: A/C engaged during the purge test (AcFlags bit 6)
 L25570:
         BRSET   >Options0334,#$10,L255AA                 ; bit 4: PWM fan output: output-compare set-up at reset and in the PIT code
-        BRSET   >ControlFlagsC33,Z,#$04,L25730
-        BRSET   >ControlFlagsC33,Z,#$40,L25730
+        BRSET   >ControlFlagsC33,Z,#$04,L25730           ; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
+        BRSET   >ControlFlagsC33,Z,#$40,L25730           ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test
         BRCLR   >ControlFlags944,Z,#$10,L25590           ; bit 4: radiator fan relay, probably (FanControl, BusTempFlag, output test)
         BRCLR   >PurgeFlowTestFlags2,Z,#$10,L25730       ; bit 4: fan relay on during the purge test (ControlFlags944 bit 4)
         BRA     L25596
@@ -10325,7 +10325,7 @@ FuelSysLean1Adapt:
         LDAA    >ShortTermTrim1,Z
         CMPA    >O2AdaptCellMin
         BNE     L2A0E0
-        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A0AE
+        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A0AE        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         LDAA    >FuelSysCellMin
         CMPA    <PurgeCellTrim1,Z
         BGT     L2A0AE
@@ -10341,7 +10341,7 @@ L2A0BC:
         CLR     >FuelSysLeanFaults,Z
         INC     >FuelSysCount3,Z
         LDAA    >FuelSysCount3,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A0D4
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A0D4        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A0D8
 L2A0D4:
@@ -10373,7 +10373,7 @@ L2A10E:
         LDAB    >ShortTermTrim1,Z
         JSR     FuelSysWarmupScale
         STAB    $059F,Z
-        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A13C
+        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A13C        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         BRCLR   >Options032C,#$40,L2A12C                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRCLR   >Options032F,#$08,L2A13C                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
 L2A12C:
@@ -10404,7 +10404,7 @@ L2A174:
         CLR     >FuelSysLeanFaults,Z
         INC     >FuelSysCount1,Z
         LDAA    >FuelSysCount1,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A18C
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A18C        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A190
 L2A18C:
@@ -10516,7 +10516,7 @@ FuelSysLean2Adapt:
         LDAA    >ShortTermTrim2,Z
         CMPA    >O2AdaptCellMin
         BNE     L2A2F2
-        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A2C0
+        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A2C0        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         LDAA    >FuelSysCellMin
         CMPA    <PurgeCellTrim1B2,Z
         BGT     L2A2C0
@@ -10532,7 +10532,7 @@ L2A2CE:
         CLR     $05AD,Z
         INC     >FuelSysRichCount2,Z
         LDAA    >FuelSysRichCount2,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A2E6
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A2E6        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A2EA
 L2A2E6:
@@ -10564,7 +10564,7 @@ L2A320:
         LDAB    >ShortTermTrim2,Z
         JSR     FuelSysWarmupScale
         STAB    $05A0,Z
-        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A34E
+        BRSET   >ClosedLoopMonFlags,Z,#$80,L2A34E        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         BRCLR   >Options032C,#$40,L2A33E                 ; bit 6: flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used
         BRCLR   >Options032F,#$08,L2A34E                 ; bit 3: selects branches in the fuel event, closed-loop timing, idle and flex code
 L2A33E:
@@ -10595,7 +10595,7 @@ L2A386:
         CLR     $05AD,Z
         INC     >FuelSysCount2,Z
         LDAA    >FuelSysCount2,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A39E
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A39E        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A3A2
 L2A39E:
@@ -10709,7 +10709,7 @@ L2A4BE:
         CLR     >FuelSysRichFaults,Z
         INC     >FuelSysCount3,Z
         LDAA    >FuelSysCount3,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A4D6
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A4D6        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A4DA
 L2A4D6:
@@ -10760,7 +10760,7 @@ L2A554:
         CLR     >FuelSysRichFaults,Z
         INC     >FuelSysCount1,Z
         LDAA    >FuelSysCount1,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A56C
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A56C        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A570
 L2A56C:
@@ -10874,7 +10874,7 @@ L2A68C:
         CLR     $05AB,Z
         INC     >FuelSysRichCount2,Z
         LDAA    >FuelSysRichCount2,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A6A4
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A6A4        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A6A8
 L2A6A4:
@@ -10925,7 +10925,7 @@ L2A722:
         CLR     $05AB,Z
         INC     >FuelSysCount2,Z
         LDAA    >FuelSysCount2,Z
-        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A73A
+        BRCLR   >ClosedLoopMonFlags,Z,#$80,L2A73A        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         CMPA    >FuelSysWork,Z
         BRA     L2A73E
 L2A73A:
@@ -11061,7 +11061,7 @@ L2A832:
         CLRW    $05CC,Z
         CLRW    $05CE,Z
 L2A84E:
-        BCLR    >MisfireFlags2,Z,#$04
+        BCLR    >MisfireFlags2,Z,#$04                    ; bit 2: misfire transient hold running (MisfireSegmentTime)
         LBRA    L2A8F6
 L2A856:
         LBSR    MisfireSegmentTime
@@ -11077,7 +11077,7 @@ L2A872:
         BEQ     L2A8F6
         BSET    <MisfireFlags,Z,#$08                     ; bit 3: misfire monitor enabled for this event (MisfireEnableCheck in MisfireMonitorEvent)
         LBSR    MisfireDeviation
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2A890
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2A890        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         BEQ     L2A8F6
 L2A890:
         TST     >MisfireTransientHold,Z
@@ -11197,10 +11197,10 @@ L2A9C4:
         ADCE    #$0000
         SUBD    >MisfireRpmRef,Z
         SBCE    #$0000
-        BCLR    >MisfireFlags2,Z,#$08
+        BCLR    >MisfireFlags2,Z,#$08                    ; bit 3: crank period deviation negative (MisfireDeviation)
         STD     >Temp4F6,Z
         BPL     L2A9F2
-        BSET    >MisfireFlags2,Z,#$08
+        BSET    >MisfireFlags2,Z,#$08                    ; bit 3: crank period deviation negative (MisfireDeviation)
 L2A9F2:
         TZX
         LDX     #$8013
@@ -11224,10 +11224,10 @@ L2AA1C:
         SUBD    >MisfireRpmRef,Z
         SBCE    #$0000
 L2AA36:
-        BCLR    >MisfireFlags2,Z,#$08
+        BCLR    >MisfireFlags2,Z,#$08                    ; bit 3: crank period deviation negative (MisfireDeviation)
         STD     >Temp4F6,Z
         BPL     L2AA44
-        BSET    >MisfireFlags2,Z,#$08
+        BSET    >MisfireFlags2,Z,#$08                    ; bit 3: crank period deviation negative (MisfireDeviation)
 L2AA44:
         TZX
         LDX     #$800F
@@ -11327,10 +11327,10 @@ L2AB0C:
 MisfireEnableCheck:
         BRCLR   >Options033E,#$04,L2AB98                 ; bit 2: misfire monitor variant (MisfireEnableCheck)
         BRCLR   >MonStatusMisfire,Z,#$80,L2AB98
-        BRCLR   >MisfireFlags2,Z,#$04,L2AB98
+        BRCLR   >MisfireFlags2,Z,#$04,L2AB98             ; bit 2: misfire transient hold running (MisfireSegmentTime)
         TST     >SystemTestMode,Z
         LBNE    L2AB98
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2AB40
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2AB40        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MonitorDisableFlags,Z,#$2F,L2AB40       ; bit 5: flex-fuel learning hold active (FlexLearnHold not zero): misfire, catalyst, O2, EGR, purge and leak monitors wait; bit 3: fuel level outside the monitor window (MonEnableFuelLow); bit 2: battery voltage at or below MonEnableVoltsMin; bit 1: barometric pressure below MonEnableBaroMin (altitude); bit 0: battery (ambient) temperature below MonEnableBattTempMin
         LBRA    L2AB98
 L2AB40:
@@ -11348,22 +11348,22 @@ L2AB5C:
         BLS     L2AB98
 L2AB62:
         BRCLR   >MonEnableFlags2,Z,#$80,L2AB6E           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
-        BCLR    >MisfireFlags2,Z,#$03
+        BCLR    >MisfireFlags2,Z,#$03                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck); bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         BRA     L2AB94
 L2AB6E:
-        BCLR    >MisfireFlags2,Z,#$02
+        BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
         LDY     #$4215
         JSR     ConditionTable
         BEQ     L2AB80
-        BSET    >MisfireFlags2,Z,#$02
+        BSET    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
 L2AB80:
         LDY     #$41D8
         JSR     ConditionTable
         BEQ     L2AB90
-        BSET    >MisfireFlags2,Z,#$01
+        BSET    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         BRA     L2AB98
 L2AB90:
-        BCLR    >MisfireFlags2,Z,#$01
+        BCLR    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
 L2AB94:
         LDAA    #$FF
         BRA     L2AB9A
@@ -11492,7 +11492,7 @@ L2ACB2:
         LDE     >MisfireWork5D2,Z
         STE     $05E4,Z
         BSET    >MisfireWork628,Z,#$80
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2ACC8
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2ACC8        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L2ACC8:
         LDE     >MisfireChangeFiltered,Z
@@ -11589,7 +11589,7 @@ L2ADAC:
 L2ADCC:
         BCLR    >MonEnableFlags2,Z,#$01                  ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
 L2ADD0:
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE1C
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE1C        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         CLRA
         LDAB    #$00
         BRCLR   >MonEnableFlags2,Z,#$01,L2ADE2           ; bit 0: misfire threshold in the closed-loop range (MisfireThreshold)
@@ -11628,8 +11628,8 @@ MisfireCount:
         LDAA    $060C,Z
         CMPA    #$64
         LBCS    L2B094
-        BCLR    >MisfireFlags2,Z,#$10
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE72
+        BCLR    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2AE72        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         BRCLR   >MonFlags64D,Z,#$40,L2AF32
         TZX
         LDX     #$8600
@@ -11658,7 +11658,7 @@ L2AE72:
         LDD     $060D,Z
         CPD     >MisfireCountLimit
         LBCS    L2AF28
-        BSET    >MisfireFlags2,Z,#$10
+        BSET    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
         BSET    $0612,Z,#$80
         BSET    <MonRecordB7,Z,#$08
         CLR     $060F,Z
@@ -11727,7 +11727,7 @@ L2AF32:
         LDAB    $061A,Z
         CMPB    #$05
         LBCS    L2B094
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B068
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B068        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         LDAA    >MisfireCount2,Z
         BRSET   >MisfireFlags3,Z,#$80,L2AF8A
         CMPA    >MisfireCountLimit2
@@ -11928,7 +11928,7 @@ L2B1A6:
         BCLR    >MisfireFlags5,Z,#$10
 L2B1AA:
         LDAA    >MisfireHoldDefault
-        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2B1BE
+        BRCLR   >ClosedLoopMonFlags,Z,#$40,L2B1BE        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         BRSET   >MisfireFlags4,Z,#$02,L2B1BE
         LDAA    >MisfireHoldRpmValue,Z
 L2B1BE:
@@ -12002,19 +12002,19 @@ L2B280:
         LDE     >MisfireChangeFiltered,Z
         CPE     >MisfireNoiseLevel,Z
         BCC     L2B296
-        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B296
+        BRSET   >ClosedLoopMonFlags,Z,#$40,L2B296        ; bit 6: run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)
         BSET    <MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
         BRA     L2B29A
 L2B296:
         BCLR    <MisfireFlags,Z,#$20                     ; bit 5: crankshaft change above the noise level while closed-loop monitoring allows it (MisfireTransient)
 L2B29A:
         BRSET   >ThrottleState,Z,#$80,L2B2AC             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BRCLR   >MisfireFlags2,Z,#$40,L2B2CA
-        BCLR    >MisfireFlags2,Z,#$40
+        BRCLR   >MisfireFlags2,Z,#$40,L2B2CA             ; bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
+        BCLR    >MisfireFlags2,Z,#$40                    ; bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
         BRA     L2B2B6
 L2B2AC:
-        BRSET   >MisfireFlags2,Z,#$40,L2B2CA
-        BSET    >MisfireFlags2,Z,#$40
+        BRSET   >MisfireFlags2,Z,#$40,L2B2CA             ; bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
+        BSET    >MisfireFlags2,Z,#$40                    ; bit 6: throttle open state seen by the misfire transient filter (MisfireTransient)
 L2B2B6:
         BSET    >MisfireFlags5,Z,#$40
         LDAB    >MisfireHoldEvent
@@ -12605,7 +12605,7 @@ L2B8E2:
         SUBD    >SegmentRpm,Z
         STD     >RpmRate,Z
 L2B8F2:
-        BRSET   >MisfireFlags2,Z,#$04,L2B93C
+        BRSET   >MisfireFlags2,Z,#$04,L2B93C             ; bit 2: misfire transient hold running (MisfireSegmentTime)
         BRCLR   >MisfireFlags,Z,#$80,L2B902              ; bit 7: misfire deviation armed (MisfireDeviation, from MisfireFlags4 bit 1)
         CLRW    >MisfireEventCount,Z
 L2B902:
@@ -12625,7 +12625,7 @@ L2B902:
         BLS     L2B938
         STAB    >MisfireTransientHold,Z
 L2B938:
-        BSET    >MisfireFlags2,Z,#$04
+        BSET    >MisfireFlags2,Z,#$04                    ; bit 2: misfire transient hold running (MisfireSegmentTime)
 L2B93C:
         RTS
 
@@ -12677,7 +12677,7 @@ L2B9A8:
         PULM    K,X
         LDE     $0000,X
         LDD     $02,X
-        BRSET   >MisfireFlags2,Z,#$08,L2B9F6
+        BRSET   >MisfireFlags2,Z,#$08,L2B9F6             ; bit 3: crank period deviation negative (MisfireDeviation)
         ADDD    >Temp4F6,Z
         ADCE    #$0000
         STE     >Temp4F2,Z
@@ -13941,28 +13941,28 @@ Sub_2CC28:
 L2CC54:
         SUBA    >Map,Z
 L2CC58:
-        BRCLR   >BusReqFlags,Z,#$04,L2CC6C
+        BRCLR   >BusReqFlags,Z,#$04,L2CC6C               ; bit 2: MAP high: MAP above the baro/rpm threshold (MapHighBusFlag, hysteresis BusMapHyst)
         BLS     L2CC76
         SUBA    $35A2
         BLS     L2CC76
-        BCLR    >BusReqFlags,Z,#$04
+        BCLR    >BusReqFlags,Z,#$04                      ; bit 2: MAP high: MAP above the baro/rpm threshold (MapHighBusFlag, hysteresis BusMapHyst)
         BRA     L2CC72
 L2CC6C:
         BHI     L2CC76
-        BSET    >BusReqFlags,Z,#$04
+        BSET    >BusReqFlags,Z,#$04                      ; bit 2: MAP high: MAP above the baro/rpm threshold (MapHighBusFlag, hysteresis BusMapHyst)
 L2CC72:
         BSET    >BusTxRequest,Z,#$08                     ; bit 3: send message $91 (BusTxMsg91); set when the MAP-high bus flag changes (MapHighBusFlag)
 L2CC76:
-        BRSET   >BusReqFlags,Z,#$01,L2CC84
-        BRCLR   >BusReqFlags,Z,#$02,L2CC90
+        BRSET   >BusReqFlags,Z,#$01,L2CC84               ; bit 0: bus message status bits = $80 (CcdReceive); set on a body bus timeout
+        BRCLR   >BusReqFlags,Z,#$02,L2CC90               ; bit 1: bus message bit 6 (CcdReceive); set on a body bus timeout
         BRA     L2CC8A
 L2CC84:
-        BRCLR   >BusReqFlags,Z,#$04,L2CC90
+        BRCLR   >BusReqFlags,Z,#$04,L2CC90               ; bit 2: MAP high: MAP above the baro/rpm threshold (MapHighBusFlag, hysteresis BusMapHyst)
 L2CC8A:
-        BSET    >BusReqFlags,Z,#$08
+        BSET    >BusReqFlags,Z,#$08                      ; bit 3: MAP-high flag changed since the last message (MapHighBusFlag)
         BRA     L2CC94
 L2CC90:
-        BCLR    >BusReqFlags,Z,#$08
+        BCLR    >BusReqFlags,Z,#$08                      ; bit 3: MAP-high flag changed since the last message (MapHighBusFlag)
 L2CC94:
         RTS
 
@@ -14023,7 +14023,7 @@ L2CD0E:
 ;---------------------------------------------------------------------------------------------------
 SriMileageStore:
         BRSET   >EepromFlags,Z,#$80,L2CD74               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
-        BRCLR   >VssFlags,Z,#$04,L2CD74
+        BRCLR   >VssFlags,Z,#$04,L2CD74                  ; bit 2: mileage step reached: SRI mileage to be stored (Isr_GPT_IC3, SriMileageStore)
         BRSET   >FaultSet07,Z,#$01,L2CD3A
         TZX
         LDX     #$8AD4
@@ -14034,11 +14034,11 @@ SriMileageStore:
         JSR     ReportFault
         BCC     L2CD74
 L2CD3A:
-        BCLR    >VssFlags,Z,#$04
+        BCLR    >VssFlags,Z,#$04                         ; bit 2: mileage step reached: SRI mileage to be stored (Isr_GPT_IC3, SriMileageStore)
         CLRW    >SriMileage,Z
         JMP     L2CD74
 L2CD46:
-        BCLR    >VssFlags,Z,#$04
+        BCLR    >VssFlags,Z,#$04                         ; bit 2: mileage step reached: SRI mileage to be stored (Isr_GPT_IC3, SriMileageStore)
         BSET    >EepromFlags,Z,#$C0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         ADDE    #$01
         STE     >SriMileage,Z
@@ -14431,7 +14431,7 @@ L2D152:
 ;---------------------------------------------------------------------------------------------------
 Sub_2D154:
         BRCLR   >SwitchInputs2,Z,#$20,L2D15E             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
-        BCLR    >SparkFaultFlags,Z,#$20
+        BCLR    >SparkFaultFlags,Z,#$20                  ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
 L2D15E:
         BRCLR   >Options032E,#$40,L2D16C                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BCLR    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -14439,10 +14439,10 @@ L2D15E:
 L2D16C:
         BRCLR   >EquipmentFlags,Z,#$20,L2D180            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >Options0338,#$40,L2D180                 ; bit 6: selects a branch in GearStateUpdate
-        BRSET   >GearStateFlags,Z,#$10,L2D28E
+        BRSET   >GearStateFlags,Z,#$10,L2D28E            ; bit 4: bus gear message: in drive (CcdReceive)
         BRA     L2D184
 L2D180:
-        BSET    >GearStateFlags,Z,#$80
+        BSET    >GearStateFlags,Z,#$80                   ; bit 7: gear engaged and shift idle delay done (GearStateUpdate)
 L2D184:
         LDAB    >DriveFlags,Z
         ANDB    #$20
@@ -14451,7 +14451,7 @@ L2D184:
         ANDB    #$20
         EORB    <Scratch0,Z
         BNE     L2D1A0
-        BRSET   >GearStateFlags,Z,#$02,L2D27E
+        BRSET   >GearStateFlags,Z,#$02,L2D27E            ; bit 1: gear idle step duration finished (GearStateUpdate)
         LBRA    L2D2AA
 L2D1A0:
         BSET    >FlexLearnFlags9,Z,#$08
@@ -14465,15 +14465,15 @@ L2D1BE:
         CPD     >SegmentRpm,Z
         LBLS    L2D27E
 L2D1C6:
-        BRSET   >GearStateFlags,Z,#$80,L2D1D8
-        BRCLR   >GearStateFlags,Z,#$08,L2D1D8
-        BRSET   >GearStateFlags,Z,#$40,L2D2BA
+        BRSET   >GearStateFlags,Z,#$80,L2D1D8            ; bit 7: gear engaged and shift idle delay done (GearStateUpdate)
+        BRCLR   >GearStateFlags,Z,#$08,L2D1D8            ; bit 3: gear message received from the bus (CcdReceive, PciReceive)
+        BRSET   >GearStateFlags,Z,#$40,L2D2BA            ; bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
 L2D1D8:
         BRSET   >IdleFlags3,Z,#$08,L2D27E                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BSET    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         BRCLR   >SwitchInputs2,Z,#$20,L2D22A             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
-        BRSET   >GearStateFlags,Z,#$04,L2D22A
-        BRSET   >GearStateFlags,Z,#$20,L2D22A
+        BRSET   >GearStateFlags,Z,#$04,L2D22A            ; bit 2: set with bit 7 when the shift idle delay ends (GearStateUpdate)
+        BRSET   >GearStateFlags,Z,#$20,L2D22A            ; bit 5: bus gear message: not in drive (CcdReceive)
         LDAA    >CoolantTemp,Z
         CMPA    $30B4
         BCS     L2D22A
@@ -14490,12 +14490,12 @@ L2D212:
 L2D21A:
         STAB    >ShiftIdleDelay,Z
         LBNE    L2D2BA
-        BSET    >GearStateFlags,Z,#$84
+        BSET    >GearStateFlags,Z,#$84                   ; bit 7: gear engaged and shift idle delay done (GearStateUpdate); bit 2: set with bit 7 when the shift idle delay ends (GearStateUpdate)
         JMP     L2D2BA
 L2D22A:
         LDAA    >IacGearDuration,Z
         BNE     L2D278
-        BSET    >GearStateFlags,Z,#$02
+        BSET    >GearStateFlags,Z,#$02                   ; bit 1: gear idle step duration finished (GearStateUpdate)
         LDAA    >CoolantTemp,Z
         BRCLR   >DriveFlags,Z,#$20,L2D25C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
         LDX     #Tab2D_315B
@@ -14524,11 +14524,11 @@ L2D278:
 L2D27E:
         BRCLR   >SwitchInputs2,Z,#$20,L2D28E             ; bit 5: park/neutral switch (gear state, starter cut, park/neutral monitor)
         BSET    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
-        BCLR    >GearStateFlags,Z,#$40
+        BCLR    >GearStateFlags,Z,#$40                   ; bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
         BRA     L2D29C
 L2D28E:
         BRSET   >BusModuleFlags,Z,#$02,L2D298            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BSET    >GearStateFlags,Z,#$40
+        BSET    >GearStateFlags,Z,#$40                   ; bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
 L2D298:
         BCLR    >DriveFlags,Z,#$20                       ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L2D29C:
@@ -14537,10 +14537,10 @@ L2D29C:
         BCC     L2D2AA
         BCLR    >ThrottleState,Z,#$01                    ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
 L2D2AA:
-        BCLR    >GearStateFlags,Z,#$34
+        BCLR    >GearStateFlags,Z,#$34                   ; bit 5: bus gear message: not in drive (CcdReceive); bit 4: bus gear message: in drive (CcdReceive); bit 2: set with bit 7 when the shift idle delay ends (GearStateUpdate)
         BCLR    >DriveFlags,Z,#$80                       ; bit 7: drive engagement handling in progress (GearStateUpdate), probably
         CLR     >ShiftIdleDelay,Z
-        BCLR    >GearStateFlags,Z,#$02
+        BCLR    >GearStateFlags,Z,#$02                   ; bit 1: gear idle step duration finished (GearStateUpdate)
 L2D2BA:
         RTS
 
@@ -14672,7 +14672,7 @@ L2D3E6:
         BSET    >ThrottleState,Z,#$80                    ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
 L2D3FA:
         CLR     >ThrottleCloseCount,Z
-        BCLR    >SparkFaultFlags,Z,#$20
+        BCLR    >SparkFaultFlags,Z,#$20                  ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         LDAA    >ThrottleCloseHold
         STAA    >DashpotHold,Z
         LBRA    L2D4AC
@@ -14843,7 +14843,7 @@ CalcVehicleSpeed:
         LDAA    $01,X
         CMPA    #$20
         BCS     L2D5C0
-        BSET    >VssFlags,Z,#$10
+        BSET    >VssFlags,Z,#$10                         ; bit 4: vehicle speed reading valid (set at reset and by CalcVehicleSpeed)
 L2D5C0:
         LDX     #$8AB6
         ORP     #$00E0
@@ -14854,19 +14854,19 @@ L2D5C0:
         LSRA
         CMPA    >VssPeriodMin
         BCS     L2D5EE
-        BRCLR   >VssFlags,Z,#$03,L2D6A8
+        BRCLR   >VssFlags,Z,#$03,L2D6A8                  ; bit 1: second VSS pulse seen (Isr_GPT_IC3); bit 0: first VSS pulse seen (Isr_GPT_IC3)
         JSR     VssStore
         LBRA    L2D6A8
 L2D5EE:
-        BRCLR   >VssFlags,Z,#$10,L2D66C
+        BRCLR   >VssFlags,Z,#$10,L2D66C                  ; bit 4: vehicle speed reading valid (set at reset and by CalcVehicleSpeed)
         LDAA    >MainLoopCounter,Z
         ANDA    #$03
         BNE     L2D66C
-        BRCLR   >VssFlags,Z,#$02,L2D66C
+        BRCLR   >VssFlags,Z,#$02,L2D66C                  ; bit 1: second VSS pulse seen (Isr_GPT_IC3)
         ORP     #$00E0
         BCLR    >TMSK1,Z,#$04
         ANDP    #$FF1F
-        BRSET   >VssFlags,Z,#$08,L2D65C
+        BRSET   >VssFlags,Z,#$08,L2D65C                  ; bit 3: new VSS period to process (Isr_GPT_IC3, cleared by CalcVehicleSpeed)
         LDAA    $0AB6,Z
         LSRA
         TAB
@@ -14893,7 +14893,7 @@ L2D64C:
 L2D658:
         STD     >VehicleSpeedRaw,Z
 L2D65C:
-        BCLR    >VssFlags,Z,#$08
+        BCLR    >VssFlags,Z,#$08                         ; bit 3: new VSS period to process (Isr_GPT_IC3, cleared by CalcVehicleSpeed)
         ORP     #$00E0
         BSET    >TMSK1,Z,#$04
         ANDP    #$FF1F
@@ -15356,12 +15356,12 @@ L2DAE2:
 ; Called from: Isr_PIT
 ;---------------------------------------------------------------------------------------------------
 HighRpmTimerPit:
-        BRCLR   >CrankFlags2,Z,#$80,L2DB26
-        BRSET   >CrankFlags2,Z,#$40,L2DB26
+        BRCLR   >CrankFlags2,Z,#$80,L2DB26               ; bit 7: reference event seen since the last PIT check (Isr_GPT_IC1, HighRpmTimerPit)
+        BRSET   >CrankFlags2,Z,#$40,L2DB26               ; bit 6: EngineRpm reached $1900 (HighRpmTimerPit)
         LDD     >EngineRpm,Z
         CPD     #$1900
         BCS     L2DB1E
-        BSET    >CrankFlags2,Z,#$40
+        BSET    >CrankFlags2,Z,#$40                      ; bit 6: EngineRpm reached $1900 (HighRpmTimerPit)
         LDD     >HighRpmTimer,Z
         CPD     #$0E39
         BCS     L2DB0E
@@ -15372,11 +15372,11 @@ L2DB0E:
         EMUL
 L2DB14:
         STD     >HighRpmTimer,Z
-        BCLR    >CrankFlags2,Z,#$02
+        BCLR    >CrankFlags2,Z,#$02                      ; bit 1: engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it
         BRA     L2DB26
 L2DB1E:
         INCW    >HighRpmTimer,Z
-        BSET    >CrankFlags2,Z,#$02
+        BSET    >CrankFlags2,Z,#$02                      ; bit 1: engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it
 L2DB26:
         RTS
 
@@ -15385,29 +15385,29 @@ L2DB26:
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
 HighRpmTimerUpdate:
-        BRCLR   >CrankFlags2,Z,#$20,L2DB34
+        BRCLR   >CrankFlags2,Z,#$20,L2DB34               ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts
         INCW    >HighRpmTimer,Z
         BRA     L2DB4E
 L2DB34:
-        BRCLR   >CrankFlags2,Z,#$10,L2DB4E
+        BRCLR   >CrankFlags2,Z,#$10,L2DB4E               ; bit 4: timer update due for HighRpmTimer (HighRpmTimerUpdate)
         LDD     >HighRpmTimer,Z
         LSRD
         LSRD
         ADDD    >HighRpmTimer,Z
         STD     >HighRpmTimer,Z
-        BCLR    >CrankFlags2,Z,#$10
+        BCLR    >CrankFlags2,Z,#$10                      ; bit 4: timer update due for HighRpmTimer (HighRpmTimerUpdate)
 L2DB4E:
-        BRCLR   >CrankFlags2,Z,#$08,L2DB5A
+        BRCLR   >CrankFlags2,Z,#$08,L2DB5A               ; bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2
         INCW    >HighRpmTimer2,Z
         BRA     L2DB74
 L2DB5A:
-        BRCLR   >CrankFlags2,Z,#$04,L2DB74
+        BRCLR   >CrankFlags2,Z,#$04,L2DB74               ; bit 2: timer update due for HighRpmTimer2 (HighRpmTimerUpdate)
         LDD     >HighRpmTimer2,Z
         LSRD
         LSRD
         ADDD    >HighRpmTimer2,Z
         STD     >HighRpmTimer2,Z
-        BCLR    >CrankFlags2,Z,#$04
+        BCLR    >CrankFlags2,Z,#$04                      ; bit 2: timer update due for HighRpmTimer2 (HighRpmTimerUpdate)
 L2DB74:
         RTS
 

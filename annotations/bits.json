@@ -19,6 +19,13 @@
   "1": "body/transmission bus message timed out (BodyBusTimeout); cleared by each received message",
   "0": "transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)"
  },
+ "BusReqFlags": {
+  "4": "bus A/C or fan request held: throttle below BusReqThrottleMax when it came (CcdReceive, timed by BusReqTimerTick)",
+  "3": "MAP-high flag changed since the last message (MapHighBusFlag)",
+  "2": "MAP high: MAP above the baro/rpm threshold (MapHighBusFlag, hysteresis BusMapHyst)",
+  "1": "bus message bit 6 (CcdReceive); set on a body bus timeout",
+  "0": "bus message status bits = $80 (CcdReceive); set on a body bus timeout"
+ },
  "BusTxRequest": {
   "7": "send the reply to bus message $C8 (set by CcdReceive, cleared when PciService sends it)",
   "6": "send the security message (BusTxSecurity); set at reset",
@@ -49,6 +56,10 @@
   "1": "battery temperature model started (BatteryTempModel)",
   "0": "a fault with the charge-lamp flag was reported (ReportFault); charge lamp request"
  },
+ "ClosedLoopMonFlags": {
+  "7": "adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)",
+  "6": "run time since start past the stored limit ($0641,Z): misfire monitoring allowed (ClosedLoopMonTimer)"
+ },
  "ControlFlags943": {
   "7": "A/C cut active (AcCutControl timer running)",
   "6": "set while an actuator test step runs (ActuatorTestMain, OutputTestOcFire)",
@@ -66,6 +77,14 @@
   "1": "toggled by ActuatorTestMain, not read",
   "0": "starter cut active (StarterCut)"
  },
+ "ControlFlagsC33": {
+  "7": "knock learn decay pass armed (KnockLearnDecayFlag)",
+  "6": "hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test",
+  "5": "three seconds after key-on passed (RunModeSwitch)",
+  "4": "fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)",
+  "2": "hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM",
+  "0": "MIL lamp check done since the engine started (MilLampUpdate)"
+ },
  "ControlFlagsC39": {
   "7": "PCI link variant: set at reset from the bus configuration, cleared when the link check fails",
   "6": "diagnostic mode request (DiagModeUpdate)",
@@ -73,6 +92,16 @@
   "4": "transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it",
   "3": "diagnostic mode bit mirrored into ControlFlags944 bit 7 (DiagModeInit)",
   "2": "set and cleared with bit 7"
+ },
+ "CrankFlags2": {
+  "7": "reference event seen since the last PIT check (Isr_GPT_IC1, HighRpmTimerPit)",
+  "6": "EngineRpm reached $1900 (HighRpmTimerPit)",
+  "5": "vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts",
+  "4": "timer update due for HighRpmTimer (HighRpmTimerUpdate)",
+  "3": "VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2",
+  "2": "timer update due for HighRpmTimer2 (HighRpmTimerUpdate)",
+  "1": "engine rpm below $1900: HighRpmTimer counting (HighRpmTimerPit); AsdRelayCheck and others read it",
+  "0": "first crank period delta taken (CrankPeriodDelta2)"
  },
  "CrankSyncFlags": {
   "7": "crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)",
@@ -143,6 +172,14 @@
   "3": "pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)",
   "2": "pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)",
   "0": "input capture 4 edge was the first kind (TCTL2 bit 7 clear) (Isr_GPT_IC4OC5)"
+ },
+ "FanFlags": {
+  "7": "A/C fan stage bit (FanAcStage)",
+  "6": "A/C fan stage bit (FanAcStage)",
+  "3": "fan idle state: engine idling, idle timer counting (FanIdleState)",
+  "2": "vehicle speed below FanWarmupSpeedMax (FanWarmupState)",
+  "1": "fan PWM output read back low (FanPwmOutputCheck)",
+  "0": "fan PWM output read back high (FanPwmOutputCheck)"
  },
  "FieldFlags": {
   "6": "field ramp minimum time after start passed (FieldRampTimeMin)",
@@ -236,6 +273,15 @@
   "2": "adaptive at its upper limit (O2AdaptMax / O2AdaptCellMax) this pass, bank 2",
   "1": "rich fault count reached (FuelSysRichFaultCount), bank 2",
   "0": "rich condition counted in the current window, bank 2"
+ },
+ "GearStateFlags": {
+  "7": "gear engaged and shift idle delay done (GearStateUpdate)",
+  "6": "start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)",
+  "5": "bus gear message: not in drive (CcdReceive)",
+  "4": "bus gear message: in drive (CcdReceive)",
+  "3": "gear message received from the bus (CcdReceive, PciReceive)",
+  "2": "set with bit 7 when the shift idle delay ends (GearStateUpdate)",
+  "1": "gear idle step duration finished (GearStateUpdate)"
  },
  "IacAcFlags": {
   "7": "A/C clutch spark hold during a shift step (AcClutchSpark)",
@@ -443,6 +489,14 @@
   "2": "misfire-driven event correction active (EventCorrections, LimitReasonCode)",
   "1": "cleared with the misfire records; read by MisfireCount",
   "0": "misfire start delay elapsed (MisfireEnableMain)"
+ },
+ "MisfireFlags2": {
+  "6": "throttle open state seen by the misfire transient filter (MisfireTransient)",
+  "4": "misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it",
+  "3": "crank period deviation negative (MisfireDeviation)",
+  "2": "misfire transient hold running (MisfireSegmentTime)",
+  "1": "misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)",
+  "0": "misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)"
  },
  "MisfireFlags4": {
   "6": "set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation"
@@ -722,6 +776,12 @@
   "1": "SKIM state to be written to the EEPROM (SkimState)",
   "0": "SKIM: key not valid / security request pending, probably (set by SkimState and CcdReceive, cleared on a good key)"
  },
+ "SparkFaultFlags": {
+  "5": "idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code",
+  "4": "tip-in spark retard finished or blocked (TipInSparkControl)",
+  "1": "surge spark correction active (SurgeControl, set with bit 0)",
+  "0": "surge spark correction active (SurgeControl, set with bit 1)"
+ },
  "SparkFlags": {
   "7": "set at a reference event while IoInputs0 bit 2 (ASD output present, probably) is high (Isr_GPT_IC1)",
   "6": "reference event handled, rpm update due (Isr_GPT_IC1 -> CalcEngineRpm)",
@@ -729,6 +789,16 @@
   "4": "cleared by SparkOutputOc2 only",
   "2": "tip-in spark retard started (TipInSparkControl)",
   "1": "tip-in spark retard armed (TipInSparkControl)"
+ },
+ "SparkFlags2": {
+  "7": "high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)",
+  "6": "vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)",
+  "5": "engine rpm below SparkRpmFlagMin (SparkSpeedFlags)",
+  "4": "base spark limited by the value at $0D3E,Z (CalcBaseSpark)",
+  "3": "cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions",
+  "2": "cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions",
+  "1": "low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)",
+  "0": "EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)"
  },
  "SpeedCtlFlags": {
   "7": "switch command from bit 5 of the switch byte (SpeedCtlShift)",
@@ -775,5 +845,12 @@
   "3": "closed position taken from the calibration default, probably (ThrottleClosedLearn only)",
   "1": "set by a diagnostic bus request (BusDataRequest), cleared by IdleRpmTarget or another request; probably a test hold of idle and spark",
   "0": "idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)"
+ },
+ "VssFlags": {
+  "4": "vehicle speed reading valid (set at reset and by CalcVehicleSpeed)",
+  "3": "new VSS period to process (Isr_GPT_IC3, cleared by CalcVehicleSpeed)",
+  "2": "mileage step reached: SRI mileage to be stored (Isr_GPT_IC3, SriMileageStore)",
+  "1": "second VSS pulse seen (Isr_GPT_IC3)",
+  "0": "first VSS pulse seen (Isr_GPT_IC3)"
  }
 }

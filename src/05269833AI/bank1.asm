@@ -1117,7 +1117,7 @@ L10B52:
 L10B6E:
         BRCLR   >Options032C,#$80,L10BBA                 ; bit 7: closed loop off: ClosedLoopMain clears the O2 state and the short-term trim
         LDAA    >FlexStartValue
-        BRSET   >ControlFlagsC33,Z,#$10,L10B82
+        BRSET   >ControlFlagsC33,Z,#$10,L10B82           ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         LDAA    >FuelTrimAdjustValue,Z
 L10B82:
         LDX     #FuelTrimAdjust
@@ -2374,7 +2374,7 @@ L1188A:
         STD     >AccelFuel,Z
         ADDE    >Temp4F4,Z
         RORE
-        BRCLR   >SparkFlags2,Z,#$80,L118B8
+        BRCLR   >SparkFlags2,Z,#$80,L118B8               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         LDAA    >EngineRpm,Z
         LDX     #FuelEventRpmAdder
         JSR     Lookup2D
@@ -2584,7 +2584,7 @@ L11ADE:
         BRCLR   >MisfireFlags4,Z,#$08,L11B1C
         BRCLR   >FuelModeFlags2,Z,#$80,L11B1C            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L11AF6:
-        BRSET   >MisfireFlags2,Z,#$01,L11B1C
+        BRSET   >MisfireFlags2,Z,#$01,L11B1C             ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         BRCLR   <MonStatusMisfire,Z,#$80,L11B1C
         BSET    <MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         LDX     #$2EC5
@@ -2642,7 +2642,7 @@ L11BA6:
         STAA    $07A3,Z
         STAB    $07A4,Z
         BCLR    >MisfireFlags4,Z,#$10
-        BRSET   >MisfireFlags2,Z,#$01,L11BCC
+        BRSET   >MisfireFlags2,Z,#$01,L11BCC             ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         BRCLR   >MisfireFlags4,Z,#$08,L11BCC
         TST     $07A3,Z
         BNE     L11BCC
@@ -5420,7 +5420,7 @@ L14AE8:
         BSET    <Scratch1,Z,#$C0
 L14AF8:
         BRCLR   >MisfireOptions,#$80,L14B18              ; bit 7: MisfireFlags2 bit 4 handling in ClosedLoopManager and FuelSystemStatus
-        BRCLR   >MisfireFlags2,Z,#$10,L14B18
+        BRCLR   >MisfireFlags2,Z,#$10,L14B18             ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
         BSET    <Scratch0,Z,#$F0
         BSET    <Scratch1,Z,#$F0
         JSR     O2MemClearLeanBank1
@@ -5532,7 +5532,7 @@ L14C64:
         BEQ     L14C6C
         BSET    <Scratch1,Z,#$F0
 L14C6C:
-        BRCLR   >SparkFlags2,Z,#$80,L14C82
+        BRCLR   >SparkFlags2,Z,#$80,L14C82               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         BSET    <Scratch0,Z,#$F0
         BSET    <Scratch1,Z,#$F0
         BSET    >O2InactiveFlags,Z,#$C0
@@ -5935,7 +5935,7 @@ L150C8:
         BNE     L150DC
         DEC     >O2ColdLeanCount2,Z
 L150DC:
-        BRSET   >ClosedLoopMonFlags,Z,#$80,L150F2
+        BRSET   >ClosedLoopMonFlags,Z,#$80,L150F2        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         BRCLR   >ThrottleState,Z,#$80,L15128             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >O2ColdPurgeCounter,Z
         CMPA    >O2ColdPurgeCount
@@ -6677,7 +6677,7 @@ L157E4:
         LDD     #$FF80
 L157EE:
         BCLR    $1E,X,#$01
-        BRSET   >ClosedLoopMonFlags,Z,#$80,L15846
+        BRSET   >ClosedLoopMonFlags,Z,#$80,L15846        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         BRCLR   >O2CrossFlags,Z,#$02,L15818
         LDAA    >O2ColdTrimMin
         BRCLR   >DriveFlags,Z,#$20,L1580C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
@@ -6982,7 +6982,7 @@ L15B1A:
         LBRA    L15BF2
 L15B22:
         LDAB    >ColdEnrich,Z
-        BRSET   >ClosedLoopMonFlags,Z,#$80,L15B30
+        BRSET   >ClosedLoopMonFlags,Z,#$80,L15B30        ; bit 7: adaptive memory cleared for the fuel system monitors this drive cycle (ClosedLoopMemClear)
         ORAB    >O2WarmDelay,Z
 L15B30:
         LBNE    L15BF2
@@ -11055,7 +11055,7 @@ L19944:
         LDAA    >CoolantTemp,Z
         CMPA    >IacHotCoolantMin
         BLS     L1996E
-        BCLR    >ControlFlagsC33,Z,#$44
+        BCLR    >ControlFlagsC33,Z,#$44                  ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
 L1996E:
         LDD     >IdleTarget,Z
         SUBD    >IacDroopMargin2
@@ -11298,7 +11298,7 @@ L19C28:
 L19C34:
         STAA    >IacTarget,Z
 L19C38:
-        BRCLR   >ControlFlagsC33,Z,#$44,L19CAE
+        BRCLR   >ControlFlagsC33,Z,#$44,L19CAE           ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
         BRSET   >IdleFlags3,Z,#$08,L19CAE                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRCLR   >ThrottleState,Z,#$01,L19C78             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         TST     >DashpotTimerMoving,Z
@@ -11312,7 +11312,7 @@ L19C50:
 L19C68:
         BCLR    >IdleFlags5,Z,#$04                       ; bit 2: shift idle step applied (IacShiftStepApply in IdleTargetControl)
         CLR     >IdleCount0322,Z
-        BCLR    >ControlFlagsC33,Z,#$44
+        BCLR    >ControlFlagsC33,Z,#$44                  ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
         LBRA    L19F0A
 L19C78:
         BRCLR   >IdleFlags,Z,#$80,L19CAE                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
@@ -11327,7 +11327,7 @@ L19C8A:
         LBRA    L1A462
 L19CA2:
         BCLR    >IdleFlags,Z,#$02                        ; bit 1: shift idle step applied (IacShiftStepApply)
-        BCLR    >ControlFlagsC33,Z,#$44
+        BCLR    >ControlFlagsC33,Z,#$44                  ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
         LBRA    L19F0A
 L19CAE:
         LDAA    >Count3s,Z
@@ -11536,7 +11536,7 @@ L19F9A:
 L19F9E:
         TST     >ShiftIdleDelay,Z
         BEQ     L19FAA
-        BRCLR   >GearStateFlags,Z,#$20,L1A036
+        BRCLR   >GearStateFlags,Z,#$20,L1A036            ; bit 5: bus gear message: not in drive (CcdReceive)
 L19FAA:
         LDAB    >IdleFlags7,Z
         BITB    #$0C
@@ -12154,7 +12154,7 @@ IacResetHold:
         EMUL
         STAA    >IacStartHold,Z
         STAA    >IacStartHold2,Z
-        BSET    >GearStateFlags,Z,#$40
+        BSET    >GearStateFlags,Z,#$40                   ; bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
         BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BCLR    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    #$FF
@@ -12466,7 +12466,7 @@ L1A94A:
 IacShiftStepApply:
         LDAA    >IacShiftMode,Z
         BNE     L1A96C
-        BRSET   >ControlFlagsC33,Z,#$40,L1A962
+        BRSET   >ControlFlagsC33,Z,#$40,L1A962           ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test
         LDAA    >IacShiftStep
         LDAB    >IacShiftTime
         BRA     L1A974
@@ -13275,7 +13275,7 @@ L1B1CE:
         LBRA    L1B5F2
 L1B1D8:
         BCLR    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
-        BRSET   >SparkFaultFlags,Z,#$20,L1B1EA
+        BRSET   >SparkFaultFlags,Z,#$20,L1B1EA           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         LDAB    >FaultSet02,Z
         ANDB    #$C0
         BEQ     L1B1FC
@@ -14294,7 +14294,7 @@ L1D12A:
         BNE     L1D146
         BRA     L1D14A
 L1D140:
-        BRCLR   >SparkFaultFlags,Z,#$20,L1D14A
+        BRCLR   >SparkFaultFlags,Z,#$20,L1D14A           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
 L1D146:
         LDAA    >SparkFaultValue
 L1D14A:
@@ -14377,40 +14377,40 @@ L1D1F4:
 SparkSpeedFlags:
         BRSET   >ThrottleState,Z,#$80,L1D250             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDAA    >VehicleSpeed,Z
-        BRCLR   >SparkFlags2,Z,#$40,L1D210
+        BRCLR   >SparkFlags2,Z,#$40,L1D210               ; bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)
         SUBA    >SparkSpeedFlagHyst
         BCC     L1D210
         CLRA
 L1D210:
         CMPA    >SparkSpeedFlagMin
         BCC     L1D21C
-        BSET    >SparkFlags2,Z,#$40
+        BSET    >SparkFlags2,Z,#$40                      ; bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)
         BRA     L1D220
 L1D21C:
-        BCLR    >SparkFlags2,Z,#$40
+        BCLR    >SparkFlags2,Z,#$40                      ; bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags)
 L1D220:
         LDAA    >EngineRpm,Z
-        BRCLR   >SparkFlags2,Z,#$20,L1D232
+        BRCLR   >SparkFlags2,Z,#$20,L1D232               ; bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
         SUBA    >SparkRpmFlagHyst
         BCC     L1D232
         CLRA
 L1D232:
         CMPA    >SparkRpmFlagMin
         BCC     L1D23E
-        BSET    >SparkFlags2,Z,#$20
+        BSET    >SparkFlags2,Z,#$20                      ; bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
         BRA     L1D242
 L1D23E:
-        BCLR    >SparkFlags2,Z,#$20
+        BCLR    >SparkFlags2,Z,#$20                      ; bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
 L1D242:
-        BRSET   >SparkFlags2,Z,#$60,L1D24A
+        BRSET   >SparkFlags2,Z,#$60,L1D24A               ; bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags); bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
         BRA     L1D254
 L1D24A:
-        BSET    >SparkFlags2,Z,#$02
+        BSET    >SparkFlags2,Z,#$02                      ; bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)
         BRA     L1D258
 L1D250:
-        BCLR    >SparkFlags2,Z,#$60
+        BCLR    >SparkFlags2,Z,#$60                      ; bit 6: vehicle speed below SparkSpeedFlagMin (SparkSpeedFlags); bit 5: engine rpm below SparkRpmFlagMin (SparkSpeedFlags)
 L1D254:
-        BCLR    >SparkFlags2,Z,#$02
+        BCLR    >SparkFlags2,Z,#$02                      ; bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)
 L1D258:
         RTS
 
@@ -14422,14 +14422,14 @@ CalcBaseSpark:
         JSR     SparkSpeedFlags
         CLRA
         BRCLR   >Options0337,#$02,L1D27C                 ; bit 1: selects a branch in CalcBaseSpark
-        BRCLR   >SparkFlags2,Z,#$02,L1D27C
+        BRCLR   >SparkFlags2,Z,#$02,L1D27C               ; bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)
         BRSET   >Options032E,#$40,L1D278                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
         BRSET   >DriveFlags,Z,#$20,L1D27C                ; bit 5: transmission in gear (park/neutral switch), automatic only (calibration bit $032E.6 clear)
 L1D278:
         JMP     L1D308
 L1D27C:
         BRSET   >FuelModeFlags,Z,#$20,L1D2A8             ; bit 5: WOT delay running (DetectWot, WotFlagTimer)
-        BCLR    >SparkFlags2,Z,#$10
+        BCLR    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
         CLR     >SparkTrim1,Z
         LDX     #PartThrottleMapScale
         LDAA    >Map,Z
@@ -14447,7 +14447,7 @@ L1D2A8:
         LDX     #WotSpark
         JSR     Lookup3D
         STAA    $0D3E,Z
-        BRSET   >SparkFlags2,Z,#$10,L1D308
+        BRSET   >SparkFlags2,Z,#$10,L1D308               ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
         TST     >SparkTrimStep
         BEQ     L1D300
         CLRA
@@ -14470,7 +14470,7 @@ L1D2FA:
         CMPA    $0D3E,Z
         BLT     L1D308
 L1D300:
-        BSET    >SparkFlags2,Z,#$10
+        BSET    >SparkFlags2,Z,#$10                      ; bit 4: base spark limited by the value at $0D3E,Z (CalcBaseSpark)
         LDAA    $0D3E,Z
 L1D308:
         RTS
@@ -14481,7 +14481,7 @@ L1D308:
 ;---------------------------------------------------------------------------------------------------
 SparkCoolantCorr:
         CLRA
-        BRCLR   >SparkFlags2,Z,#$02,L1D32E
+        BRCLR   >SparkFlags2,Z,#$02,L1D32E               ; bit 1: low speed and low rpm together (bits 6 and 5): low-speed spark correction (SparkSpeedFlags)
         LDAA    >CoolantTemp,Z
         LDX     #SparkCoolantCorrA
         BRSET   >Options032E,#$40,L1D32A                 ; bit 6: manual transmission: GearStateUpdate and the park/neutral monitor are skipped
@@ -14523,7 +14523,7 @@ O2SparkTrimCalc:
         BRSET   >ThrottleState,Z,#$80,L1D3D6             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >ThrottleState,Z,#$01,L1D3D6             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         BRCLR   >EngineStateFlags,Z,#$80,L1D3D6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >ControlFlagsC33,Z,#$44,L1D378
+        BRCLR   >ControlFlagsC33,Z,#$44,L1D378           ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
         BRA     L1D3D6
 L1D378:
         LDAB    >DashpotTimer,Z
@@ -14854,7 +14854,7 @@ L1D702:
         CPD     >EngineRpm,Z
         LBCS    L1D7C0
 L1D70A:
-        BRSET   >SparkFaultFlags,Z,#$10,L1D764
+        BRSET   >SparkFaultFlags,Z,#$10,L1D764           ; bit 4: tip-in spark retard finished or blocked (TipInSparkControl)
         BSET    >SparkFlags,Z,#$02                       ; bit 1: tip-in spark retard armed (TipInSparkControl)
         LDAA    >AirTemp,Z
         LDX     #TipInRetardDuration
@@ -14878,11 +14878,11 @@ L1D74C:
         JSR     Lookup3D
         BRCLR   >Options0339,#$01,L1D7DE                 ; bit 0: tip-in retard hold (TipInRetardHold)
         LBNE    L1D7DE
-        BSET    >SparkFaultFlags,Z,#$10
+        BSET    >SparkFaultFlags,Z,#$10                  ; bit 4: tip-in spark retard finished or blocked (TipInSparkControl)
         BRA     L1D7BC
 L1D764:
         BRCLR   >Options0339,#$01,L1D76E                 ; bit 0: tip-in retard hold (TipInRetardHold)
-        BSET    >SparkFaultFlags,Z,#$10
+        BSET    >SparkFaultFlags,Z,#$10                  ; bit 4: tip-in spark retard finished or blocked (TipInSparkControl)
 L1D76E:
         ORP     #$00E0
         BRSET   >SparkFlags,Z,#$04,L1D780                ; bit 2: tip-in spark retard started (TipInSparkControl)
@@ -14914,7 +14914,7 @@ L1D7B2:
         ANDP    #$FF1F
         BRA     L1D7DE
 L1D7BC:
-        BSET    >SparkFaultFlags,Z,#$10
+        BSET    >SparkFaultFlags,Z,#$10                  ; bit 4: tip-in spark retard finished or blocked (TipInSparkControl)
 L1D7C0:
         BCLR    >SparkFlags,Z,#$06                       ; bit 2: tip-in spark retard started (TipInSparkControl); bit 1: tip-in spark retard armed (TipInSparkControl)
         CLR     >TipInSteps,Z
@@ -14922,7 +14922,7 @@ L1D7C0:
         CLRA
         BRCLR   >Options0339,#$01,L1D7DE                 ; bit 0: tip-in retard hold (TipInRetardHold)
         BRSET   >ThrottleState,Z,#$80,L1D7DE             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
-        BCLR    >SparkFaultFlags,Z,#$10
+        BCLR    >SparkFaultFlags,Z,#$10                  ; bit 4: tip-in spark retard finished or blocked (TipInSparkControl)
 L1D7DE:
         NEGA
         BVC     L1D7E4
@@ -15169,7 +15169,7 @@ L1DA36:
         TST     <Scratch6,Z
         BMI     L1DAA6
         LDAA    <Scratch6,Z
-        BRSET   >SparkFlags2,Z,#$01,L1DAA6
+        BRSET   >SparkFlags2,Z,#$01,L1DAA6               ; bit 0: EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)
         TST     >SparkTrimStep2
         BEQ     L1DA8C
         LDAA    $0D08,Z
@@ -15185,7 +15185,7 @@ L1DA88:
         CMPA    <Scratch6,Z
         BCS     L1DAA6
 L1DA8C:
-        BSET    >SparkFlags2,Z,#$01
+        BSET    >SparkFlags2,Z,#$01                      ; bit 0: EGR spark correction applied (EgrSparkCalc, cleared by EgrEnable)
         LDAA    <Scratch6,Z
         BRA     L1DAA6
 L1DA94:
@@ -15581,18 +15581,18 @@ HighSpeedSparkFlag:
         LDAA    >VehicleSpeedCoarse,Z
         CMPA    >HighSpeedSparkOn
         BCC     L1DE44
-        BRCLR   >SparkFlags2,Z,#$80,L1DE58
+        BRCLR   >SparkFlags2,Z,#$80,L1DE58               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         CMPA    >HighSpeedSparkOff
         BCS     L1DE58
 L1DE44:
-        BSET    >SparkFlags2,Z,#$80
+        BSET    >SparkFlags2,Z,#$80                      ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         LDAA    >EngineRpm,Z
         LDX     #HighSpeedSparkRpm
         JSR     Lookup2D
         NEGA
         BRA     L1DE5E
 L1DE58:
-        BCLR    >SparkFlags2,Z,#$80
+        BCLR    >SparkFlags2,Z,#$80                      ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         CLRA
 L1DE5E:
         RTS
@@ -15668,7 +15668,7 @@ L1DF26:
         CLR     $0D35,Z
         CLR     >SurgeJerkRetard,Z
         CLR     >SurgeStageTime,Z
-        BCLR    >SparkFaultFlags,Z,#$03
+        BCLR    >SparkFaultFlags,Z,#$03                  ; bit 1: surge spark correction active (SurgeControl, set with bit 0); bit 0: surge spark correction active (SurgeControl, set with bit 1)
         LDAA    >SurgeOpenTime,Z
         CMPA    >SurgeOpenThrottleTime
         LBCC    L1E12E
@@ -15845,8 +15845,8 @@ L1E12E:
         CLRB
 L1E130:
         CLR     >SurgeRetard,Z
-        BRCLR   >SparkFaultFlags,Z,#$03,L1E13E
-        BSET    >SparkFaultFlags,Z,#$03
+        BRCLR   >SparkFaultFlags,Z,#$03,L1E13E           ; bit 1: surge spark correction active (SurgeControl, set with bit 0); bit 0: surge spark correction active (SurgeControl, set with bit 1)
+        BSET    >SparkFaultFlags,Z,#$03                  ; bit 1: surge spark correction active (SurgeControl, set with bit 0); bit 0: surge spark correction active (SurgeControl, set with bit 1)
 L1E13E:
         TBA
         RTS
@@ -16014,7 +16014,7 @@ L1E2CE:
         SXT
         TDE
         BRSET   $0C50,Z,#$02,L1E35A
-        BRSET   >SparkFaultFlags,Z,#$20,L1E35A
+        BRSET   >SparkFaultFlags,Z,#$20,L1E35A           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         LDAB    >AcSpark,Z
         SXT
         ADE
@@ -16388,7 +16388,7 @@ L1E6CC:
         STAA    >IdleSparkSteps,Z
         BRA     L1E726
 L1E6E0:
-        BRSET   >SparkFaultFlags,Z,#$20,L1E72A
+        BRSET   >SparkFaultFlags,Z,#$20,L1E72A           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         BRSET   >SensorFaultFlags,Z,#$80,L1E72A          ; bit 7: coolant sensor fault (P0117, P0118 or P0125 set): coolant default in use
         BRSET   >ThrottleState,Z,#$80,L1E72A             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         LDE     >IdleSparkPeriodMin4Cyl
@@ -16941,8 +16941,8 @@ L1F2D6:
 ;---------------------------------------------------------------------------------------------------
 KnockLearnDecayFlag:
         BRCLR   >SparkFlags,Z,#$20,L1F30A                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
-        BRSET   >ControlFlagsC33,Z,#$80,L1F30A
-        BSET    >ControlFlagsC33,Z,#$80
+        BRSET   >ControlFlagsC33,Z,#$80,L1F30A           ; bit 7: knock learn decay pass armed (KnockLearnDecayFlag)
+        BSET    >ControlFlagsC33,Z,#$80                  ; bit 7: knock learn decay pass armed (KnockLearnDecayFlag)
         TZX
         LDX     #$8092
 L1F2F6:

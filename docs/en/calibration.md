@@ -355,7 +355,7 @@ applies only to the reference image.
 - 1,081 RAM variables and the 63 used registers of the CS2 chip have names, including the fault
   bit arrays FaultSet00-1B and FaultMem00-1B, the stored fault list and the monitor status and
   freeze-frame bytes. Flag bytes whose bits serve several subsystems have neutral names; the bits of
-  100 bytes are described in `annotations/bits.json`. 721 other RAM offsets are still known by
+  110 bytes are described in `annotations/bits.json`. 721 other RAM offsets are still known by
   address; none of them is used ten times or more, 95 are used five times or more and 401 once or
   twice. Constant descriptions give such addresses as $xxxx,Z.
 - The seven lookups whose table address comes from a pointer, not from `LDX #` (for example at

@@ -5541,7 +5541,7 @@ L04872:
         INC     $0171,Z
         CLR     $016F,Z
 L04892:
-        BSET    >CrankFlags2,Z,#$80
+        BSET    >CrankFlags2,Z,#$80                      ; bit 7: reference event seen since the last PIT check (Isr_GPT_IC1, HighRpmTimerPit)
         CLRA
         BRCLR   >CrankSyncFlags,Z,#$80,L048FA            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
         LDAA    >CrankSyncFlags,Z
@@ -6441,24 +6441,24 @@ L05298:
 L052A4:
         BSET    $030E,Z,#$04
 L052A8:
-        BRCLR   >CrankFlags2,Z,#$08,L052C2
+        BRCLR   >CrankFlags2,Z,#$08,L052C2               ; bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2
         LDD     $0354,Z
         ADDD    #$01
         STD     $0354,Z
         CPD     #$07D0
         BCS     L052C2
-        BCLR    >CrankFlags2,Z,#$08
+        BCLR    >CrankFlags2,Z,#$08                      ; bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2
 L052C2:
-        BRCLR   >CrankFlags2,Z,#$20,L052D4
+        BRCLR   >CrankFlags2,Z,#$20,L052D4               ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts
         LDAA    >VehicleSpeed,Z
         CMPA    #$78
         BCS     L052D4
-        BCLR    >CrankFlags2,Z,#$20
+        BCLR    >CrankFlags2,Z,#$20                      ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts
 L052D4:
         LDAA    $035D,Z
         CMPA    #$7F
         BCS     L052EC
-        BSET    >CrankFlags2,Z,#$3C
+        BSET    >CrankFlags2,Z,#$3C                      ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts; bit 4: timer update due for HighRpmTimer (HighRpmTimerUpdate); bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2; bit 2: timer update due for HighRpmTimer2 (HighRpmTimerUpdate)
         CLRW    >HighRpmTimer,Z
         CLRW    >HighRpmTimer2,Z
         CLRW    $0354,Z
@@ -7697,7 +7697,7 @@ L066C6:
         BITB    #$80
         BNE     L066F4
         ANDB    #$DF
-        BRSET   >MisfireFlags2,Z,#$01,L066DE
+        BRSET   >MisfireFlags2,Z,#$01,L066DE             ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         BRSET   >MisfireFlags4,Z,#$08,L066E4
         BRSET   >MisfireFlags4,Z,#$04,L066E4
 L066DE:
@@ -8740,7 +8740,7 @@ L07188:
 L071A4:
         BRCLR   >Options0337,#$20,L071FA                 ; bit 5: speed limiter on (SpeedLimitOn, FuelCutControl)
         LDAA    $067E
-        BRSET   >ControlFlagsC33,Z,#$10,L071B8
+        BRSET   >ControlFlagsC33,Z,#$10,L071B8           ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         LDAA    >FuelTrimAdjustValue,Z
 L071B8:
         LDX     #Tab2D_067F
@@ -9591,7 +9591,7 @@ L07A22:
         STD     >AccelFuel,Z
         ADDE    >Temp4F4,Z
         RORE
-        BRCLR   >SparkFlags2,Z,#$80,L07A50
+        BRCLR   >SparkFlags2,Z,#$80,L07A50               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         LDAA    >EngineRpm,Z
         LDX     #FuelEventRpmAdder
         JSR     Lookup2D
@@ -9770,7 +9770,7 @@ L07C2A:
         BRCLR   >MisfireFlags4,Z,#$04,L07C50
         BRCLR   >FuelModeFlags2,Z,#$80,L07C50            ; bit 7: byte writes only; read by the event fuel, spark, misfire and purge code
 L07C40:
-        BRSET   >MisfireFlags2,Z,#$01,L07C50
+        BRSET   >MisfireFlags2,Z,#$01,L07C50             ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         LDX     #$266D
         BSET    >MisfireFlags,Z,#$04                     ; bit 2: misfire-driven event correction active (EventCorrections, LimitReasonCode)
         BRA     L07C80
@@ -9808,7 +9808,7 @@ L07CAA:
         STAA    $05CF,Z
         STAB    $05D0,Z
         BCLR    >MisfireFlags4,Z,#$08
-        BRSET   >MisfireFlags2,Z,#$01,L07CD0
+        BRSET   >MisfireFlags2,Z,#$01,L07CD0             ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
         BRCLR   >MisfireFlags4,Z,#$04,L07CD0
         TST     $05CF,Z
         BNE     L07CD0
@@ -11644,7 +11644,7 @@ L090C0:
         BSET    $01F1,Z,#$C0
 L090D0:
         BRCLR   $2644,#$80,L090EC
-        BRCLR   >MisfireFlags2,Z,#$10,L090EC
+        BRCLR   >MisfireFlags2,Z,#$10,L090EC             ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
         BSET    >IacBase,Z,#$F0
         BSET    $01F1,Z,#$F0
         JSR     O2MemClearLeanBank1
@@ -11732,7 +11732,7 @@ L091E2:
         BEQ     L091EA
         BSET    $01F1,Z,#$F0
 L091EA:
-        BRCLR   >SparkFlags2,Z,#$80,L09200
+        BRCLR   >SparkFlags2,Z,#$80,L09200               ; bit 7: high vehicle speed spark correction active (HighSpeedSparkFlag, hysteresis HighSpeedSparkOff)
         BSET    >IacBase,Z,#$F0
         BSET    $01F1,Z,#$F0
         BSET    $054B,Z,#$C0
@@ -14064,7 +14064,7 @@ L0A9AE:
         LDAA    >CoolantTemp,Z
         CMPA    >IacHotCoolantMin
         BLS     L0A9D8
-        BCLR    >ControlFlagsC33,Z,#$44
+        BCLR    >ControlFlagsC33,Z,#$44                  ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
 L0A9D8:
         LDD     >IdleTarget,Z
         SUBD    >IacDroopMargin2
@@ -14284,7 +14284,7 @@ L0AC78:
 L0AC82:
         STAA    >IacTarget,Z
 L0AC86:
-        BRCLR   >ControlFlagsC33,Z,#$44,L0ACFC
+        BRCLR   >ControlFlagsC33,Z,#$44,L0ACFC           ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
         BRSET   >IdleFlags3,Z,#$08,L0ACFC                ; bit 3: SegmentRpm below the gear-step rpm (IdleTargetControl, GearStateUpdate)
         BRCLR   >ThrottleState,Z,#$01,L0ACC6             ; bit 0: idle: closed throttle and vehicle speed below IdleRollSpeed (IdleStateUpdate)
         TST     >DashpotTimerMoving,Z
@@ -14298,7 +14298,7 @@ L0AC9E:
 L0ACB6:
         BCLR    >IdleFlags5,Z,#$04                       ; bit 2: shift idle step applied (IacShiftStepApply in IdleTargetControl)
         CLR     >IdleCount0322,Z
-        BCLR    >ControlFlagsC33,Z,#$44
+        BCLR    >ControlFlagsC33,Z,#$44                  ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
         LBRA    L0AF72
 L0ACC6:
         BRCLR   >IdleFlags,Z,#$80,L0ACFC                 ; bit 7: closed throttle while rolling at or above IdleRollSpeed (coast), or IacStepFlags bit 0 (IdleStateUpdate)
@@ -14313,7 +14313,7 @@ L0ACD8:
         LBRA    L0B484
 L0ACF0:
         BCLR    >IdleFlags,Z,#$02                        ; bit 1: shift idle step applied (IacShiftStepApply)
-        BCLR    >ControlFlagsC33,Z,#$44
+        BCLR    >ControlFlagsC33,Z,#$44                  ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test; bit 2: hot-coolant idle state (cleared with bit 6); read by spark trim, purge test, fan PWM
         LBRA    L0AF72
 L0ACFC:
         LDAA    >Count3s,Z
@@ -14523,7 +14523,7 @@ L0AFF0:
 L0AFF4:
         TST     >ShiftIdleDelay,Z
         BEQ     L0B000
-        BRCLR   >GearStateFlags,Z,#$20,L0B066
+        BRCLR   >GearStateFlags,Z,#$20,L0B066            ; bit 5: bus gear message: not in drive (CcdReceive)
 L0B000:
         LDAB    >SparkFlags3,Z
         BITB    #$0C
@@ -15104,7 +15104,7 @@ Sub_0B628:
         EMUL
         STAA    $0688,Z
         STAA    $0687,Z
-        BSET    >GearStateFlags,Z,#$40
+        BSET    >GearStateFlags,Z,#$40                   ; bit 6: start: no gear message from the bus yet (set at start by IacResetHold, cleared by GearStateUpdate or a bus timeout)
         BSET    <IacStepFlags,Z,#$20                     ; bit 5: start hold of the idle air control active (IacCrankControl, IacResetHold)
         BCLR    <IacStepFlags,Z,#$10                     ; bit 4: idle air at the fixed target (IacFixedTarget)
         LDAA    #$FF
@@ -15410,7 +15410,7 @@ L0B982:
 IacShiftStepApply:
         LDAA    >IacShiftMode,Z
         BNE     L0B9A4
-        BRSET   >ControlFlagsC33,Z,#$40,L0B99A
+        BRSET   >ControlFlagsC33,Z,#$40,L0B99A           ; bit 6: hot-coolant idle step active (IdleTargetControl, IacShiftStepApply); read by spark trim and purge test
         LDAA    >IacShiftStep
         LDAB    >IacShiftTime
         BRA     L0B9AC
@@ -15940,7 +15940,7 @@ L0BEC2:
 L0BEDC:
         BCLR    >SparkFlags3,Z,#$60
         BCLR    >IdleFlags6,Z,#$10                       ; bit 4: idle conditions for learning met (IdleStateFlags)
-        BRSET   >SparkFaultFlags,Z,#$20,L0BF4E
+        BRSET   >SparkFaultFlags,Z,#$20,L0BF4E           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         LDAB    $0135,Z
         ANDB    #$C0
         BNE     L0BF4E
@@ -16225,7 +16225,7 @@ L0C24A:
         LBRA    L0C56A
 L0C256:
         BCLR    <IacStepFlags,Z,#$04                     ; bit 2: diagnostic idle air command active (IdleRpmTarget, DiagCommand)
-        BRSET   >SparkFaultFlags,Z,#$20,L0C268
+        BRSET   >SparkFaultFlags,Z,#$20,L0C268           ; bit 5: idle spark hold: cleared when the throttle closes, on a gear change or by a diagnostic command; read by the spark and idle code
         LDAB    $0135,Z
         ANDB    #$C0
         BEQ     L0C27C
@@ -17442,10 +17442,10 @@ L0D00C:
         COMB
         CBA
         BNE     L0D07A
-        BCLR    >ControlFlagsC33,Z,#$10
+        BCLR    >ControlFlagsC33,Z,#$10                  ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         BRA     L0D088
 L0D07A:
-        BSET    >ControlFlagsC33,Z,#$10
+        BSET    >ControlFlagsC33,Z,#$10                  ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         LDAA    $067E
         STAA    $05DD,Z
         LDAA    #$80

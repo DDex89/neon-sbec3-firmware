@@ -9628,11 +9628,11 @@ L0802A:
         BLS     L0803A
         CLRW    $0052,Z
 L08036:
-        BSET    >VssFlags,Z,#$04
+        BSET    >VssFlags,Z,#$04                         ; bit 2: mileage step reached: SRI mileage to be stored (Isr_GPT_IC3, SriMileageStore)
 L0803A:
-        BRSET   >VssFlags,Z,#$02,L08068
-        BRSET   >VssFlags,Z,#$01,L08062
-        BSET    >VssFlags,Z,#$01
+        BRSET   >VssFlags,Z,#$02,L08068                  ; bit 1: second VSS pulse seen (Isr_GPT_IC3)
+        BRSET   >VssFlags,Z,#$01,L08062                  ; bit 0: first VSS pulse seen (Isr_GPT_IC3)
+        BSET    >VssFlags,Z,#$01                         ; bit 0: first VSS pulse seen (Isr_GPT_IC3)
         CLR     $0AB2,Z
         LDD     >TIC3,Z
         STD     $0AB6,Z
@@ -9640,10 +9640,10 @@ L0803A:
         STD     $0AA2,Z
         LBRA    L0825C
 L08062:
-        BSET    >VssFlags,Z,#$02
+        BSET    >VssFlags,Z,#$02                         ; bit 1: second VSS pulse seen (Isr_GPT_IC3)
         BRA     L0806C
 L08068:
-        BSET    >VssFlags,Z,#$08
+        BSET    >VssFlags,Z,#$08                         ; bit 3: new VSS period to process (Isr_GPT_IC3, cleared by CalcVehicleSpeed)
 L0806C:
         LDD     >TIC3,Z
         TZX
@@ -9675,24 +9675,24 @@ L0806C:
         LDE     #$FFFF
 L080C8:
         STE     >VssBusValue2,Z
-        BRCLR   >CrankFlags2,Z,#$08,L080E6
+        BRCLR   >CrankFlags2,Z,#$08,L080E6               ; bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2
         LDD     $0AA9,Z
         ADDD    #$01
         STD     $0AA9,Z
         CPD     #$07D0
         BCS     L080E6
-        BCLR    >CrankFlags2,Z,#$08
+        BCLR    >CrankFlags2,Z,#$08                      ; bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2
 L080E6:
-        BRCLR   >CrankFlags2,Z,#$20,L080F8
+        BRCLR   >CrankFlags2,Z,#$20,L080F8               ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts
         LDAA    >VehicleSpeed,Z
         CMPA    #$78
         BCS     L080F8
-        BCLR    >CrankFlags2,Z,#$20
+        BCLR    >CrankFlags2,Z,#$20                      ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts
 L080F8:
         LDAA    >VssBusValue,Z
         CMPA    #$7F
         BCS     L08110
-        BSET    >CrankFlags2,Z,#$3C
+        BSET    >CrankFlags2,Z,#$3C                      ; bit 5: vehicle speed or bus speed value high (Isr_GPT_IC3); HighRpmTimerUpdate counts; bit 4: timer update due for HighRpmTimer (HighRpmTimerUpdate); bit 3: VSS period long ($07D0 or more) not seen (Isr_GPT_IC3); HighRpmTimerUpdate counts HighRpmTimer2; bit 2: timer update due for HighRpmTimer2 (HighRpmTimerUpdate)
         CLRW    >HighRpmTimer,Z
         CLRW    >HighRpmTimer2,Z
         CLRW    $0AA9,Z
@@ -10766,17 +10766,17 @@ FanPwmOutputCheck:
         BNE     L08C38
         BITA    #$20
         BNE     L08C28
-        BRSET   >FanFlags,Z,#$02,L08C70
-        BSET    >FanFlags,Z,#$02
-        BCLR    >FanFlags,Z,#$01
+        BRSET   >FanFlags,Z,#$02,L08C70                  ; bit 1: fan PWM output read back low (FanPwmOutputCheck)
+        BSET    >FanFlags,Z,#$02                         ; bit 1: fan PWM output read back low (FanPwmOutputCheck)
+        BCLR    >FanFlags,Z,#$01                         ; bit 0: fan PWM output read back high (FanPwmOutputCheck)
         BRA     L08C9C
 L08C28:
-        BRSET   >FanFlags,Z,#$01,L08C7A
-        BSET    >FanFlags,Z,#$01
-        BCLR    >FanFlags,Z,#$02
+        BRSET   >FanFlags,Z,#$01,L08C7A                  ; bit 0: fan PWM output read back high (FanPwmOutputCheck)
+        BSET    >FanFlags,Z,#$01                         ; bit 0: fan PWM output read back high (FanPwmOutputCheck)
+        BCLR    >FanFlags,Z,#$02                         ; bit 1: fan PWM output read back low (FanPwmOutputCheck)
         BRA     L08C9C
 L08C38:
-        BCLR    >FanFlags,Z,#$02
+        BCLR    >FanFlags,Z,#$02                         ; bit 1: fan PWM output read back low (FanPwmOutputCheck)
         LDD     >Temp4F2,Z
         CPD     #$0004
         BLS     L08C9C
@@ -11266,7 +11266,7 @@ L0A196:
         BSET    >CrankSyncFlags2,Z,#$20
         CLR     $0693,Z
 L0A19E:
-        BSET    >CrankFlags2,Z,#$80
+        BSET    >CrankFlags2,Z,#$80                      ; bit 7: reference event seen since the last PIT check (Isr_GPT_IC1, HighRpmTimerPit)
         CLRA
         BRCLR   >CrankSyncFlags,Z,#$80,L0A206            ; bit 7: crank/cam synchronised (set with bit 2 as $84 by Isr_GPT_PAI)
         LDAA    >CrankSyncFlags,Z
@@ -11450,8 +11450,8 @@ L0A34E:
 L0A3AA:
         BCLR    >SparkFlags,Z,#$20                       ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
         CLR     >SurgeEnableTime,Z
-        BCLR    >SparkFlags2,Z,#$08
-        BCLR    >SparkFlags2,Z,#$04
+        BCLR    >SparkFlags2,Z,#$08                      ; bit 3: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
+        BCLR    >SparkFlags2,Z,#$04                      ; bit 2: cleared in Isr_GPT_IC1 when the period is long; not set by bit instructions
         JMP     L0A4D4
 L0A3BE:
         BRCLR   >SparkFlags,Z,#$20,L0A3AA                ; bit 5: reference period short enough for running spark (RefPeriod below $00FF): surge and after-start spark, dwell
@@ -12305,7 +12305,7 @@ CrankPeriodDelta:
         TBXK
         TBYK
         LDE     >CrankPeriodSum,Z
-        BRSET   >CrankFlags2,Z,#$01,L0ACF4
+        BRSET   >CrankFlags2,Z,#$01,L0ACF4               ; bit 0: first crank period delta taken (CrankPeriodDelta2)
         STE     $0000,X
         BRA     L0AD16
 L0ACF4:
@@ -12332,8 +12332,8 @@ L0AD16:
 ;---------------------------------------------------------------------------------------------------
 CrankPeriodDelta2:
         LDE     >CrankPeriodSum,Z
-        BRSET   >CrankFlags2,Z,#$01,L0AD2C
-        BSET    >CrankFlags2,Z,#$01
+        BRSET   >CrankFlags2,Z,#$01,L0AD2C               ; bit 0: first crank period delta taken (CrankPeriodDelta2)
+        BSET    >CrankFlags2,Z,#$01                      ; bit 0: first crank period delta taken (CrankPeriodDelta2)
         STE     $0AC2,Z
         BRA     L0AD50
 L0AD2C:
@@ -15121,7 +15121,7 @@ L0D78E:
         BSET    >ThrottleFilterState,Z,#$03
         LDAA    #$7F
         STAA    >SparkStartRamp,Z
-        BSET    >VssFlags,Z,#$10
+        BSET    >VssFlags,Z,#$10                         ; bit 4: vehicle speed reading valid (set at reset and by CalcVehicleSpeed)
         BSET    >ThrottleState,Z,#$10                    ; bit 4: closed position stepped to a new minimum, probably (ThrottleClosedLearn only)
         BSET    >AcFlags,Z,#$B0                          ; bit 7: A/C clutch engaged (AcClutchControl); set at reset; bit 5: A/C idle step active (IdleTargetControl); set at reset; bit 4: A/C idle bump pending, probably (IdleTargetControl); set at reset
         BSET    >SpeedCtlState,Z,#$A0                    ; bit 7: speed control off: not engaged or cancelled (set at reset and on cancel); bit 5: set at reset, on cancel and on engage; meaning not settled
@@ -15438,10 +15438,10 @@ L0DB82:
         COMB
         CBA
         BNE     L0DBFC
-        BCLR    >ControlFlagsC33,Z,#$10
+        BCLR    >ControlFlagsC33,Z,#$10                  ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         BRA     L0DC0A
 L0DBFC:
-        BSET    >ControlFlagsC33,Z,#$10
+        BSET    >ControlFlagsC33,Z,#$10                  ; bit 4: fuel trim adjust value differs from the stored copy (Reset, FuelTrimAdjustStore)
         LDAA    >FlexStartValue
         STAA    >FlexStartFuel,Z
         LDAA    #$80
@@ -16796,7 +16796,7 @@ BusReqTimerTick:
         BEQ     L0EBD4
         DECA
         BNE     L0EBD0
-        BCLR    >BusReqFlags,Z,#$10
+        BCLR    >BusReqFlags,Z,#$10                      ; bit 4: bus A/C or fan request held: throttle below BusReqThrottleMax when it came (CcdReceive, timed by BusReqTimerTick)
 L0EBD0:
         STAA    >BusReqTimer,Z
 L0EBD4:
