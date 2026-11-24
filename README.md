@@ -31,6 +31,10 @@ What is still open, and the checks run on the annotations: [docs/en/open-questio
 The base fuel pulse routine and what a replacement must keep, with an instruction-level simulator: [docs/en/fuel-pulse.md](docs/en/fuel-pulse.md).
 Map sizes, unused code and free flash and RAM of 05293190AC, 05007038 and 04887050/51, as a basis for improvements: [docs/en/revision.md](docs/en/revision.md).
 
+## Experimental modifications
+
+- [DinoFuel for 128 KB SBEC3](patches/dinofuel/README.md): experimental 16-bit base-pulse tables for 04887050 and 05293013AC. The stock source tree remains unchanged. Simulator validation is not hardware validation.
+
 ## Layout
 
 ```
@@ -42,6 +46,7 @@ annotations/hand/       hand names for ported images (05007038, 04887050) where 
 docs/catalogue/         generated calibration catalogue of each image
 docs/diffs/             generated calibration differences inside each family
 xdf/                    generated TunerPro definitions, one per image
+patches/                experimental firmware modifications, separate from stock sources
 tools/                  CPU16 opcode table, decoder, assembler, analysis, generator, build, survey
 roms/                   place for the flash images (not distributed, see roms/README.md)
 third_party/            SBECBootLoader by Dino Yancey: reading and reflashing on the bench

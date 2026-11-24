@@ -4,22 +4,24 @@
 Adapted from Dino Yancey's DinoFuel, corrected in DDex89/dinofuel at ff9521d.
 This does NOT change the stock sources or enable a real vehicle flash.
 Run after tools/build.py:
-    python3 tools/dinofuel128.py build/04887050.bin
-    python3 tools/dinofuel128.py build/05293013AC.bin --full
+    python3 patches/dinofuel/dinofuel128.py build/04887050.bin
+    python3 patches/dinofuel/dinofuel128.py build/05293013AC.bin --full
 Optional --output writes an experimental ROM only after full simulator checks.
 """
 import argparse
 import hashlib
 import json
+import sys
 from fractions import Fraction
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools"))
+
 from asm16 import assemble
 from cpu16 import decode
 from cpu16sim import CPU
-
-ROOT = Path(__file__).resolve().parent.parent
 SIZE = 0x20000
 CODE = 0x0FC04
 CODE_LIMIT = 0x10000
@@ -386,7 +388,8 @@ def validate(stock, new, p, pt, wt, full):
     max_stock_steps = 0
     for mp in mps:
         for rpm in rpms:
-            for mode, flags in enumerate((0,0x21)):
+            for flags in ((0,1,0x20,0x21) if full else (0,0x21)):
+                mode = int(bool(flags & 0x20))
                 # Include correction and saturation cases while retaining a base-pulse comparison.
                 wte = 40 if (mp+rpm)%2 else 0
                 baro = 65535 if (mp+rpm)%31 == 0 else (100 if (mp+rpm)%3 else 0)
@@ -407,14 +410,14 @@ def validate(stock, new, p, pt, wt, full):
                     continue
                 counts[mode] += 1
                 base = float(reference(wt if mode else pt, positions[mode][effective],rpm))
-                expected = min(65535, base*(1+wte/256 if mode else 1)+baro)
+                expected = min(65535, base*(1+wte/256 if mode and flags & 1 else 1)+baro)
                 err = abs(nv[0]-expected)
                 worst[mode] = max(worst[mode],err)
                 require(err <= 2.5, "Interpolation/output mismatch "+where+f": {nv[0]} vs {expected}")
                 require(abs(nv[1]-base/2) <= 1.5, "CalcFuel432 mismatch "+where)
                 lo = WT_BASE if mode else PT_BASE
                 hi = lo + (343 if mode else 615)
-                require(all(not PT_BASE <= a < DATA_LIMIT or lo <= a < hi
+                require(all(not 0x04374 <= a < 0x04800 or lo <= a < hi
                             for a in nc.reads), "Cross-table read "+where)
                 # CalcFuel432 is half of the base before enrichment and baro.
                 if ov[1]:
@@ -423,9 +426,39 @@ def validate(stock, new, p, pt, wt, full):
         avg = sum(rel[i])/len(rel[i]) if rel[i] else 0
         mx = max(rel[i],default=0)
         print(f"{name}: {counts[i]} patched cases; max reference error {worst[i]:.2f} counts; "
-              f"stock base difference mean {avg:.3f}%, max {mx:.3f}%")
-    print(f"{fallback} stock fallback/cutoff cases; maximum instructions stock={max_stock_steps}, "
+              f"stock CalcFuel432 difference mean {avg:.3f}%, max {mx:.3f}%")
+    print(f"Total cases: {sum(counts)+fallback}; {fallback} stock fallback/cutoff cases; maximum instructions stock={max_stock_steps}, "
           f"patched={max_steps} (not CPU cycles).")
+    # Exercise option combinations independently of the stock ROM settings.
+    # The patch is created only from a verified original ROM; these copies
+    # are for simulation only and are never exported.
+    edge_n = 0
+    for hold in (0,1):
+        for tip in (0,1):
+            old, patched = bytearray(stock), bytearray(new)
+            for image in (old, patched):
+                image[0x0323] = (image[0x0323] & 0xFE) | hold
+                image[p["accel"]] = (image[p["accel"]] & 0x7F) | (tip << 7)
+            for mp in (0,12,13,19,20,31,32,33,127,128,239,240,241,255):
+                for rpm in (0,16,17,224,225,226,255):
+                    for flags in (0,1,0x20,0x21):
+                        oc, ov = run_cfp(old,p,mp,rpm,flags,255,100)
+                        nc, nv = run_cfp(patched,p,mp,rpm,flags,255,100)
+                        require(nv[3:] == ov[3:], "Option edge: TipIn or MAP hold mismatch")
+                        require(nv[0] == nv[2], "Option edge: FuelPulse mirror mismatch")
+                        mode = int(bool(flags & 0x20))
+                        effective = max(mp,old[p["hold"]]) if hold and not mode else mp
+                        points = scales[mode]
+                        offset = old[p["wt_offset" if mode else "pt_offset"]]
+                        if effective < offset or not points[0][0] <= effective <= points[-1][0]:
+                            require(nv == ov, "Option edge: stock fallback mismatch")
+                        else:
+                            base = float(reference(wt if mode else pt, positions[mode][effective],rpm))
+                            expected = min(65535,base*(1+255/256 if mode and flags & 1 else 1)+100)
+                            require(abs(nv[0]-expected) <= 3.5, "Option edge: interpolation mismatch")
+                            require(abs(nv[1]-base/2) <= 1.5, "Option edge: CalcFuel432 mismatch")
+                        edge_n += 1
+    print(f"Additional MAP hold / TipIn / WOT flag edge tests: {edge_n} passed.")
     print("Simulator validation passed; no hardware validation implied.")
 
 
