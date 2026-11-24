@@ -34,3 +34,11 @@ No turbo changes, ROM export or hardware validation.
 ## CalcSpark publication contract
 
 `publicationcheck.py` independently checks the actual stock correction-sum and publication tail in both original and fuel+spark V1.1 images. The 1996 implementation has 18 terms including a separate checked trim and adds that trim to the fault angle with saturation; the 1997 implementation has 17 terms and uses the fault angle directly. Override, fault, hold, idle/dashpot branches and signed saturation must stay unchanged. Correction generators are not executed in this fixture. A separate host-only fractional experiment uses 1/16-degree units, preserving integer corrections and forcing exactly the original angle in override/fault paths. No claim of atomic publication, downstream compatibility, or available RAM is made.
+
+## Confirmed correction and arithmetic profile
+
+[Publication CI 45507213567](https://github.com/DDex89/neon-sbec3-firmware/actions/runs/45507213567): 27,904 (1996) and 27,328 (1997) stock/composed tail cases passed; 441,856 separate host fractional cases passed. [Precision profile CI 45507266759](https://github.com/DDex89/neon-sbec3-firmware/actions/runs/45507266759/job/138845575237): 13 instructions, 6 bytes stack including test return frame, modeled 70/89/108 clocks for 2/3/4-clock flash. Not a complete ISR cost.
+
+## Stock byte-map interpolation experiment
+
+`map_precision.py` retains the original angle cells, MAP scale and row coordinate; evaluates all MAP/RPM bytes in PT/WOT for each supported ROM. Compares actual stock machine results against a rational reference and Q8/Q11/Q16 host interpolation with final rounding to 1/16 degree. No increase in stored map size is required for this experiment. It also reports residuals relative to actual stock outputs, particularly cases outside the previously studied [-4,+3] fine-unit publication envelope. These must be measured before choosing a representation; the host-only publication test does not demonstrate that all real interpolation residuals fit. No production map, firmware, or ABI is modified.
