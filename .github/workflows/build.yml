@@ -102,3 +102,29 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/simulate.py ${{ matrix.pn }} --full
+  spark-v11:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pn: ['04887050', '05293013AC']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/spark/simulate_v11.py ${{ matrix.pn }}
+  spark-v11-full:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pn: ['04887050', '05293013AC']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/spark/simulate_v11.py ${{ matrix.pn }} --full
