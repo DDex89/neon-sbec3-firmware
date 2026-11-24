@@ -154,3 +154,11 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/timercheck.py ${{ matrix.pn }}
+  spark-v2-precision-research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 patches/spark/v2/precision.py

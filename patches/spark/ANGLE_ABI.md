@@ -30,3 +30,5 @@ Therefore increasing only map word size cannot provide actual fractional-degree 
 Naturally aspirated only. No ROM output. No new ignition calibration, changes to protection, or timer modification in V1.1.
 
 See [TIMER_ARITHMETIC.md](TIMER_ARITHMETIC.md) for the separate three-path timer audit and executable arithmetic checks.
+
+See [v2/README.md](v2/README.md) for the separate high-resolution arithmetic experiment. It does not alter any firmware image.
