@@ -33,17 +33,17 @@ SparkLookup:
         TBXK
         PULB
         PSHA
-        CLRA
-        ASLD
-        TDE
         LDY     #RPMIndex
         BRSET   >FuelModeFlags,Z,#$20,ReadIndex
-        CMPB    #$60
+        CMPB    #$30
         BCS     ReadIndex
-        CMPB    #$7E
+        CMPB    #$3F
         BCC     ReadIndex
         LDY     #PTExceptionBase
 ReadIndex:
+        CLRA
+        ASLD
+        TDE
         LDD     E,Y
         TDE
         TAB
@@ -168,6 +168,16 @@ def check(pn,full):
     positions=[[lookup_position(stock,p,p[k],mp) for mp in range(256)] for k in ("pt_scale","wt_scale")]
     mps=list(range(256)) if full else sorted(set(range(0,256,13))|{0,31,32,33,111,112,113,127,128,129,239,240,241,254,255})
     rpms=list(range(256)) if full else sorted(set(range(0,256,11))|set(range(45,65))|set(ts[0][0])|{255})
+    # Explicit regression for the high-RPM alias caused by doubling B before selection.
+    for mode in (0,1):
+        for rpm in range(256):
+            before=invoke(cpus[0],p,entry,0,rpm,mode)
+            after=invoke(cpus[2],p,entry,0,rpm,mode)
+            require(before==after,f"RPM alias regression {mode} {rpm}")
+            expected_address=(EXCEPT+2*(rpm-48) if not mode and 48<=rpm<63 else LUT+2*rpm)
+            reads=cpus[2].reads
+            require(expected_address in reads and expected_address+1 in reads,"Wrong index address")
+    print(f"{pn}: all 512 RPM index addresses and high-RPM alias regression passed",flush=True)
     n=0
     for mode in (0,1):
         worst=0
