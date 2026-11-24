@@ -26,3 +26,11 @@ These numbers come from a separate mathematical evaluation; the CPU16 regression
 4. Validate protection, dwell, ISR budget and physical timing before any on-engine use.
 
 No turbo changes, ROM export or hardware validation.
+
+## Confirmed isolated arithmetic
+
+[CI 45506783465, job 138843937377](https://github.com/DDex89/neon-sbec3-firmware/actions/runs/45506783465/job/138843937377): all 18,018 isolated CPU16 cases passed, confirming the numerical table. `profile_precision.py` measures the isolated arithmetic routine under the existing CPU16 timing model; this excludes caller setup, branch selection, hardware and the rest of the ISR.
+
+## CalcSpark publication contract
+
+`publicationcheck.py` independently checks the actual stock correction-sum and publication tail in both original and fuel+spark V1.1 images. The 1996 implementation has 18 terms including a separate checked trim and adds that trim to the fault angle with saturation; the 1997 implementation has 17 terms and uses the fault angle directly. Override, fault, hold, idle/dashpot branches and signed saturation must stay unchanged. Correction generators are not executed in this fixture. A separate host-only fractional experiment uses 1/16-degree units, preserving integer corrections and forcing exactly the original angle in override/fault paths. No claim of atomic publication, downstream compatibility, or available RAM is made.
