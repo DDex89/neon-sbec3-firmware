@@ -2,6 +2,10 @@
 
 [Русский](README.ru.md)
 
+## Versions
+
+This directory describes V1 (absolute pulse maps). The selected naturally aspirated Q11 candidate is isolated in [v2/](v2/README.md). The formats are incompatible.
+
 ## Scope
 
 This port adapts the corrected [DinoFuel](https://github.com/DDex89/dinofuel) by Dino Yancey (dino2gnt) to the stock 04887050 (family A) and 05293013AC (family B) images. It is kept outside the original source tree. The stock sources, stock XDF definitions and byte-identical build remain unchanged.

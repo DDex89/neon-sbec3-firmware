@@ -60,6 +60,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/dinofuel/v2/check_calibration.py ${{ matrix.pn }}
       - run: python3 patches/dinofuel/v2/simulate.py ${{ matrix.pn }}
   dinofuel-v2-full:
     runs-on: ubuntu-latest
