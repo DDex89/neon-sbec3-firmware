@@ -1,5 +1,7 @@
 # neon-sbec3-firmware
 
+[Модульная архитектура](patches/README.md) · [Профили ресурсов](profiles/modules.json) · [Эксперимент Spark V1](patches/spark/README.md). Атмосферные прошивки, исходный код сохранён.
+
 Разбор прошивки контроллера двигателя Chrysler **SBEC3** (Motorola 68HC16, 1996 год и позже). Цель —
 размеченный исходник, который собирается обратно в оригинал, и описания калибровки для редактора
 (TunerPro XDF). Основная цель — Dodge / Plymouth Neon 1996+; Mitsubishi Eclipse / Eagle Talon второго

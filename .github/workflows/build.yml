@@ -75,3 +75,30 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/dinofuel/v2/simulate.py ${{ matrix.pn }} --full
+  modular-spark:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pn: ['04887050', '05293013AC']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 patches/common/resource_check.py
+      - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/spark/simulate.py ${{ matrix.pn }}
+  modular-spark-full:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pn: ['04887050', '05293013AC']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/spark/simulate.py ${{ matrix.pn }} --full

@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "scope": "naturally aspirated; simulation only",
+  "variants": {
+    "04887050": {
+      "fuel_hook": "0x07DEA",
+      "spark_entry": "0x1C082",
+      "spark_tail": "0x0E598",
+      "spark_tables": [
+        "0x1544",
+        "0x1497"
+      ]
+    },
+    "05293013AC": {
+      "fuel_hook": "0x07E0A",
+      "spark_entry": "0x141E4",
+      "spark_tail": "0x0E698",
+      "spark_tables": [
+        "0x155C",
+        "0x14AF"
+      ]
+    }
+  },
+  "profiles": {
+    "stock": [],
+    "fuel_v1": [
+      "fuel_v1"
+    ],
+    "fuel_q11": [
+      "fuel_q11"
+    ],
+    "fuel_q11_spark": [
+      "fuel_q11",
+      "spark_v1"
+    ]
+  },
+  "modules": {
+    "fuel_v1": {
+      "depends": [],
+      "flash": [
+        [
+          "0x04401",
+          "0x047C0"
+        ],
+        [
+          "0x0FC04",
+          "0x0FE00"
+        ]
+      ],
+      "persistent_ram": [],
+      "conflicts": [
+        "fuel_q11"
+      ]
+    },
+    "fuel_q11": {
+      "depends": [],
+      "flash": [
+        [
+          "0x04401",
+          "0x047C0"
+        ],
+        [
+          "0x0FC04",
+          "0x0FD40"
+        ],
+        [
+          "0x0FE00",
+          "0x10000"
+        ]
+      ],
+      "persistent_ram": [],
+      "conflicts": [
+        "fuel_v1"
+      ]
+    },
+    "spark_v1": {
+      "depends": [
+        "fuel_q11"
+      ],
+      "flash": [
+        [
+          "0x0FD40",
+          "0x0FE00"
+        ]
+      ],
+      "persistent_ram": [],
+      "conflicts": []
+    }
+  },
+  "planned": [
+    "fuel-corrections",
+    "knock",
+    "idle",
+    "lambda",
+    "common"
+  ]
+}

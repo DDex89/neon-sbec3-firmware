@@ -31,6 +31,10 @@ What is still open, and the checks run on the annotations: [docs/en/open-questio
 The base fuel pulse routine and what a replacement must keep, with an instruction-level simulator: [docs/en/fuel-pulse.md](docs/en/fuel-pulse.md).
 Map sizes, unused code and free flash and RAM of 05293190AC, 05007038 and 04887050/51, as a basis for improvements: [docs/en/revision.md](docs/en/revision.md).
 
+## Modular development
+
+[Architecture and module rules](patches/README.md) · [Resource profiles](profiles/modules.json) · [Spark V1 experiment](patches/spark/README.md). The atmospheric experimental branch retains the original source as the reference.
+
 ## Experimental modifications
 
 - [DinoFuel for 128 KB SBEC3](patches/dinofuel/README.md): experimental 16-bit base-pulse tables for 04887050 and 05293013AC. The stock source tree remains unchanged. Simulator validation is not hardware validation.
