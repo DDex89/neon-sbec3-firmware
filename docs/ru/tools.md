@@ -34,6 +34,8 @@ python3 tools/survey.py roms/*.bin  # заголовок, контрольная
 | `tools/catalogue.py` | Пишет каталог калибровки (`docs/catalogue/`) |
 | `tools/xref.py` | Перекрёстные ссылки на переменные ОЗУ и адреса калибровки: кто читает и пишет |
 | `tools/port.py` | Переносит разметку эталона на другой образ (`annotations/ports/`) |
+| `tools/cpu16sim.py` | Покомандный симулятор CPU16 для запуска отдельных подпрограмм образа ([fuel-pulse.md](fuel-pulse.md)) |
+| `tools/simtest.py` | Сверяет симулятор с моделями штатных `Lookup3D` и `CalcFuelPulse` |
 | `tools/revision.py` | Учёт флеша и ОЗУ образа: свободное место, заглушки, подпрограммы, выключенные калибровкой ([revision.md](revision.md)) |
 | `tools/caldiff.py` | Сравнивает два образа одного семейства по таблицам (`docs/diffs/`) |
 | `tools/xdf.py` | Пишет описание образа для TunerPro (`xdf/`) |

@@ -114,7 +114,7 @@ $0732-$075E are the largest piece of unused code in family C.
 
 ## Where an improvement would go
 
-- **Main maps**: `CalcFuelPulse` / `PartThrottleFuelCalc` (fuel) and `CalcBaseSpark` (spark) pick
+- **Main maps**: `CalcFuelPulse` (base pulse per event, its contract in [fuel-pulse.md](fuel-pulse.md)) / `PartThrottleFuelCalc` (fuel) and `CalcBaseSpark` (spark) pick
   the maps. As far as the lookup goes, a map of another size needs only the new table in bank 0:
   `Lookup3D` reads rows, columns and the column axis from the table header, and the row comes as a
   position 0-255 whatever the number of rows.

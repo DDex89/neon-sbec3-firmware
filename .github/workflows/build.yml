@@ -20,3 +20,5 @@ jobs:
         run: python3 tools/edittest.py
       - name: Inventory tool runs on a 128 KB and a 256 KB image
         run: python3 tools/revision.py build/05007038.bin && python3 tools/revision.py build/05293190AC.bin
+      - name: Simulator self-test (stock Lookup3D and CalcFuelPulse against models)
+        run: python3 tools/simtest.py build/05293190AC.bin && python3 tools/simtest.py build/04887050.bin

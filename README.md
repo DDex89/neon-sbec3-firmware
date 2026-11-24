@@ -28,6 +28,7 @@ has its source in the repository.
 | 6 | Editor definitions: TunerPro XDF generated from the annotations | first version, see [docs/en/tunerpro.md](docs/en/tunerpro.md); to be tried in TunerPro |
 
 What is still open, and the checks run on the annotations: [docs/en/open-questions.md](docs/en/open-questions.md).
+The base fuel pulse routine and what a replacement must keep, with an instruction-level simulator: [docs/en/fuel-pulse.md](docs/en/fuel-pulse.md).
 Map sizes, unused code and free flash and RAM of 05293190AC, 05007038 and 04887050/51, as a basis for improvements: [docs/en/revision.md](docs/en/revision.md).
 
 ## Layout
