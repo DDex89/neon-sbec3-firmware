@@ -24,3 +24,5 @@ jobs:
         run: python3 tools/simtest.py build/05293190AC.bin && python3 tools/simtest.py build/04887050.bin
       - name: Experimental DinoFuel 128 KB port — dense grid and edge tests
         run: python3 patches/dinofuel/dinofuel128.py build/04887050.bin --full && python3 patches/dinofuel/dinofuel128.py build/05293013AC.bin --full
+      - name: DinoFuel XDF cell layout and simulated calibration edits
+        run: python3 patches/dinofuel/xdfcheck.py

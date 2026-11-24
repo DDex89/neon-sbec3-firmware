@@ -46,10 +46,16 @@ The script requires an exact stock SHA-256, checks erased regions, hook instruct
 
 The reported stock difference is a calibration/model difference in the half-base-pulse variable, not interpolation error. Instruction count is not timing. Expanded tests run in CI on this branch.
 
+## Experimental TunerPro definitions
+
+Use only the matching file in [xdf/](xdf/) with the corresponding patched ROM. The stock XDF does not edit the new tables. Both RPM and MAP axis labels are fixed to the original calibration; do not change the underlying axes or MAP scale. The cells are unsigned big-endian words, displayed as base pulse counts (X/2), not milliseconds; physical time conversion has not been independently verified. The 17x17 PT cells begin at $04426; the 9x17 WOT cells begin at $0468E. After editing, checksum repair is required for any bench image. No on-vehicle use.
+
+`python3 patches/dinofuel/xdfcheck.py` verifies all 442 cells per ROM and simulates a single cell edit per table through actual CPU16 instructions. TunerPro GUI compatibility remains untested.
+
 ## Remaining work
 
 - Check CPU16 worst-case cycle time, total interrupt/stack budget, actual RAM and flash access on hardware.
-- Produce separate XDF definitions for the experimental tables; stock XDFs do not edit the new tables.
+- Validate the experimental XDFs in the actual TunerPro GUI; the separate definitions and automated checks are now in this folder.
 - Compare final fuel delivery on a bench, including transition at the MAP fallback boundary.
 - Extend to other exact ROM variants only after verifying their signatures and free areas.
 
