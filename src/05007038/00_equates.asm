@@ -185,12 +185,12 @@ MonitorDisableFlags equ $0055        ; $F8055
 EquipmentFlags   equ $0056        ; $F8056
 ;                 bit 7: A/C fitted (EquipmentDetect)
 ;                 bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
-;                 bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
+;                 bit 5: automatic transmission: set at reset with Options0324 bit 1, or by CcdReceive when the transmission module is seen on the bus
 ;                 bit 4: A/C requested (AcRequestUpdate)
-;                 bit 3: copy of calibration bit $033E.1 at reset; not read
-;                 bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
-;                 bit 1: copy of calibration bit $0335.3 at reset; not read
-;                 bit 0: copy of calibration bit $0330.4 at reset; not read
+;                 bit 3: copy of Options0335 bit 1 (leak detection pump fitted) at reset
+;                 bit 2: power steering pressure switch fitted (EquipmentDetect, PspPresentCounter)
+;                 bit 1: copy of Options032C bit 0 at reset
+;                 bit 0: copy of Options0329 bit 2 (catalyst temperature sensor) at reset
 Ac058            equ $0057        ; $F8057
 CalTypeCopy      equ $0058        ; $F8058
 IacStepper054    equ $0059        ; $F8059
