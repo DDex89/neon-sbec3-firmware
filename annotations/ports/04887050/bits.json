@@ -1,67 +1,99 @@
 {
  "_comment": "Carried over from 05293190AC (gaps filled through 05293013AC) by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
+ "EquipmentFlags": {
+  "7": "power steering pressure switch fitted: set by EquipmentDetect once the switch input was seen (PspPresentCounter); used by the idle code and PspSwitchMonitor",
+  "6": "A/C fitted: set by EquipmentDetect once an A/C request was seen (AcPresentCounter)",
+  "5": "speed control fitted: set by EquipmentDetect once the speed control switch inputs were seen, or by EquipmentProbe when the probed input answers",
+  "4": "A/C requested (AcRequestUpdate)",
+  "3": "copy of calibration bit $033E.1 at reset; not read",
+  "2": "power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)",
+  "1": "copy of calibration bit $0335.3 at reset; not read",
+  "0": "copy of calibration bit $0330.4 at reset; not read"
+ },
  "Options031D": {
-  "7": "engine/ignition variant used by the event, spark, knock and rpm code",
-  "6": "engine variant used by the event, fuel accounting and misfire code (cylinder layout, probably)",
-  "5": "hardware set-up variant at reset (Reset, HardwareCheck)"
+  "7": "engine/ignition variant (HardwareCheck, SparkEventCalc, StartInjectorPulse, KnockSample, InjectorFuelAccount)",
+  "6": "hardware set-up variant (Reset, HardwareCheck, GptRegisterCheck; also SparkEventCalc, FinishFuelPulse, KnockSample)",
+  "5": "hardware set-up variant (Reset, HardwareCheck, GptRegisterCheck; also SparkEventCalc, FinishFuelPulse, KnockSample)",
+  "0": "hardware variant bit (HardwareCheck, GptRegisterCheck3, SparkEventCalc, StartInjectorPulse, KnockSample, QspiOutputStatus and others)",
+  "1": "hardware variant bit (HardwareCheck, GptRegisterCheck3, SparkEventCalc, StartInjectorPulse, IdleTargetControl, SpeedCtlControl and others)",
+  "2": "hardware variant bit (HardwareCheck, Isr_GPT_IC1, FinishFuelPulse, MisfireSegmentTime, QspiOutputStatus)",
+  "3": "hardware variant bit (HardwareCheck, GptRegisterCheck2, SparkEventCalc, FinishFuelPulse, RefPeriodUpdate, IdleTargetControl and others)",
+  "4": "hardware variant bit (HardwareCheck, GptRegisterCheck2, SparkEventCalc, FinishFuelPulse, RefPeriodUpdate, KnockSample)"
  },
  "Options031E": {
-  "7": "A/C pressure sensor fitted, not a switch (AcPressureSensor): idle A/C steps, clutch, cut and fan",
-  "6": "A/C detection variant (EquipmentDetect, AcClutchControl, FanRelayControl)",
-  "5": "A/C detection variant (EquipmentDetect, AcClutchControl)",
-  "4": "fuel level from the bus instead of the sender, probably",
-  "3": "power steering pressure switch fitted (sets EquipmentFlags bit 2)"
+  "7": "upstream O2 sensor 1 fitted (ClosedLoopManager, FuelSysTooRich1Monitor, FuelSysTooLean1Monitor, O2HeaterMonitor, PurgeCellTrimFilter)",
+  "6": "upstream O2 sensor 2 fitted, second bank (ClosedLoopManager, FuelSysTooRich2Monitor, FuelSysTooLean2Monitor, PurgeVaporLearn and others)",
+  "5": "downstream O2 sensor 2 fitted (ClosedLoopManager, O2HeaterMonitor, O2DownResponseMonitor, O2UpdateDownstream)",
+  "4": "downstream O2 sensor 1 fitted (ClosedLoopManager, O2HeaterMonitor, O2UpdateDownstream)",
+  "3": "selects a branch in CcdReceive",
+  "1": "A/C detection variant (AcClutchControl, FanRelayControl)",
+  "2": "A/C pressure sensor variant: idle A/C steps, clutch, cut and fan (AcClutchSpark, AcCutLogic, EquipmentDetect, IacLearn, IdleTargetControl)"
  },
  "Options0321": {
-  "7": "fan control variant (FanMain)",
-  "5": "fan relay variant (FanControl, output tests)",
-  "4": "PWM fan output: output-compare set-up at reset and in the PIT code",
-  "3": "output driver variant (QspiOutputStatus)",
+  "7": "fan output control on (FanOutputControl)",
+  "5": "transmission-related variant (GearStateUpdate, TccMonitor, SpeedCtlShift, IdleRpmTarget, AcCutControl, CcdTransmit and others)",
+  "4": "output driver variant (QspiOutputStatus, Isr_PIT)",
+  "3": "fan control variant (FanMain, AcCutLogic)",
   "2": "output driver variant (QspiOutputStatus)",
-  "0": "fan relay variant (FanRelayControl, QspiOutputStatus)"
+  "0": "fan relay variant (FanRelayControl, QspiOutputStatus)",
+  "1": "fan relay variant (FanControl, ActuatorTestMain)"
  },
  "Options0323": {
-  "7": "per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)",
-  "6": "speed damping spark on (SpeedDampOn)",
-  "5": "speed limiter on (SpeedLimitOn, FuelCutControl)",
-  "4": "surge spark control on (SurgeSparkOn)",
-  "3": "selects a branch in ReadMap",
-  "2": "part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)",
-  "1": "selects a branch in CalcBaseSpark",
-  "0": "idle dip kick mode (IdleDipKickMode); also EquipmentInit and EquipmentDetect"
+  "7": "per-event spark on (EventSparkControl, EventCorrections); also the cam signal handling (Isr_GPT_IC4OC5); set in 04887050 (automatic)",
+  "6": "spark/dwell variant (CalcSpark, DwellCalc, Isr_GPT_OC2, CalcEngineRpm, OcOutputsReset, Reset)",
+  "5": "closed loop off: the O2 control and learning are skipped (ClosedLoopMain, O2LearnEnable, O2UpdateUpstream, PurgeVaporLearn, FuelCorrections)",
+  "4": "surge spark control variant (SurgeSparkControl, Reset)",
+  "3": "speed limiter on (FuelCutControl)",
+  "2": "surge control on (SurgeControl); set in 04887051 (manual), clear in 04887050",
+  "1": "selects a branch in ReadMap",
+  "0": "part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)"
  },
  "Options0324": {
-  "7": "closed loop off: ClosedLoopMain clears the O2 state and the short-term trim",
-  "6": "flex-fuel (ethanol) calibration: FlexEthanol and the flex learning are used"
+  "7": "purge variant (PurgeRampControl, PurgeVaporLearn)",
+  "6": "selects a branch in GearStateUpdate; set in 04887050 (automatic)",
+  "0": "flex fuel on: ethanol content, flex factors and flex spark are used (FuelCorrections, FlexSensorCheck, FlexSparkCalc, O2FlexOffset and others)",
+  "1": "speed control switch variant (SpeedCtlControl, SpeedCtlSwitchRead)",
+  "2": "speed control switch variant; also used by EquipmentDetect",
+  "3": "selects a branch in EquipmentDetect",
+  "4": "selects a branch in SpeedCtlControl",
+  "5": "knock enrichment on (KnockEnrichment, SparkHook)"
  },
  "Options0325": {
-  "7": "bus message variant (CcdTransmit, PciBuildMessage)",
-  "6": "manual transmission: GearStateUpdate and the park/neutral monitor are skipped",
-  "5": "transmission controller on the bus (sets EquipmentFlags bit 5)",
-  "4": "bus timeout variant (BusTimeoutCheck)",
-  "3": "PCI link variant (PciLinkCheck, PciBuildMessage)",
-  "2": "PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit"
+  "7": "O2 cell selection variant (O2CellSelect3x3, O2CellSelect)",
+  "6": "EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor, ObdRequest and others); clear in 04887050/51",
+  "5": "manual transmission: the gear state, park/neutral and automatic-only paths are skipped (GearStateUpdate, PnSwitchMonitor, IdleRpmTarget and others); set in 04887051",
+  "4": "selects a branch in KnockSample",
+  "3": "alternative purge duty table (PurgeRampControl, with bit 2)",
+  "2": "alternative purge duty table (PurgeRampControl, with bit 3)",
+  "0": "tip-in retard hold (TipInSparkControl)",
+  "1": "selects a branch in FinishFuelPulse"
  },
  "Options0326": {
   "7": "idle flare check off (IdleFlareCheck skips when set)",
   "6": "selects a branch in IdleRpmTarget",
-  "4": "A/C spark on (AcSparkOn, AcClutchSpark)",
+  "4": "cam/crank offset relearn (CamCrankRelation)",
   "3": "selects a branch in IdleTargetControl",
-  "0": "start injector / spark variant (StartInjectorPulse, FinishFuelPulse, SparkEventCalc)"
+  "0": "fan relay variant (FanRelayControl)",
+  "5": "O2 cross check on (O2CrossCheck)"
  },
  "Options0329": {
   "7": "event layout variant: segment times, fuel accounting, spark events",
   "6": "dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code",
-  "5": "spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement"
+  "5": "purge flow test on (PurgeFlowTest)",
+  "0": "EGR monitor test supported (EgrMonitorTask)",
+  "1": "O2 heater monitor supported (O2HeaterMonitor)",
+  "2": "misfire monitor variant (MisfireEnableCheck)",
+  "3": "purge flow test variant (PurgeFlowTest)",
+  "4": "catalyst monitor bank 1 supported (CatMonitorBank1)"
  },
  "Options032B": {
   "7": "idle rpm monitor on (IdleRpmMonitor)",
-  "6": "park/neutral switch monitor on (PnSwitchMonitor)",
+  "6": "park/neutral switch monitor on (PnSwitchMonitor, PnSwitchMonitor2); set in 04887050 (automatic)",
   "5": "brake switch, VSS and purge flow monitors variant",
-  "4": "thermostat monitor on (ThermostatWarmCheck)",
+  "4": "closed-loop temperature (coolant warm-up) monitor on (CoolantWarmupMonitor, P0125)",
   "3": "power steering switch monitor on (PspSwitchMonitor)",
   "2": "cam/crank sync monitor on (CamCrankSyncMonitor)",
   "1": "fuel sender monitor on (FuelSenderMonitor)",
-  "0": "O2 activity checks variant (O2NoActivityCold, O2DownEnable)"
+  "0": "O2 activity check variant (O2NoActivityCold)"
  }
 }

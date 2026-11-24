@@ -32,11 +32,11 @@ CamCrankSyncCount equ $0010        ; $F8010
 EquipmentFlags   equ $0011        ; $F8011
 ;                 bit 7: A/C fitted (EquipmentDetect)
 ;                 bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
-;                 bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
-;                 bit 4: A/C requested (AcRequestUpdate)
-;                 bit 3: copy of calibration bit $033E.1 at reset; not read
+;                 bit 5: automatic transmission: set at reset unless Options0325 bit 5 (manual) or Options0321 bit 5
+;                 bit 4: automatic transmission, variant: set at reset instead of bit 5 when Options0321 bit 5 is set
+;                 bit 3: copy of calibration bit $032C.7 at reset
 ;                 bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)
-;                 bit 1: copy of calibration bit $0335.3 at reset; not read
+;                 bit 1: copy of Options0321 bit 0 at reset
 ;                 bit 0: copy of calibration bit $0330.4 at reset; not read
 EgrZeroPos       equ $0013        ; $F8013
 SegmentTimePair2 equ $0018        ; $F8018

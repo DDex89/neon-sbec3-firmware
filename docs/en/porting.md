@@ -106,7 +106,11 @@ program.
 - In family B 56 routines have no name yet (most of them the OBD monitors that A also has: the
   names of A could be chained to B the same way).
 - Bit texts in the 128 KB images come from the reference by RAM name; where a byte is used
-  differently in the older program the text can be wrong. They are corrected by hand only where
-  the code was read (for example Options033A bit 4 in C, the development port).
+  differently in the older program the text can be wrong. The option bytes are the worst case:
+  their bit layout changed between the generations, so carrying the reference text by byte gives
+  the wrong meaning. For families A and B every tested option bit and EquipmentFlags have hand
+  texts read from the routines that test them (`annotations/hand/04887050/bits.json`,
+  `annotations/hand/05293013AC/bits.json`; in B the bytes from $0328 on sit two bytes higher than
+  in A). In family C only Options0331 bit 4 (the development port) is corrected so far.
 - Vehicle and engine of most images are still unknown; the fault tables (cylinder count) and the
   calibration differences are the next clues.

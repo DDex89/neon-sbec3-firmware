@@ -330,7 +330,8 @@ VIA = {"05293013AC": "05007038", "05293014AC": "05007038",
 # hand annotations made on one image of a family (annotations/hand/<PN>/), valid for every image
 # with the same code: they override what was carried over
 HAND = {"05007038": "05007038", "05293148AA": "05007038",
-        "04887050": "04887050", "04887051": "04887050"}
+        "04887050": "04887050", "04887051": "04887050",
+        "05293013AC": "05293013AC", "05293014AC": "05293013AC"}
 
 
 def overlay(base, hand):

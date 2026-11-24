@@ -13,6 +13,7 @@
  "11CB6": "CalcVehicleSpeed",
  "11FDE": "BatteryTempInputs",
  "121B8": "SriMileageStore",
+ "1255C": "EquipmentProbe",
  "12F36": "SciPutByte",
  "136C8": "OutputTestIacToggle",
  "13C88": "DiagStatusBits",

@@ -152,7 +152,7 @@
  "123F8": "AdcStartF0",
  "1240C": "ReadMap",
  "1247E": "EquipmentDetect",
- "1255C": "MonTaskLdp",
+ "1255C": "EquipmentProbe",
  "129BA": "SciRequestReceive",
  "12BFE": "FuelTrimAdjustStore",
  "12C4C": "SystemTestRejectCount",

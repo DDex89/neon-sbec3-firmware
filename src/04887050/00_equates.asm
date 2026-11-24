@@ -51,9 +51,9 @@ VacLeakFlags     equ $0035        ; $F8035
 ;                 bit 0: cam/crank offset to be stored, first kind (CamCrankRelation)
 IacStepper054    equ $0036        ; $F8036
 EquipmentFlags   equ $003E        ; $F803E
-;                 bit 7: A/C fitted (EquipmentDetect)
-;                 bit 6: speed control fitted (EquipmentDetect, EquipmentProbe)
-;                 bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
+;                 bit 7: power steering pressure switch fitted: set by EquipmentDetect once the switch input was seen (PspPresentCounter); used by the idle code and PspSwitchMonitor
+;                 bit 6: A/C fitted: set by EquipmentDetect once an A/C request was seen (AcPresentCounter)
+;                 bit 5: speed control fitted: set by EquipmentDetect once the speed control switch inputs were seen, or by EquipmentProbe when the probed input answers
 ;                 bit 4: A/C requested (AcRequestUpdate)
 ;                 bit 3: copy of calibration bit $033E.1 at reset; not read
 ;                 bit 2: power steering pressure switch fitted (calibration bit $0331.3, or EquipmentDetect)

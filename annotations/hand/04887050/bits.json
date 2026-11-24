@@ -1,0 +1,88 @@
+{
+ "_comment": "Hand bit texts for 04887050/51 (family A): the option bytes and EquipmentFlags, read from the routines that test or set each bit. The layout of these bytes differs from 05293190AC, so the reference texts do not apply.",
+ "Options031D": {
+  "0": "hardware variant bit (HardwareCheck, GptRegisterCheck3, SparkEventCalc, StartInjectorPulse, KnockSample, QspiOutputStatus and others)",
+  "1": "hardware variant bit (HardwareCheck, GptRegisterCheck3, SparkEventCalc, StartInjectorPulse, IdleTargetControl, SpeedCtlControl and others)",
+  "2": "hardware variant bit (HardwareCheck, Isr_GPT_IC1, FinishFuelPulse, MisfireSegmentTime, QspiOutputStatus)",
+  "3": "hardware variant bit (HardwareCheck, GptRegisterCheck2, SparkEventCalc, FinishFuelPulse, RefPeriodUpdate, IdleTargetControl and others)",
+  "4": "hardware variant bit (HardwareCheck, GptRegisterCheck2, SparkEventCalc, FinishFuelPulse, RefPeriodUpdate, KnockSample)",
+  "5": "hardware set-up variant (Reset, HardwareCheck, GptRegisterCheck; also SparkEventCalc, FinishFuelPulse, KnockSample)",
+  "6": "hardware set-up variant (Reset, HardwareCheck, GptRegisterCheck; also SparkEventCalc, FinishFuelPulse, KnockSample)",
+  "7": "engine/ignition variant (HardwareCheck, SparkEventCalc, StartInjectorPulse, KnockSample, InjectorFuelAccount)"
+ },
+ "Options031E": {
+  "1": "A/C detection variant (AcClutchControl, FanRelayControl)",
+  "2": "A/C pressure sensor variant: idle A/C steps, clutch, cut and fan (AcClutchSpark, AcCutLogic, EquipmentDetect, IacLearn, IdleTargetControl)",
+  "3": "selects a branch in CcdReceive",
+  "4": "downstream O2 sensor 1 fitted (ClosedLoopManager, O2HeaterMonitor, O2UpdateDownstream)",
+  "5": "downstream O2 sensor 2 fitted (ClosedLoopManager, O2HeaterMonitor, O2DownResponseMonitor, O2UpdateDownstream)",
+  "6": "upstream O2 sensor 2 fitted, second bank (ClosedLoopManager, FuelSysTooRich2Monitor, FuelSysTooLean2Monitor, PurgeVaporLearn and others)",
+  "7": "upstream O2 sensor 1 fitted (ClosedLoopManager, FuelSysTooRich1Monitor, FuelSysTooLean1Monitor, O2HeaterMonitor, PurgeCellTrimFilter)"
+ },
+ "Options0321": {
+  "1": "fan relay variant (FanControl, ActuatorTestMain)",
+  "3": "fan control variant (FanMain, AcCutLogic)",
+  "4": "output driver variant (QspiOutputStatus, Isr_PIT)",
+  "5": "transmission-related variant (GearStateUpdate, TccMonitor, SpeedCtlShift, IdleRpmTarget, AcCutControl, CcdTransmit and others)",
+  "7": "fan output control on (FanOutputControl)"
+ },
+ "Options0323": {
+  "0": "part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)",
+  "1": "selects a branch in ReadMap",
+  "2": "surge control on (SurgeControl); set in 04887051 (manual), clear in 04887050",
+  "3": "speed limiter on (FuelCutControl)",
+  "4": "surge spark control variant (SurgeSparkControl, Reset)",
+  "5": "closed loop off: the O2 control and learning are skipped (ClosedLoopMain, O2LearnEnable, O2UpdateUpstream, PurgeVaporLearn, FuelCorrections)",
+  "6": "spark/dwell variant (CalcSpark, DwellCalc, Isr_GPT_OC2, CalcEngineRpm, OcOutputsReset, Reset)",
+  "7": "per-event spark on (EventSparkControl, EventCorrections); also the cam signal handling (Isr_GPT_IC4OC5); set in 04887050 (automatic)"
+ },
+ "Options0324": {
+  "0": "flex fuel on: ethanol content, flex factors and flex spark are used (FuelCorrections, FlexSensorCheck, FlexSparkCalc, O2FlexOffset and others)",
+  "1": "speed control switch variant (SpeedCtlControl, SpeedCtlSwitchRead)",
+  "2": "speed control switch variant; also used by EquipmentDetect",
+  "3": "selects a branch in EquipmentDetect",
+  "4": "selects a branch in SpeedCtlControl",
+  "5": "knock enrichment on (KnockEnrichment, SparkHook)",
+  "6": "selects a branch in GearStateUpdate; set in 04887050 (automatic)",
+  "7": "purge variant (PurgeRampControl, PurgeVaporLearn)"
+ },
+ "Options0325": {
+  "0": "tip-in retard hold (TipInSparkControl)",
+  "1": "selects a branch in FinishFuelPulse",
+  "2": "alternative purge duty table (PurgeRampControl, with bit 3)",
+  "3": "alternative purge duty table (PurgeRampControl, with bit 2)",
+  "4": "selects a branch in KnockSample",
+  "5": "manual transmission: the gear state, park/neutral and automatic-only paths are skipped (GearStateUpdate, PnSwitchMonitor, IdleRpmTarget and others); set in 04887051",
+  "6": "EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor, ObdRequest and others); clear in 04887050/51",
+  "7": "O2 cell selection variant (O2CellSelect3x3, O2CellSelect)"
+ },
+ "Options0326": {
+  "0": "fan relay variant (FanRelayControl)",
+  "4": "cam/crank offset relearn (CamCrankRelation)",
+  "5": "O2 cross check on (O2CrossCheck)",
+  "6": "selects a branch in IdleRpmTarget",
+  "7": "idle flare check off (IdleFlareCheck skips when set)"
+ },
+ "Options0329": {
+  "0": "EGR monitor test supported (EgrMonitorTask)",
+  "1": "O2 heater monitor supported (O2HeaterMonitor)",
+  "2": "misfire monitor variant (MisfireEnableCheck)",
+  "3": "purge flow test variant (PurgeFlowTest)",
+  "4": "catalyst monitor bank 1 supported (CatMonitorBank1)",
+  "5": "purge flow test on (PurgeFlowTest)"
+ },
+ "Options032B": {
+  "0": "O2 activity check variant (O2NoActivityCold)",
+  "1": "fuel sender monitor on (FuelSenderMonitor)",
+  "2": "cam/crank sync monitor on (CamCrankSyncMonitor)",
+  "3": "power steering switch monitor on (PspSwitchMonitor)",
+  "4": "closed-loop temperature (coolant warm-up) monitor on (CoolantWarmupMonitor, P0125)",
+  "6": "park/neutral switch monitor on (PnSwitchMonitor, PnSwitchMonitor2); set in 04887050 (automatic)",
+  "7": "idle rpm monitor on (IdleRpmMonitor)"
+ },
+ "EquipmentFlags": {
+  "5": "speed control fitted: set by EquipmentDetect once the speed control switch inputs were seen, or by EquipmentProbe when the probed input answers",
+  "6": "A/C fitted: set by EquipmentDetect once an A/C request was seen (AcPresentCounter)",
+  "7": "power steering pressure switch fitted: set by EquipmentDetect once the switch input was seen (PspPresentCounter); used by the idle code and PspSwitchMonitor"
+ }
+}
