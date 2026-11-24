@@ -16,7 +16,11 @@ Optional `--dense` uses a denser input grid. The profiler executes real instruct
 
 References: [Motorola CPU16RM, table 6-36 and chapter 8](https://www.nxp.com/docs/en/reference-manual/CPU16RM.pdf); [Motorola EB251, tables 1-3](https://www.nxp.com/docs/en/engineering-bulletin/EB251.pdf). The bit-test branch timing uses the taken/non-taken ordering implied by EB251, rather than the ambiguous pair order in table 6-36.
 
-Both early ROMs write SYNCR=$7F80, PITR=$0007, CSORBT=$6870, CSOR0=$7070, CSOR2=$7870. The 16.777216 MHz scenario assumes a 32.768 kHz reference as described for the later reference image in docs/en/architecture.md. Verify oscillator, actual flash bus width and termination on the physical early ECU. Do not assume the entire ISR has the same time budget as this single routine. The profile does not include pipeline/bus interactions outside the routine, other interrupts, peripheral latency, or an exhaustive WCET proof.
+Both early ROMs write SYNCR=$7F80, PITR=$0007, CSPAR0=$00FF, CSORBT=$6870, CSOR0=$7070, CSOR2=$7870. Under the standard MC68HC16 chip-select layout, DSACK[3:0] (bits 9:6) is 1 for all three CSOR values: one wait state, corresponding to a 4-clock external bus cycle (EB251). The four-clock profile is therefore the most relevant of the three modeled cases, conditional on the physical chip-select wiring and bus width. The 16.777216 MHz scenario assumes a 32.768 kHz reference as described for the later reference image in docs/en/architecture.md. Verify oscillator, actual flash bus width and termination on the physical early ECU. Do not assume the entire ISR has the same time budget as this single routine. The profile does not include pipeline/bus interactions outside the routine, other interrupts, peripheral latency, or an exhaustive WCET proof.
+
+## Boundary continuity
+
+Run `python3 patches/dinofuel/boundarycheck.py` after building the original ROMs. This compares the adjacent-MAP pulse jump of stock and patched code across each cutoff/scale/fallback transition for all 256 RPM bytes, with WOT enrichment and MAP hold cases. It reports maximum absolute jumps and worst excess jump relative to stock, in base/final pulse counts with zero barometric adder. The test measures discontinuity; it does not certify a safe acceptance threshold or a running engine. Timing and boundary profiles are separate CI jobs.
 
 ## Bench acceptance sequence (no engine connected)
 
