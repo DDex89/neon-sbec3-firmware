@@ -28,3 +28,5 @@ Therefore increasing only map word size cannot provide actual fractional-degree 
 ## Scope
 
 Naturally aspirated only. No ROM output. No new ignition calibration, changes to protection, or timer modification in V1.1.
+
+See [TIMER_ARITHMETIC.md](TIMER_ARITHMETIC.md) for the separate three-path timer audit and executable arithmetic checks.
