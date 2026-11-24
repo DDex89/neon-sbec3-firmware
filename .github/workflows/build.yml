@@ -203,3 +203,16 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/v2/byte_interp.py ${{ matrix.pn }} --full
+  spark-v2-resource-survey:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pn: ['04887050', '05293013AC']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/spark/v2/resource_survey.py ${{ matrix.pn }}

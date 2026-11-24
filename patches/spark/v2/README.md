@@ -56,3 +56,5 @@ A separate exhaustive host calculation over all 256 row positions and 256 RPM in
 The measured absolute Q11 residual relative to the actual stock angle is eight fine units (0.5 degree). The original fractional publication model [-4,+3] is inadequate: 1996 PT/WOT have 8264/7162 out-of-envelope samples; 1997 PT/WOT 8238/7162. Extend the test envelope to [-8,+8] inclusive (17 possible values, at least five bits, or a signed byte). This is a model bound for the single-round Q11 factory map experiment, not yet a bound for every modified calibration or the staged CPU16 implementation. A full signed 16-bit angle remains the preferred publication concept until atomic ownership and scheduling are verified.
 
 The initial byte interpolation job failed at assembly because LDE has no IND8,X encoding. Force the legal IND16,X operand. No arithmetic outcome was produced by the failed job; rerun full machine regression before acceptance.
+
+See [RESOURCE_GATE.md](RESOURCE_GATE.md) for the conservative memory survey and proposed publication interface; no memory has been allocated.
