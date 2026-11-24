@@ -4,6 +4,7 @@ from precision import ASM,ENTRY,STRIDE,assemble,TemporaryDirectory,Path,require
 import timing
 
 def main():
+    timing.ALU.add("ADDD") # immediate word addition, same timing class as ADDE
     timing.REG2.add("RORD") # rotate D, inherent; 2-clock register operation
     with TemporaryDirectory() as tmp:
         p=Path(tmp)/"isolated.asm"
