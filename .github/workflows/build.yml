@@ -48,3 +48,29 @@ jobs:
         run: python3 tools/build.py 04887050 05293013AC
       - name: Profile stock and patched jumps at MAP transitions
         run: python3 patches/dinofuel/boundarycheck.py
+  dinofuel-v2-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pn: ['04887050', '05293013AC']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/dinofuel/v2/simulate.py ${{ matrix.pn }}
+  dinofuel-v2-full:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        pn: ['04887050', '05293013AC']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/build.py ${{ matrix.pn }}
+      - run: python3 patches/dinofuel/v2/simulate.py ${{ matrix.pn }} --full
