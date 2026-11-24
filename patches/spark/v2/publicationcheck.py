@@ -108,13 +108,13 @@ def check(pn):
             branches[branch]+=1;n+=1
             # Hypothetical publication: old integer corrections times eight,
             # add signed fractional residual only in the ordinary branch.
-            for residual in range(-4,4):
+            for residual in range(-8,9):
                 fine=clip(total*8+residual,-1024,1016) if branch=="normal" else expected*8
                 require(-1024<=fine<=1016,"Fine publication bounds")
                 if residual==0 or branch!="normal":
                     require(fine==expected*8,"Integer or forced path compatibility")
                 if branch=="normal":
-                    require(abs(fine-expected*8)<=4,"Unexpected fractional change")
+                    require(abs(fine-expected*8)<=8,"Unexpected fractional change")
                 fractional_cases+=1
     print(f"{pn}: CalcSpark tail at ${entry:05X}; {len(offsets)} signed terms; {n} exact stock/composed cases; branches {branches}")
     print(f"{pn}: {fractional_cases} host-only fractional publication cases passed; no new RAM or production ABI")

@@ -29,7 +29,7 @@ ByteMap:
         PSHM    D
         AIY     #$02
         TSX
-        LDE     $04,X
+        LDE     >$04,X
         JSR     ByteLerp
         TDE
         PULM    D
