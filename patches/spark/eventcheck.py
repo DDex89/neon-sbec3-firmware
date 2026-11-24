@@ -94,7 +94,7 @@ def check(pn):
                                             offset=stock[0x10000+ptr+cylinder]
                                             require(offset<6,"Unsupported knock index in fixture")
                                             total-=retard
-                                    if not freeze and stock[0x327]&8:
+                                    if not freeze:  # ThrottleState=0: both option paths reach the ramp update.
                                         nv=8
                                         r=(ramp+4)&255
                                         nr=127 if r&128 else r
