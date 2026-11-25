@@ -178,27 +178,70 @@ def reviewed_dispatch(code, labels, pn):
         assert all(x in labels for x in targets), address
         arg = "$00000,X" if address.startswith("05E") else "$" + address + ",X"
         dispatch[arg] = targets
+    address = "1F938" if pn == "04887050" else "1FA06"
+    dispatch["$" + address + ",X"] = ["JumpTable_" + address,
+        "L1F93E" if pn == "04887050" else "L1FA0C",
+        "L1F944" if pn == "04887050" else "L1FA12", "ConditionEntry4"]
     return dispatch
 
 
-def conditional_audit(pn, code, labels):
+def stock_sources(pn, sources, guard=True):
+    """Expand only two byte sequences with reviewed instruction semantics."""
+    a, b = [[" ".join(line.split(";")[0].split())
+             for line in source.splitlines()] for source in sources]
+    a, b = [x for x in a if x], [x for x in b if x]
+    i = a.index("MisfireOptions:")
+    assert a[i+1] == "dc.b $08", "Misfire calibration changed; review stack"
+    is96 = pn == "04887050"
+    addr = "1F938" if is96 else "1FA06"
+    raw = "dc.b $FA,$01,$F9,$76" if is96 else "dc.b $FA,$01,$FA,$44"
+    i = b.index("JumpTable_" + addr + ":")
+    assert b[i+9] == raw
+    # CPU16 FA = JSR EXT20, 58 = CMPA IND8,Y, B4 = BCC REL8.
+    # BCC at $1F978/$1FA46 with displacement zero targets PC+6.
+    b[i+9:i+10] = ["ConditionEntry4:", "JSR ConditionFourthCompare"]
+    i = b.index("ConditionAbove:")
+    j = b.index("dc.b $58,$03,$B4,$00", i)
+    assert b[j+1] == ("L1F97A:" if is96 else "L1FA48:")
+    b[j:j+1] = ["ConditionFourthCompare:", "CMPA $03,Y",
+                "BCC " + ("L1F97E" if is96 else "L1FA4C")]
+    # The selector reads offsets 0,6,12,18; all four entries are explored.
+    i = b.index("ConditionTable:")
+    assert "dc.b $00,$00,$00,$06,$00,$0C,$00,$12" in b[i:i+60]
+    i = b.index("MisfireDevCalc:")
+    target = "L19CC6" if is96 else "L1CDB4"
+    op = "BRCLR >MisfireOptions,#$08," + target
+    j = b.index(op, i)
+    assert j-i < 15 and b[b.index(target + ":")+1] == "RTS"
+    if guard:
+        # Only the stock ROM option is fixed; no other branch is pruned.
+        b[j] = "STOCK_MISFIRE_GUARD"
+    return ["\n".join(a), "\n".join(b)]
+
+
+def conditional_audit(pn, sources):
+    code, labels = parse(stock_sources(pn, sources))
+    # Negative regression: without the proven stock guard the imbalance
+    # must still be reported, not suppressed globally.
+    uc, ul = parse(stock_sources(pn, sources, guard=False))
+    unguarded = Analyzer(uc, ul, reviewed_dispatch(uc, ul, pn))
+    assert unguarded.root("MisfireDevCalc").issues == {"return RTS depth 4"}
+
     a = Analyzer(code, labels, reviewed_dispatch(code, labels, pn))
     pit = 38 if pn == "04887050" else 34
-    for name, peak in (("Isr_GPT_IC4OC5", 28), ("Isr_PIT", pit)):
+    for name, peak in (("ConditionTable", 12), ("MisfireDevCalc", 26),
+                       ("Isr_GPT_IC1", 52), ("Isr_GPT_IC4OC5", 28), ("Isr_PIT", pit)):
         r = a.root(name)
         assert r.returns and not r.issues and r.peak == peak, (pn, name, r)
         print(f"{pn}: {name}: {r.peak} bytes; conditional table expansion")
-    r = a.root("Isr_GPT_IC1")
-    unresolved = "$1F938,X" if pn == "04887050" else "$1FA06,X"
-    assert r.returns and r.peak == 52
-    assert r.issues == {"unresolved JMP " + unresolved, "return RTS depth 4"}, r
-    print(f"{pn}: IC1 partial peak {r.peak}; {sorted(r.issues)}")
+    print(f"{pn}: MisfireOptions bit 3 guard required; unguarded imbalance reproduced")
     print("Table index bounds, bank state and asynchronous nesting are not certified.")
 
 
 def audit(pn):
     base = ROOT / "src" / pn
-    a = Analyzer(*parse([(base / name).read_text() for name in ("bank0.asm", "bank1.asm")]))
+    sources = [(base / name).read_text() for name in ("bank0.asm", "bank1.asm")]
+    a = Analyzer(*parse(sources))
     for name, expected in EXPECTED.items():
         r = a.root(name)
         assert r.returns and not r.issues and r.peak == expected, (pn, name, r)
@@ -206,7 +249,7 @@ def audit(pn):
     for name in OPEN:
         r = a.root(name)
         print(f"{pn}: {name}: partial peak {r.peak}; unresolved {sorted(r.issues)}")
-    conditional_audit(pn, a.code, a.labels)
+    conditional_audit(pn, sources)
     print("No global maximum: computed dispatch, stack reset paths, IRQ nesting and stack writes remain open.")
 
 
