@@ -192,6 +192,7 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/v2/map_precision.py ${{ matrix.pn }}
+      - run: python3 patches/spark/v2/event_timing_limit.py ${{ matrix.pn }}
   spark-v2-byte-interpolation:
     runs-on: ubuntu-latest
     strategy:
