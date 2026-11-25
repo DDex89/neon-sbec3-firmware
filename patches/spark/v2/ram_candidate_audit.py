@@ -43,11 +43,21 @@ def audit(pn):
                     if re.fullmatch(r"CMPA\s+\$%04X"%b,line):
                         battery.append(b)
     assert not direct, (pn,direct)
-    # Conservatively fail on ANY operand starting in the three bytes before
-    # the candidate, rather than presuming its access width.
-    assert not nearby, (pn,nearby)
+    # The two 1997 neighboring accesses are proven one-byte opcodes at
+    # 05EF. Keep all other near-start accesses blocked, including unknown
+    # widths. Verify the exact signatures, not just the number of hits.
+    expected = [] if pn == "04887050" else [
+        ("bank0","AccelEnrichFactors","STAA", "AccelTpsBaroFactor"),
+        ("bank0","FinishFuelPulse","LDAB", "AccelTpsBaroFactor"),
+    ]
+    observed = []
+    for bank,i,label,line in nearby:
+        m = re.fullmatch(r"(STAA|LDAB)\s+>(AccelTpsBaroFactor),Z",line)
+        assert m and eq[m[2]] == 0x5EF, (pn,bank,i,line)
+        observed.append((bank,label,m[1],m[2]))
+    assert sorted(observed)==sorted(expected), (pn,observed)
     assert sorted(battery)==[addr,addr+1], (pn,battery)
-    print(f"{pn}: no named/direct Z-relative candidate or preceding-three-byte operands")
+    print(f"{pn}: no named/direct candidate operands; {len(nearby)} reviewed nonoverlapping byte accesses")
     print(f"{pn}: ROM ${addr:04X}/${addr+1:04X} are separate CMPA operands in {routine}")
     print("Still open: computed pointers, implicit accesses, diagnostic aliases, reset lifecycle, "
           "1997 05FB ROM pattern; no RAM reservation.")
