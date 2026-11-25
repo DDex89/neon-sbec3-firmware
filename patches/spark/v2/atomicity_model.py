@@ -99,9 +99,43 @@ def protocol():
           f"unprotected torn observations: {unsafe}; no machine atomicity claim")
 
 
+def reader_protocol():
+    """Reader-side preemption: writer commit can occur between byte reads.
+
+    Abstract single CPU, one writer update, priorities 1..6 only.
+    The writer is already atomic; its own masking cannot prevent a
+    higher-priority writer from interrupting a lower-priority reader.
+    The three-byte test patterns cover all nonempty byte-change subsets;
+    they are not required to be physically reachable angle pairs.
+    """
+    old=(0xFF,0xFF,0xF8)
+    protected=0
+    unsafe=0
+    for changed in range(1,8):
+        new=tuple((0x01,0x00,0x08)[i] if changed&(1<<i) else old[i]
+                  for i in range(3))
+        for initial in range(8):
+            for priority in range(1,7):
+                for cut in range(4):
+                    for masked in (False,True):
+                        mask=7 if masked and 0<cut<3 else initial
+                        if priority<=mask:
+                            continue
+                        observed=old[:cut]+new[cut:]
+                        if masked:
+                            require(observed in (old,new),"Torn masked reader")
+                            protected+=1
+                        elif observed not in (old,new):
+                            unsafe+=1
+    require(protected>0 and unsafe>0,"Reader model negative control missing")
+    print(f"Abstract reader preemptions: {protected} protected observations; "
+          f"{unsafe} torn unprotected observations; not machine validation")
+
+
 def check(pn):
     audit(pn)
     protocol()
+    reader_protocol()
 
 
 if __name__=="__main__":
