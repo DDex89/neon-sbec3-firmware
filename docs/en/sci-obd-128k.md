@@ -24,3 +24,18 @@ Foreground ObdFaultProcess saves Y in Scratch0. PIT MonitorFlagsClear calls ObdR
 [Detailed pinned audit](https://github.com/DDex89/recore-sbec3/blob/a97cbced64ccabc62c4eed17a68cbaf1b05c6880/patches/spark/v2/INTEGRATION_GATE.md); [CI 45710722294](https://github.com/DDex89/recore-sbec3/actions/runs/45710722294) resource jobs [1996](https://github.com/DDex89/recore-sbec3/actions/runs/45710722294/job/139544225166) and [1997](https://github.com/DDex89/recore-sbec3/actions/runs/45710722294/job/139544225694) passed the exact-ROM synthetic receive-init, five received bytes and 13 service-call sequence and four negative controls each (checksum, period, crank and diagnostic blockers), plus isolated timer/clear tests. Physical handshake, IRQ delivery, actual foreground overlap and invalid-address behavior remain open. No production or calibration changes.
 
 2026-11-26 follow-up: exact-ROM scripted state-0 initialization passed [CI 45713933073](https://github.com/DDex89/recore-sbec3/actions/runs/45713933073) in both images (1083/1268 service calls for two paths, four controls each). 1996 state 6 ($1DAF8) now named SciHandshakeSendKeyByte2 instead of misported IacTestToggle; actual IAC output test is $136C8. 1997 and reference IAC labels are unchanged. No hardware timing proof.
+
+## SCI indexed RAM access — verified 2026-11-26
+
+Scope remains exactly 04887050 and 05293013AC, with stock Z=$F8000.
+
+| Access | 04887050 | 05293013AC |
+|---|---|---|
+| RX indexed write, inclusive | $F8254–$F825A | $F826E–$F8274 |
+| TX indexed read, inclusive | $F825D–$F835B | $F8277–$F8375 |
+
+The RX store uses the previous count for values 0–6; for count >=7 it overwrites slot 6 without normalizing the count. TX indexed access is read-only; the range above is a conservative bound across arbitrary byte index and limit, not the nominal frame length. Neither domain overlaps the reviewed scratch regions or ReCore candidate $F85F2–$F85FF under the stock Z premise.
+
+[ReCore CI 45714450145](https://github.com/DDex89/recore-sbec3/actions/runs/45714450145), resource jobs [04887050](https://github.com/DDex89/recore-sbec3/actions/runs/45714450145/job/139557032063) and [05293013AC](https://github.com/DDex89/recore-sbec3/actions/runs/45714450145/job/139557032236), passed 768 isolated exact-ROM indexed cases per image (1536 total). All 30 jobs in that run completed successfully. See the SCI label and indexed access section of the [ReCore integration gate](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/INTEGRATION_GATE.md).
+
+These are runtime RAM domains, not ROM calibration offsets; do not add them as editable stock XDF entries. Arbitrary Z, PIT/GPT computed writes, physical IRQ timing and global scratch/RAM ownership remain open. No stock code or calibration change.
