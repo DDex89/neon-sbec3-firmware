@@ -112,6 +112,26 @@ exists. This is not approval to remove or relocate production code.
   stack/control-flow defect before enabling ReFlex; regress ReLoop,
   fuel and spark interactions. Keep FlexFuel disabled in the baseline.
 
+### ReFlex fault-path audit — reset and restore evidence
+
+- Both target calibrations disable FlexFuel (Options0324 bit 0) and
+  P0176/P0178/P0179 reporting (descriptor byte 3 = $03; ReportFault
+  requires bit 7). These are separate gates.
+- Reset clears active fault bytes: 1996 offsets $013E/$0140 within
+  $010A..$06FF; 1997 offsets $016E/$0170 within $013A..$0725.
+  The retained RAM checksum ends before these bytes. Stored DTC history
+  is distinct from active fault flags.
+- Original ROM table inspection: EepromReadInit destinations at
+  $13FEA (51 big-endian words) and $17246 (80 words) contain neither
+  active fault-byte offset. The 13 primary ObdResetInit destinations
+  at $1F000/$1F006 (20-byte records, word at offset 2) also contain
+  neither. This excludes these direct table-driven restoration paths,
+  not all indirect writes or service modes.
+- Remaining gate: review secondary OBD descriptor destinations, other
+  indirect writers and interrupt paths; do not claim unconditional
+  unreachability. Preserve the HardwareCheck stack-anchor mechanism
+  in any future relocation/refactoring.
+
 ## Change-control rule
 
 Each item starts with a measurable problem and an independent module proposal:
