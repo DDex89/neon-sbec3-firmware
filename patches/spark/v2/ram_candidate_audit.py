@@ -62,6 +62,47 @@ def audit(pn):
     print("Still open: computed pointers, implicit accesses, diagnostic aliases, reset lifecycle, "
           "1997 05FB ROM pattern; no RAM reservation.")
 
+
+def audit_page_pointers(pn):
+    """Inventory literal X/Y loads and comparisons in page 85.
+    This freezes known source signatures, not computed-pointer reachability.
+    """
+    base = ROOT / "src" / pn
+    first, second, learn1, learn2 = (
+        (0x8500,0x8521,0x85A1,0x85A8) if pn=="04887050" else
+        (0x850F,0x8530,0x85B1,0x85B8))
+    expected = [
+        ("O2UpdateUpstream","LDX",first),("O2UpdateUpstream","LDX",second),
+        ("O2UpdateDownstream","LDX",first),("O2UpdateDownstream","LDX",second),
+        ("O2DownTrim","CPX",first),
+        ("ClosedLoopManager","LDX",first),("ClosedLoopManager","LDY",second),
+        ("O2UpTrim","CPX",first),
+        ("O2CellSelect","LDY",learn1),("O2CellSelect","LDY",learn2),
+        ("O2LearnEnable","CPY",learn1),("O2LearnEnable","CPY",learn2),
+    ]
+    actual=[]
+    for bank in ("bank0","bank1"):
+        label=""
+        for line in (base/(bank+".asm")).read_text().splitlines():
+            line=line.split(";")[0].strip()
+            if re.fullmatch(r"\w+:",line) and not re.fullmatch(r"L[0-9A-Fa-f]+:",line):
+                label=line[:-1]
+            m=re.fullmatch(r"(LDX|LDY|CPX|CPY)\s+#\$(85[0-9A-Fa-f]{2})",line)
+            if m:
+                assert bank=="bank0",(pn,bank,label,line)
+                actual.append((label,m[1],int(m[2],16)))
+    assert sorted(actual)==sorted(expected),(pn,actual)
+    # The spacing of O2 banks is 0x21; last word in O2DownTrim
+    # is at offset 0x1F and occupies bytes 0x1F..0x20.
+    assert second-first==0x21
+    assert second+0x20 < 0x8000+LO
+    print(f"{pn}: {len(actual)} literal page-85 X/Y signatures; "
+          f"O2 bank extents ${first:04X}-${first+0x20:04X}, "
+          f"${second:04X}-${second+0x20:04X}; no overlap by these fixed extents")
+    print("Computed aliases, alternate bases, cal tables and reset remain unproven.")
+
+
 if __name__=="__main__":
     for pn in VARIANTS:
         audit(pn)
+        audit_page_pointers(pn)
