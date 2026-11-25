@@ -142,7 +142,8 @@ def machine_protocol():
     import sys
     from tempfile import TemporaryDirectory
     sys.path.insert(0,str(ROOT/"patches/dinofuel"))
-    from dinofuel128 import assemble, CPU
+    from dinofuel128 import assemble, CPU, decode
+    import timing
 
     asm="""
 org $01000
@@ -176,19 +177,26 @@ UnprotectedSnapshot:
         def reset_regs(self):
             super().reset_regs()
             self.ipl=0
+            self.extra_ccr=0
+            self.defer_irq=False
             self.boundaries=[]
             self.inject=None
 
         def ccr(self):
-            return (super().ccr()&~0x00E0)|(self.ipl<<5)
+            return (self.extra_ccr|(self.h<<13)|(self.n<<11)|(self.z<<10)|
+                    (self.v<<9)|(self.c<<8)|(self.ipl<<5)|self.pk)
 
         def set_ccr(self,v,pk=True):
-            super().set_ccr(v,pk)
+            self.h,self.n,self.z,self.v,self.c=((v>>b)&1 for b in (13,11,10,9,8))
+            self.extra_ccr=v&0xD010 # S, MV, EV, SM; retained, not executed
             self.ipl=(v>>5)&7
+            if pk:
+                self.pk=v&15
 
         def op_ORP(self,ins,f,nxt):
             require(f["jjkk"]==0x00E0,"Unexpected fixture ORP")
             self.ipl=7
+            self.defer_irq=True # CPU16RM 5.9: through following instruction
 
         def state(self):
             return (self.ram_byte(0x102),self.ram_word(0x100))
@@ -196,10 +204,11 @@ UnprotectedSnapshot:
         def step(self,pc):
             if self.inject is not None:
                 cut,priority,new=self.inject
-                if self.steps==cut and priority>self.ipl:
+                if self.steps==cut and priority>self.ipl and not self.defer_irq:
                     # Atomic higher-priority publisher; not hardware ISR delivery.
                     self.ram_byte(0x102,new[0])
                     self.ram_word(0x100,new[1])
+            self.defer_irq=False
             super().step(pc)
             self.boundaries.append((self.ipl,self.state()))
 
@@ -212,6 +221,7 @@ UnprotectedSnapshot:
     def prepare(ipl):
         cpu.reset_regs()
         cpu.ipl=ipl
+        cpu.extra_ccr=0x5010 # inert MV/EV/SM bits in fixture
         cpu.n,cpu.z,cpu.v,cpu.c,cpu.h=1,0,1,1,1
         cpu.ix,cpu.iy=0x1234,0x5678
         cpu.d=0xA500|new[0]
@@ -261,6 +271,40 @@ UnprotectedSnapshot:
                         read_cases+=1
                     elif pair not in (old,new):
                         unsafe+=1
+    # Decode the actual assembled fixture and use the existing timing model.
+    # CPU16RM ORP IMM16: 4 clocks, two program words. The original timing
+    # module intentionally does not support this instruction.
+    for entry,mn_pair in ((0x1000,("STE","STAB")),(0x1040,("LDE","LDAB"))):
+        pc=entry
+        seq=[]
+        for _ in range(6):
+            ins=decode(image,pc)
+            require(ins is not None,"Fixture timing decode")
+            if ins.mn=="ORP":
+                require(ins.mode=="IMM16" and ins.size==4 and
+                        dict(ins.vals)["jjkk"]==0x00E0,"ORP timing signature")
+                clocks,words=4,2
+            else:
+                clocks,words=timing.timing(ins,False)
+            seq.append((ins.mn,clocks,words))
+            pc+=ins.size
+        require(tuple(x[0] for x in seq)==("PSHM","ORP",*mn_pair,"PULM","RTS"),
+                "Fixture timing sequence")
+        # Conservative span includes the entire mask-setting and restoring
+        # instructions; excludes call, PSHM, RTS and interrupt entry latency.
+        critical=seq[1:5]
+        def model(rows,flash,ram,operands):
+            return (sum(x[1] for x in rows)+(flash-2)*sum(x[2] for x in rows)
+                    +(ram-2)*operands)
+        # Two data operations + two PULM stack accesses; full routine adds
+        # one PSHM and two RTS stack accesses. Aligned 16-bit buses assumed.
+        span=[model(critical,f,2,4) for f in (2,3,4)]
+        full=[model(seq,f,2,7) for f in (2,3,4)]
+        require(span==[24,31,38] and full==[42,53,64],"Unexpected timing totals")
+        print(f"Fixture ${entry:05X}: {pc-entry} bytes; critical clocks "
+              f"2/3/4-clock flash: {span}; complete routine: {full}; "
+              "2-clock aligned RAM; no hardware WCET")
+
     require(unsafe>0,"Assembled reader negative control missing")
     print(f"CPU16 assembled fixture: {publish_cases} publications, "
           f"{observations} observable writer boundaries, {read_cases} snapshots; "
