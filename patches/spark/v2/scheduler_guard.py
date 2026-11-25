@@ -117,10 +117,10 @@ OcClass:
         LDE #$0001
         CPD #$0310
         BCC OcDone
-        INCE
+        ADDE #$0001
         CPD #$01D0
         BCC OcDone
-        INCE
+        ADDE #$0001
 OcDone:
         RTS
 org $02040
@@ -131,6 +131,19 @@ HistoryDelta:
         BGE HistoryDone
         NEGD
 HistoryDone:
+        RTS
+org $02080
+LegacyAngle:
+        ADDD #$0004
+        ASRD
+        ASRD
+        ASRD
+        TBA
+        RTS
+org $020A0
+ObdAngle:
+        JSR LegacyAngle
+        ADDA #$80
         RTS
 """
 
@@ -143,11 +156,48 @@ def fine_oc_class(q):
     u=q&2047
     return 1 if u>=784 else 2 if u>=464 else 3
 
+def diagnostic_adapter(cpu):
+    """Q4 is already clamped to [-1024,1016]; no extra saturation needed.
+    Input D = signed Q4, output A = legacy raw or OBD encoded angle.
+    Ties toward positive infinity. E, X and Y preserved; D/CCR clobbered.
+    The caller supplies a coherent snapshot; no actual RAM ABI is assigned.
+    """
+    cases=exact=0
+    last=-129
+    for q in range(-1024,1017):
+        # Independent nearest-integer selection with positive tie break.
+        lo,frac=divmod(q,8)
+        expected=lo+(frac>=4)
+        require(-128<=expected<=127 and expected>=last,"Diagnostic range/monotonicity")
+        require(abs(q-8*expected)<=4,"Diagnostic quantization")
+        last=expected
+        if q%8==0:
+            require(expected==q//8,"Integer diagnostic compatibility")
+            exact+=1
+        for entry,want in ((0x2080,expected&255),(0x20A0,expected+128)):
+            cpu.reset_regs()
+            cpu.d=q&65535
+            cpu.e=0xA55A
+            cpu.ix,cpu.iy=0x1234,0x5678
+            sp=cpu.sp
+            cpu.call(entry)
+            require(cpu.a==want and cpu.sp==sp,"Diagnostic adapter mismatch")
+            require((cpu.e,cpu.ix,cpu.iy)==(0xA55A,0x1234,0x5678),
+                    "Diagnostic adapter register corruption")
+            require(all(0xF8700<=x<0xF8800 for x in cpu.writes),
+                    "Diagnostic adapter non-stack write")
+            cases+=1
+    require(cases==4082 and exact==256,"Diagnostic grid changed")
+    print(f"Diagnostic adapters: {cases} CPU16 conversions; {exact} exact legacy "
+          "integer angles per encoding; max error 0.25 degree; no external ABI change",
+          flush=True)
+
 def consumer_precision():
     with TemporaryDirectory() as tmp:
         src=Path(tmp)/"consumers.asm"
         src.write_text(CONSUMER_ASM)
         cpu=CPU(assemble([str(src)],0x20000),0x800)
+    diagnostic_adapter(cpu)
     n=oc_diff=wrong_signed=ic_diff=0
     for raw in range(256):
         for residual in range(-8,9):
