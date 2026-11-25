@@ -108,6 +108,107 @@ def audit_source(pn):
             "Scheduler direct angle signatures changed")
     print(pn+": direct named reads/writer and signed/unsigned threshold signatures verified")
 
+# Research-only adapters; no production code or new scheduling policy.
+# D = unsigned projection of Q4 for OC2; E returns the legacy class 1..3.
+# History uses signed Q4 operands in D/E, returns absolute difference in D.
+CONSUMER_ASM="""
+org $02000
+OcClass:
+        LDE #$0001
+        CPD #$0310
+        BCC OcDone
+        INCE
+        CPD #$01D0
+        BCC OcDone
+        INCE
+OcDone:
+        RTS
+org $02040
+HistoryDelta:
+        SDE
+        TED
+        CPD #$0000
+        BGE HistoryDone
+        NEGD
+HistoryDone:
+        RTS
+"""
+
+def oc_class(raw):
+    return 1 if raw>=98 else 2 if raw>=58 else 3
+
+def fine_oc_class(q):
+    # The original OC2 compares raw *unsigned* bytes. A signed compare
+    # is not equivalent even at zero fractional residual.
+    u=q&2047
+    return 1 if u>=784 else 2 if u>=464 else 3
+
+def consumer_precision():
+    with TemporaryDirectory() as tmp:
+        src=Path(tmp)/"consumers.asm"
+        src.write_text(CONSUMER_ASM)
+        cpu=CPU(assemble([str(src)],0x20000),0x800)
+    n=oc_diff=wrong_signed=ic_diff=0
+    for raw in range(256):
+        for residual in range(-8,9):
+            q=signed(raw)*8+residual
+            if not -1024<=q<=1016:
+                continue
+            cpu.reset_regs()
+            cpu.d=q&2047
+            sp=cpu.sp
+            cpu.call(0x2000)
+            new=fine_oc_class(q)
+            require(cpu.e==new and cpu.sp==sp,"OC2 adapter mismatch")
+            require(all(0xF8700<=a<0xF8800 for a in cpu.writes),"OC2 scratch write")
+            old=oc_class(raw)
+            oc_diff+=old!=new
+            ic_diff+=(signed(raw)>=48)!=(q>=384)
+            if not residual:
+                require(old==new,"Integer OC2 compatibility")
+                wrong_signed+=old!=(1 if q>=784 else 2 if q>=464 else 3)
+            n+=1
+    hcount=hdiff=hmachine=0
+    for prev in range(256):
+        for raw in range(256):
+            p,c=signed(prev),signed(raw)
+            # Stock SUBA + signed BGE + optional NEGA + unsigned CMPA.
+            # The resulting byte represents the magnitude even for 128..255.
+            v=(prev-raw)&255
+            old_mag=v if p>=c else (-v)&255
+            require(old_mag==abs(p-c),"Stock history magnitude")
+            old=old_mag<10
+            for dp in (-8,0,8):
+                for dc in (-8,0,8):
+                    a,b=p*8+dp,c*8+dc
+                    if not(-1024<=a<=1016 and -1024<=b<=1016):
+                        continue
+                    new=abs(a-b)<80
+                    hdiff+=old!=new
+                    hcount+=1
+                    if dp==dc==0:
+                        require(old==new,"Integer history compatibility")
+                    # Exercise the assembled adapter on all boundary pairs
+                    # and a deterministic sample of the remaining domain.
+                    if abs(p-c) in (0,9,10,11,127,128,255) or (prev%31==0 and raw%31==0):
+                        cpu.reset_regs()
+                        cpu.d=a&65535
+                        cpu.e=b&65535
+                        sp=cpu.sp
+                        cpu.call(0x2040)
+                        require(cpu.d==abs(a-b) and cpu.sp==sp,"History adapter mismatch")
+                        require(all(0xF8700<=x<0xF8800 for x in cpu.writes),"History scratch write")
+                        hmachine+=1
+    require((n,oc_diff,wrong_signed,ic_diff,hcount,hdiff)==
+            (4336,27,128,9,586756,3932),"Consumer stress grid changed")
+    print(f"Consumer research: {n} OC2 CPU16 cases; {oc_diff} OC2 class changes; "
+          f"{wrong_signed} integer mismatches with naive signed OC2; "
+          f"{ic_diff} signed IC1 threshold differences",flush=True)
+    print(f"History research: {hcount} host cases, {hdiff} threshold differences; "
+          f"{hmachine} CPU16 magnitude cases",flush=True)
+    # Do not promote either adapter to scheduler/monitor code. Changes
+    # in classification must be validated together with dwell and protection.
+
 def main():
     for pn in ("04887050","05293013AC"):
         audit_source(pn)
@@ -151,6 +252,7 @@ def main():
               f"{sum(actual.values())} timer cases, {actual['fine']} CPU16 fine executions, "
               f"{sum(actual.values())} forced controls, {changed} changed outputs; "
               f"max fine rounding {maxerr:.8f} counts",flush=True)
+    consumer_precision()
     print("No ISR, hardware timing, RAM reservation or production patch.",flush=True)
 
 if __name__=="__main__":
