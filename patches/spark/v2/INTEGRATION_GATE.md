@@ -113,3 +113,30 @@ identified candidate pointer. These observations are not a complete
 range analysis of the O2 routines or indirect pointer tables.
 No persistent storage has been allocated. Do not promote 05F2..05FF
 to a reservation until the remaining alias and lifecycle audit passes.
+
+## Joined interpolation/correction fixture (f109bf6)
+
+Both timing/CCR resource-survey jobs in CI 45560792944 passed, including
+the 18-byte publish and snapshot routines and the 24/31/38 modeled
+critical-span clock assertions. No measured interrupt deadline yet.
+
+map_precision.py now also evaluates the staged interpolation residual
+against actual legacy base-angle output over the complete factory MAP/RPM
+grid. Report the observed residual and count outside [-8,+8]; do not
+assume this envelope for edited calibrations. The joined sampled fixture
+runs the original and V1.1 base lookup, the staged CPU16 interpolator,
+the V1.1 CalcSpark tail with injected signed corrections, and a separate
+assembled signed fine-sum/saturation routine. The host selects ordinary,
+fault and override paths using the known stock fixture policy. This
+checks arithmetic linkage but is not a production calling convention,
+full correction-generator execution, atomic publication, event scheduling
+or ISR integration. CI 45561333798 must confirm the new fixture.
+
+A follow-up scan of contiguous hex dc.b data in both source banks found
+05FA in both variants immediately after VssCheckVacuumRpm, 05FB near
+O2SwitchMargin in 1997, and three apparent 85FF matches straddling
+aligned list entries (0285/0485 followed by FFFF). The latter are not
+aligned candidate RAM pointer entries in those lists. The unlabeled
+05FA/05FB occurrences still need classification via table consumers;
+a byte pattern alone is not proof of a RAM reference or its absence.
+The candidate 05F2..05FF remains unallocated.
