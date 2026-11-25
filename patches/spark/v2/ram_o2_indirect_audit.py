@@ -56,8 +56,12 @@ def audit(pn):
     body=lines[start:end]
     for x,y in zip(bases[::2],bases[1::2]):
         i=body.index(f"LDX #${x:04X}")
-        assert body[i-1]=="TZX" and body[i+1:i+3]==["TZY",f"LDY #${y:04X}"]
-        assert "JSR O2CellUpdate" in body[i:i+12]
+        assert body[i-1:i+5]==["TZX",f"LDX #${x:04X}","STX >Scratch6,Z",
+                               "TZY",f"LDY #${y:04X}","STY >Scratch4,Z"]
+        assert body[i+5:i+10]==[
+            f"LDAA >ShortTermTrim{1 if x==bases[0] else 2},Z","STAA >Scratch2,Z",
+            f"LDAA >ClosedLoop{'704' if x==bases[0] else '72C'},Z","STAA >Scratch3,Z",
+            "JSR O2CellUpdate"]
     assert sum(l=="JSR O2CellUpdate" for l in lines)==2
     block=lines[end:end+35]
     assert block[1:3]==["LDAB >O2MemCell,Z","ABX"]
