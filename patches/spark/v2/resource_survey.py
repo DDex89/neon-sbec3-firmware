@@ -17,6 +17,7 @@ sys.path.insert(0,str(ROOT/"patches/spark"))
 from simulate_v11 import CONFIG,patch,require
 from resource_check import resources
 from revision import inventory
+from atomicity_model import check as check_atomicity
 
 def parse_run(s):
     m=re.fullmatch(r"\$([0-9A-Fa-f]+) \((\d+)\)",s)
@@ -65,6 +66,9 @@ def check(pn):
     for raw in ram["largest"]:
         lo,hi=parse_run(raw)
         excluded=[(a,min(a+2,0x800)) for a in eq if a<hi and a+2>lo]
+        # Stock diagnostic RAM upload/execution uses the upper RAM page.
+        # Exclude it conservatively, independently of direct-reference inventory.
+        excluded.append((0x700,0x800))
         for a,b in subtract(lo,hi,excluded):
             if b-a<8: continue
             a=(a+1)&~1
@@ -72,7 +76,9 @@ def check(pn):
     rams.sort(key=lambda r:r[1]-r[0],reverse=True)
     print("RAM candidates after annotated-offset exclusions (NOT allocated):",
           [fmt(r) for r in rams],flush=True)
-    print("Gate: computed pointers, reset initialization, diagnostic access, ISR nesting and actual stack high-water remain unverified.",flush=True)
+    print("Excluded $0700..$07FF: stock diagnostic RAM upload/execution and stack.",flush=True)
+    print("Gate: computed pointers, other diagnostic access, reset initialization, ISR nesting and actual stack high-water remain unverified.",flush=True)
+    check_atomicity(pn)
 
 if __name__=="__main__":
     ap=argparse.ArgumentParser(description=__doc__)
