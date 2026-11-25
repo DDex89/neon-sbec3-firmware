@@ -86,3 +86,30 @@ A diagnostic indexed memory read is visible in bank1
 the EEPROM-address path, so its name alone cannot establish a
 general RAM access whitelist. Debug execution and reset must be
 treated separately. No new address is approved by this review.
+
+## Assembled fixture timing and remaining ownership gate
+
+Both resource-survey jobs in run 45559879306 passed the first assembled
+fixture: 8 publications, 63 observable writer boundaries, 288 snapshots,
+21 torn unprotected snapshots per variant. The timing extension in
+a23a4e6 corrects fixture-local CCR bit positions (CPU16RM section 6),
+retains the other CCR bits as inert state and models the ORP recognition
+delay (section 5.9); the base emulator is unchanged.
+
+The decoded six-instruction fixture has a modeled critical span from ORP
+through PULM of 24/31/38 clocks and a complete routine of 42/53/64 clocks
+for flash bus periods 2/3/4, assuming aligned two-clock RAM. This follows
+the existing timing model plus the documented 4-clock ORP immediate.
+The full routine excludes the caller JSR and interrupt entry; neither
+number is a real-time hardware bound. Stack growth beyond the call frame
+is two bytes. CPU16RM: https://www.nxp.com/docs/en/reference-manual/CPU16RM.pdf
+The latest CI must confirm the executable timing assertion.
+
+RAM follow-up: explicit immediate RAM-page-85 pointer loads in the
+four source banks identify O2UpdateUpstream/Downstream, ClosedLoopManager
+and the O2LearnEnable call sites (85A1/85A8 or 85B1/85B8). The 0510
+immediate in the shutdown loop is a PowerInputHold countdown, not an
+identified candidate pointer. These observations are not a complete
+range analysis of the O2 routines or indirect pointer tables.
+No persistent storage has been allocated. Do not promote 05F2..05FF
+to a reservation until the remaining alias and lifecycle audit passes.
