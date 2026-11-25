@@ -163,6 +163,7 @@ jobs:
           python-version: "3.12"
       - run: python3 patches/spark/v2/precision.py
       - run: python3 patches/spark/v2/profile_precision.py
+      - run: python3 patches/spark/v2/fine_event.py
 
   spark-v2-publication-contract:
     runs-on: ubuntu-latest
