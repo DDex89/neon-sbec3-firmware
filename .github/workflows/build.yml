@@ -350,6 +350,7 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/v2/resource_survey.py ${{ matrix.pn }}
+      - run: python3 patches/spark/v2/ram_o2_indirect_audit.py ${{ matrix.pn }}
   spark-v2-event-q4-machine:
     needs: plan
     if: needs.plan.outputs.spark == 'true'
