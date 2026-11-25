@@ -132,6 +132,26 @@ exists. This is not approval to remove or relocate production code.
   unreachability. Preserve the HardwareCheck stack-anchor mechanism
   in any future relocation/refactoring.
 
+## Interrupt mask restoration — conditional calibration hazard
+
+- [ ] Review IacSetTarget ($0B486/$0B580): ORP #$00E0 followed by
+  unconditional ANDP #$FF1F clears IPL rather than restoring its entry
+  value. A static path exists from Isr_PIT via ChargeControl and
+  IacChargeStepCalc. In both original target ROMs this specific call
+  is excluded by stock calibration: IacChargeStep ($1FBB/$1FE1)
+  and IacStepBaroFactor ($21E8/$220F) each contain 01 80 FF 00
+  (one unsigned point, y=0). Lookup2D returns the sole y regardless
+  of input; the subsequent multiply and TSTA/BEQ skip IacSetTarget.
+  Do not claim an observed stock ISR re-entry. If these calibrations
+  or calling contexts change, require saved/restored IPL/CCR semantics,
+  preserved register/flag contracts, IRQ re-entry analysis and timing
+  regression before activation. Check other callers and IRQ7 separately.
+- [ ] MapTpsFilters ($07E60/$07E80) also clears IPL in its A=0 branch,
+  but the reviewed GPT IC1 call explicitly passes A=$55, bypassing
+  those sections. Retain this invariant or review mask restoration
+  if refactoring. Do not globally replace ANDP instructions without
+  checking caller/return contracts.
+
 ## Change-control rule
 
 Each item starts with a measurable problem and an independent module proposal:
