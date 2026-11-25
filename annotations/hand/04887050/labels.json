@@ -59,5 +59,6 @@
  "1C92E": "CheckedSparkTrim",
  "1CA64": "SurgeSparkControl",
  "1D27E": "KnockLearnUpdate",
- "1F63E": "ObdMonitorAllEntry"
+ "1F63E": "ObdMonitorAllEntry",
+ "1DAF8": "SciHandshakeSendKeyByte2"
 }

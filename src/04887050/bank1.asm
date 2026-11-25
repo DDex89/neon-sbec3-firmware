@@ -20136,7 +20136,7 @@ L1D8CC:
 L1D8D0:
         JMP     L1DADA
 L1D8D4:
-        JMP     IacTestToggle
+        JMP     SciHandshakeSendKeyByte2
 L1D8D8:
         JMP     L1DB16
 L1D8DC:
@@ -20348,7 +20348,7 @@ L1DADA:
         INC     >SciTimer,Z
 L1DAF6:
         RTS
-IacTestToggle:
+SciHandshakeSendKeyByte2:
         BRCLR   >SCSR_L,Z,#$80,L1DB14                    ; bit 7: TC: SCI transmit complete
         DEC     $0250,Z
         BNE     L1DB14
