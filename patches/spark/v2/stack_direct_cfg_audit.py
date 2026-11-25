@@ -49,8 +49,9 @@ def parse(sources):
 
 
 class Analyzer:
-    def __init__(self, code, labels):
+    def __init__(self, code, labels, dispatch=None):
         self.code, self.labels = code, labels
+        self.dispatch = dispatch or {}
         self.cache, self.active = {}, set()
 
     def solve(self, start, mode="sub"):
@@ -107,16 +108,19 @@ class Analyzer:
             elif RESET_STACK.fullmatch(op):
                 result.issues.add(f"stack/control {line}")
             elif op in CALLS:
-                if arg not in self.labels:
+                targets = [arg] if arg in self.labels else self.dispatch.get(arg)
+                if not targets:
                     result.issues.add(f"unresolved {line}")
                     continue
-                child = self.solve(self.labels[arg])
-                result.peak = max(result.peak, depth+4+child.peak)
-                result.issues.update(child.issues)
-                if child.returns:
-                    advance()
+                for target in targets:
+                    child = self.solve(self.labels[target])
+                    result.peak = max(result.peak, depth+4+child.peak)
+                    result.issues.update(child.issues)
+                    if child.returns:
+                        advance()
             elif op in ("JMP", "BRA", "LBRA"):
-                jump(arg)
+                for target in self.dispatch.get(arg, [arg]) if op == "JMP" else [arg]:
+                    jump(target)
             elif op in ("BRSET", "BRCLR", "LBRSET", "LBRCLR"):
                 jump(arg.split(",")[-1])
                 advance()
@@ -152,6 +156,46 @@ def selftest():
     assert r.returns and not r.issues and r.peak == 6
 
 
+# Conditional table expansion only: every listed entry is explored, but
+# the runtime index domain and correct K-bank state are separate obligations.
+# Explicit lengths are essential: 1996 OBD/SCI tables are adjacent.
+TABLES = {
+    "04887050": {"0481A": 4, "05E38": 9, "145B6": 18, "1D8BC": 18,
+                 "1D800": 33, "1D884": 14},
+    "05293013AC": {"0481A": 4, "05E44": 9, "18EEC": 18, "1774C": 18,
+                   "17B3A": 33, "17DCC": 14, "18086": 25},
+}
+
+
+def reviewed_dispatch(code, labels, pn):
+    dispatch = {}
+    for address, count in TABLES[pn].items():
+        start = labels["JumpTable_" + address]
+        entries = code[start:start+count]
+        assert len(entries) == count
+        assert all(re.fullmatch(r"JMP \w+", x) for x in entries), address
+        targets = [x.split()[1] for x in entries]
+        assert all(x in labels for x in targets), address
+        arg = "$00000,X" if address.startswith("05E") else "$" + address + ",X"
+        dispatch[arg] = targets
+    return dispatch
+
+
+def conditional_audit(pn, code, labels):
+    a = Analyzer(code, labels, reviewed_dispatch(code, labels, pn))
+    pit = 38 if pn == "04887050" else 34
+    for name, peak in (("Isr_GPT_IC4OC5", 28), ("Isr_PIT", pit)):
+        r = a.root(name)
+        assert r.returns and not r.issues and r.peak == peak, (pn, name, r)
+        print(f"{pn}: {name}: {r.peak} bytes; conditional table expansion")
+    r = a.root("Isr_GPT_IC1")
+    unresolved = "$1F938,X" if pn == "04887050" else "$1FA06,X"
+    assert r.returns and r.peak == 52
+    assert r.issues == {"unresolved JMP " + unresolved, "return RTS depth 4"}, r
+    print(f"{pn}: IC1 partial peak {r.peak}; {sorted(r.issues)}")
+    print("Table index bounds, bank state and asynchronous nesting are not certified.")
+
+
 def audit(pn):
     base = ROOT / "src" / pn
     a = Analyzer(*parse([(base / name).read_text() for name in ("bank0.asm", "bank1.asm")]))
@@ -162,6 +206,7 @@ def audit(pn):
     for name in OPEN:
         r = a.root(name)
         print(f"{pn}: {name}: partial peak {r.peak}; unresolved {sorted(r.issues)}")
+    conditional_audit(pn, a.code, a.labels)
     print("No global maximum: computed dispatch, stack reset paths, IRQ nesting and stack writes remain open.")
 
 
