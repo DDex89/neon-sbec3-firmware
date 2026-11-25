@@ -373,3 +373,4 @@ jobs:
       - run: python3 patches/spark/v2/composed_lifecycle_machine.py
       - run: python3 patches/spark/v2/ram_diag_alias_audit.py
       - run: python3 patches/spark/v2/ram_knock_alias_audit.py
+      - run: python3 patches/spark/v2/ram_gpt_stack_anchor_audit.py
