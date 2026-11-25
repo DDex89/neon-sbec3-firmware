@@ -145,6 +145,18 @@ ObdAngle:
         JSR LegacyAngle
         ADDA #$80
         RTS
+org $020C0
+ObdDirect:
+        PSHB
+        LDD >$0100,Z
+        ADDD #$0004
+        ASRD
+        ASRD
+        ASRD
+        TBA
+        ADDA #$80
+        PULB
+        RTS
 """
 
 def oc_class(raw):
@@ -187,6 +199,24 @@ def diagnostic_adapter(cpu):
             require(all(0xF8700<=x<0xF8800 for x in cpu.writes),
                     "Diagnostic adapter non-stack write")
             cases+=1
+        # Direct load at the diagnostic boundary, no derived byte cache.
+        # $0100 is synthetic scratch, not a production allocation.
+        cpu.reset_regs()
+        cpu.ram_word(0x100,q&65535)
+        cpu.d=0xA55A
+        cpu.e=0x1357
+        cpu.ix,cpu.iy=0x1234,0x5678
+        sp=cpu.sp
+        cpu.call(0x20C0)
+        require(cpu.a==expected+128 and cpu.b==0x5A and cpu.sp==sp,
+                "Direct OBD conversion or B preservation")
+        require((cpu.e,cpu.ix,cpu.iy)==(0x1357,0x1234,0x5678),
+                "Direct OBD register corruption")
+        require(cpu.ram_word(0x100)==(q&65535),"OBD changed source word")
+        require(all(0xF8700<=x<0xF8800 for x in cpu.writes),
+                "Direct OBD non-stack write")
+    print("Direct OBD: 2041 CPU16 word-read conversions; B/E/X/Y preserved; "
+          "synthetic RAM, no hardware atomicity claim",flush=True)
     require(cases==4082 and exact==256,"Diagnostic grid changed")
     print(f"Diagnostic adapters: {cases} CPU16 conversions; {exact} exact legacy "
           "integer angles per encoding; max error 0.25 degree; no external ABI change",
