@@ -152,6 +152,23 @@ exists. This is not approval to remove or relocate production code.
   if refactoring. Do not globally replace ANDP instructions without
   checking caller/return contracts.
 
+### IRQ nesting and provisional stack envelope
+
+- Reset/HardwareCheck set PFPAR=$14; IRQ7 pin not selected as IRQ.
+  IRQ7 handler $0C658/$0C758 saves D,X,K and clears PFPAR.7.
+  CPU16 exception frame is four bytes (PC/CCR); single IRQ7 adds ten.
+  IRQ7 is non-maskable at CPU level; abnormal assertion is separate.
+- Existing stack_direct_cfg_audit.py expands all four ConditionTable
+  selector entries at $1F938/$1FA06; source assertions: IC1 52 bytes,
+  PIT 38/34 bytes, excluding exception frame. Not a new regression run.
+- Conditional envelope for closed main-loop roots only:
+  56/58 + (52+4) + (22+4) = 138/140 bytes, SP $F8774/$F8772.
+  Single abnormal IRQ7: 148/150 bytes, SP $F876A/$F8768.
+  Not a global maximum; unresolved roots, dynamic masks, actual RAM
+  writes, timing and ownership remain open.
+- $F85F2..$F85FF remains a candidate, not an allocation. Diagnostic
+  page $F8700..$F87FF is excluded from persistent reservations.
+
 ## Change-control rule
 
 Each item starts with a measurable problem and an independent module proposal:
