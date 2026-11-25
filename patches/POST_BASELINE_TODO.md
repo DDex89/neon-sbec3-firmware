@@ -56,6 +56,52 @@ stock-compatible profile available as references.
 - [ ] Evaluate porting individually to additional SBEC3 variants after the
   initial two-variant implementation is established.
 
+## P4 — Firmware cleanup, refactoring and defragmentation (feasibility study)
+
+Status: OPTIONAL / DEFERRED; decision pending. Consider only after the
+replacement modules are integrated, validated and a stable rollback baseline
+exists. This is not approval to remove or relocate production code.
+
+- [ ] Quantify reachable code, flash savings, RAM savings, timing effects and
+  maintenance benefits versus relocation and regression risk. Decide whether
+  the work is justified at all.
+- [ ] Evaluate removing the unused factory FlexFuel implementation in a
+  gasoline-only profile or after a validated ReFlex replacement; preserve
+  required interfaces and fallback behavior.
+- [ ] Evaluate eliminating unused second cylinder-bank logic on the target
+  four-cylinder Neon configurations. Do not confuse bank 2 with the downstream
+  oxygen sensor on bank 1; retain both required sensor paths.
+- [ ] Identify diagnostics and tables exclusively tied to absent equipment;
+  prove unreachability before removal and retain required OBD-II, readiness,
+  fault reporting, protective functions and service compatibility.
+- [ ] Evaluate dead code elimination, ROM layout consolidation and relocation
+  (defragmentation), including bank boundaries, absolute and relative
+  references, computed dispatch, pointer tables, vectors, calibration/XDF
+  addresses, checksums and bootloader compatibility.
+- [ ] Require byte-level reference tracking, reproducible builds, complete
+  regression on both target variants, timing/stack/IRQ checks and bench
+  validation after each relocation stage. Preserve original and stable
+  pre-cleanup images for rollback. Reject cleanup if benefits do not justify risk.
+
+## ReFlex / ReLoop — fault-path research (deferred integration gate)
+
+- [ ] Investigate the potential stack-growing control-flow cycle from
+  O2LearnEnable ($09C88 / $09D84) back into O2CellSelect
+  ($09C04 / $09D00) in 04887050 / 05293013AC, respectively, when
+  FaultSet0B & $30 or BusModuleFlags & $10 is set. Confirm machine-code
+  targets, actual reachability, stack growth and watchdog/fault behavior.
+  Do not label a runtime overflow as proven yet.
+- [ ] DTC table entries associate FaultSet0B bits 4/5 with P0179/P0178
+  (fuel composition sensor high/low). Factory Options0324 bit 0 is clear
+  in both targets ($72/$32). Trace all direct, indirect, diagnostic and
+  multi-byte writers, including BusModuleFlags bit 4; prove baseline
+  reachability or exclusion rather than assuming configuration is sufficient.
+- [ ] Validate the observed STFT-based ethanol fallback, LTFT learning
+  inhibition and actual closed/open-loop state under sensor faults.
+  Compare the 1999 reference implementation. Resolve any confirmed
+  stack/control-flow defect before enabling ReFlex; regress ReLoop,
+  fuel and spark interactions. Keep FlexFuel disabled in the baseline.
+
 ## Change-control rule
 
 Each item starts with a measurable problem and an independent module proposal:
