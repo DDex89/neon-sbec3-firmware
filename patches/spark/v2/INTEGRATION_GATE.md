@@ -140,3 +140,42 @@ aligned candidate RAM pointer entries in those lists. The unlabeled
 05FA/05FB occurrences still need classification via table consumers;
 a byte pattern alone is not proof of a RAM reference or its absence.
 The candidate 05F2..05FF remains unallocated.
+
+## Target architecture: native Q4 consumers, compatibility at the boundary
+
+Direction agreed with the project owner: replace deficient internal routines
+where a compact, verified replacement is feasible, rather than permanently
+preserving two independently calculated angles. Q4 signed 16-bit is the
+canonical internal angle. Keep byte calibration cells when sufficient and
+convert their units explicitly; do not widen every byte table or variable
+indiscriminately.
+
+Migration order: (1) publication and event arithmetic; (2) local timer
+math; (3) coherent OC2/IC1 classification, EventTimingLimit and history;
+(4) audit the knock and protection consumers independently. Preserve
+original condition semantics, startup/fault/override rules and coil dwell.
+During migration retain a genuinely stock legacy result for fallback and
+regression comparisons. Do not replace that result with a quantized Q4
+value before all affected consumers are audited. After acceptance, retain
+the legacy byte only as an external representation or explicitly justified
+compatibility cache; do not duplicate computation unnecessarily.
+
+SCI/DRB and OBD byte adapters are boundary functions: read a coherent Q4
+snapshot, round to nearest half degree (ties toward positive infinity),
+then return the signed raw byte or apply the existing OBD +128 bias.
+For the clamped Q4 domain [-1024,1016] the conversion is
+floor((q+4)/8); all 256 integer legacy inputs round-trip exactly and
+the quantization error is at most 0.25 degree. This does not guarantee
+stock diagnostic values for fractional angles (they can round differently
+from the old interpolation). No protocol expansion is required. The
+adapters in scheduler_guard.py are synthetic CPU16 routines, not ROM
+hooks; the caller must provide an atomic/coherent input. If a shadow
+byte proves cheaper for frequent legacy consumers, publish it from Q4
+only after compatibility gates, not as an independent source of truth.
+
+CI 45565369285 exposed an assembler error (unsupported INCE) in the
+experimental OC2 adapter, not a stock firmware regression. Commit
+371f697 substitutes ADDE #$0001 and adds exhaustive diagnostic
+conversion tests (2041 input values, two encodings); confirmation pending.
+The guarded timer research itself previously passed in CI 45564309606.
+No production RAM allocation or firmware hook has been made.
