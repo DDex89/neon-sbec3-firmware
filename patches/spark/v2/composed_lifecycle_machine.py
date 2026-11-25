@@ -15,6 +15,8 @@ from spark_event_q4_contract import stock,shadow
 
 # Relocate the arithmetic fixture only; its operands are Y-relative.
 ARITH=ARITH.replace("org $01000","org $01300")
+# Reader and publisher originally assembled separately and share local labels.
+READ=READ.replace("BaseDone","ReadBaseDone").replace("EventDone","ReadEventDone")
 BEGIN,INVALIDATE,DEBUG,PB,PE,CALC=0x1000,0x1040,0x1080,0x1100,0x1180,0x1300
 BVALID,EVALID,CANCEL,DBG=1,2,4,8
 
