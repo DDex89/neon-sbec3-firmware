@@ -58,3 +58,7 @@ The measured absolute Q11 residual relative to the actual stock angle is eight f
 The initial byte interpolation job failed at assembly because LDE has no IND8,X encoding. Force the legal IND16,X operand. No arithmetic outcome was produced by the failed job; rerun full machine regression before acceptance.
 
 See [RESOURCE_GATE.md](RESOURCE_GATE.md) for the conservative memory survey and proposed publication interface; no memory has been allocated.
+
+## Scope freeze and post-baseline roadmap
+
+Retain stock knock detection, learning, per-cylinder accumulators, recovery, limits and sensing windows. Lift the signed stock correction bytes into Q4 only at the consumer. A redesigned knock algorithm is explicitly deferred until the integrated improved firmware has a validated, stable baseline. See the project-wide [post-baseline backlog](../../POST_BASELINE_TODO.md) for independent future modules and release gates.
