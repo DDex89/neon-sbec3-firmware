@@ -238,6 +238,45 @@ def conditional_audit(pn, sources):
     print("Table index bounds, bank state and asynchronous nesting are not certified.")
 
 
+# Additional tables reached from MainLoop. Kept separate from the
+# earlier IRQ regression so changes to main-loop coverage are explicit.
+MAIN_TABLES = {
+    "04887050": {"114A6": 5, "115AE": 6, "116E8": 5, "12700": 30,
+                 "12778": 12, "127A8": 3, "127B4": 67, "19D1C": 10},
+    "05293013AC": {"113A6": 5, "114AE": 6, "115E8": 5, "158C0": 30,
+                   "15938": 12, "15968": 4, "15978": 67, "1E81A": 10},
+}
+
+
+def main_dispatch(code, labels, pn):
+    dispatch = reviewed_dispatch(code, labels, pn)
+    for address, count in MAIN_TABLES[pn].items():
+        start = labels["JumpTable_" + address]
+        entries = code[start:start+count]
+        assert len(entries) == count
+        assert all(re.fullmatch(r"JMP \w+", x) for x in entries), address
+        targets = [x.split()[1] for x in entries]
+        assert all(x in labels for x in targets), address
+        dispatch["$" + address + ",X"] = targets
+    # OBD monitor table is 11 pairs JSR + BRA (6 bytes per entry),
+    # not a table of plain JMPs. Execute the entry, including its call.
+    address = "1FAE2" if pn == "04887050" else "1FC22"
+    end = "L1FB24" if pn == "04887050" else "L1FC64"
+    start = labels["JumpTable_" + address]
+    targets = ["JumpTable_" + address]
+    for k in range(11):
+        i = start + 2*k
+        assert code[i].startswith("JSR ") and code[i][4:] in labels
+        assert code[i+1] == "BRA " + end
+        if k:
+            target = f"L{int(address, 16)+6*k:05X}"
+            assert labels[target] == i
+            targets.append(target)
+    assert labels[end] == start + 22
+    dispatch["$" + address + ",Y"] = targets
+    return dispatch
+
+
 def mainloop_audit(pn, sources):
     # Normal main-loop entry invariant: SP=$F87FE; HardwareCheck is
     # called directly, so its entry SP=$F87FA. Recovery of a corrupt
@@ -258,7 +297,7 @@ def mainloop_audit(pn, sources):
     lines[t] = "NORMAL_SKB"
     lines[t+3] = "BRA " + target
     code, labels = parse(["\n".join(lines), stock[1]])
-    analyzer = Analyzer(code, labels, reviewed_dispatch(code, labels, pn))
+    analyzer = Analyzer(code, labels, main_dispatch(code, labels, pn))
     complete, pending = {}, {}
     for name in roots:
         r = analyzer.root(name)
@@ -269,11 +308,16 @@ def mainloop_audit(pn, sources):
             pending[name] = (peak, sorted(r.issues))
     expected = 131 if pn == "04887050" else 132
     assert len(roots) == expected
-    assert len(complete) == expected-6
-    assert max(complete.values()) == 42
+    assert len(complete) == expected-3
+    assert max(complete.values()) == (56 if pn == "04887050" else 58)
+    assert complete["ObdMonitorMain"] == max(complete.values())
     assert complete["SpeedCtlControl"] == 42
-    assert set(pending) == {"ClosedLoopMain", "SpeedCtlSwitchRead",
-        "ObdMonitorMain", "BusDataRequest", "ActuatorTestMain", "CheckPowerDown"}
+    assert complete["SpeedCtlSwitchRead"] == (34 if pn == "04887050" else 36)
+    assert complete["ActuatorTestMain"] == 12
+    assert set(pending) == {"ClosedLoopMain", "BusDataRequest", "CheckPowerDown"}
+    assert any("recursive" in x for x in pending["ClosedLoopMain"][1])
+    assert "unresolved JMP $F8700" in pending["BusDataRequest"][1]
+    assert "stack/control TBSK" in pending["CheckPowerDown"][1]
     print(f"{pn}: main loop {len(complete)}/{len(roots)} direct roots balanced; "
           f"maximum among closed roots {max(complete.values())} bytes")
     for name, info in pending.items():
