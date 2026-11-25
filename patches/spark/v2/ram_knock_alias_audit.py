@@ -48,7 +48,11 @@ def seq(lines, *items):
 def audit(pn):
     cell, cyl, noise, end, update = CONFIG[pn]
     base = ROOT / "src" / pn
-    a = normalized(base / "bank0.asm")
+    bank0 = base / "bank0.asm"
+    assert f"KnockRpmSteps (${end-8:04X}): 5 rows of 2 bytes" in bank0.read_text()
+    a = normalized(bank0)
+    i = a.index("KnockRpmSteps:")
+    assert a[i+1:i+6] == ["dc.b $20,$00"] + ["dc.b $37,$00"] * 4
     b = normalized(base / "bank1.asm")
     for name, expected in SIGNATURES[pn].items():
         body = routine(a if name == "Lookup2D" else b, name)
