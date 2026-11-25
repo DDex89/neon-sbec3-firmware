@@ -12400,280 +12400,476 @@
    <VAR id="X" />
   </MATH>
  </XDFCONSTANT>
- <XDFCONSTANT uniqueid="0x246" flags="0x0">
-  <title>Options031D</title>
-  <description>Option byte; bit tests in the reference-event and spark code (bits 7-6: spark cap and ignition variants) $031D</description>
+ <XDFFLAG uniqueid="0x246" flags="0x0">
+  <title>Options031D bit $01 hardware variant bit</title>
+  <description>hardware variant bit (HardwareCheck, GptRegisterCheck3, SparkEventCalc, StartInjectorPulse, KnockSample, QspiOutputStatus and others) Stock ROM option $031D mask $01.</description>
   <CATEGORYMEM index="0" category="45" />
-  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
-  <outputtype>1</outputtype>
-  <MATH equation="X">
-   <VAR id="X" />
-  </MATH>
- </XDFCONSTANT>
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x01</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x51D" flags="0x0">
+  <title>Options031D bit $02 hardware variant bit</title>
+  <description>hardware variant bit (HardwareCheck, GptRegisterCheck3, SparkEventCalc, StartInjectorPulse, IdleTargetControl, SpeedCtlControl and others) Stock ROM option $031D mask $02.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x02</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x51E" flags="0x0">
+  <title>Options031D bit $04 hardware variant bit</title>
+  <description>hardware variant bit (HardwareCheck, Isr_GPT_IC1, FinishFuelPulse, MisfireSegmentTime, QspiOutputStatus) Stock ROM option $031D mask $04.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x04</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x51F" flags="0x0">
+  <title>Options031D bit $08 hardware variant bit</title>
+  <description>hardware variant bit (HardwareCheck, GptRegisterCheck2, SparkEventCalc, FinishFuelPulse, RefPeriodUpdate, IdleTargetControl and others) Stock ROM option $031D mask $08.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x08</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x520" flags="0x0">
+  <title>Options031D bit $10 hardware variant bit</title>
+  <description>hardware variant bit (HardwareCheck, GptRegisterCheck2, SparkEventCalc, FinishFuelPulse, RefPeriodUpdate, KnockSample) Stock ROM option $031D mask $10.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x10</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x521" flags="0x0">
+  <title>Options031D bit $20 hardware set-up variant</title>
+  <description>hardware set-up variant (Reset, HardwareCheck, GptRegisterCheck; also SparkEventCalc, FinishFuelPulse, KnockSample) Stock ROM option $031D mask $20.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x20</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x522" flags="0x0">
+  <title>Options031D bit $40 hardware set-up variant</title>
+  <description>hardware set-up variant (Reset, HardwareCheck, GptRegisterCheck; also SparkEventCalc, FinishFuelPulse, KnockSample) Stock ROM option $031D mask $40.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x40</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x523" flags="0x0">
+  <title>Options031D bit $80 engine/ignition variant</title>
+  <description>engine/ignition variant (HardwareCheck, SparkEventCalc, StartInjectorPulse, KnockSample, InjectorFuelAccount) Stock ROM option $031D mask $80.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31D" mmedelementsizebits="8" />
+  <mask>0x80</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x524" flags="0x0">
+  <title>Options031E bit $02 A/C detection variant</title>
+  <description>A/C detection variant (AcClutchControl, FanRelayControl) Stock ROM option $031E mask $02.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
+  <mask>0x02</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x525" flags="0x0">
+  <title>Options031E bit $04 A/C pressure sensor variant</title>
+  <description>A/C pressure sensor variant: idle A/C steps, clutch, cut and fan (AcClutchSpark, AcCutLogic, EquipmentDetect, IacLearn, IdleTargetControl) Stock ROM option $031E mask $04.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
+  <mask>0x04</mask>
+ </XDFFLAG>
  <XDFFLAG uniqueid="0x247" flags="0x0">
-  <title>Options031E bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $08</description>
+  <title>Options031E bit $08 selects a branch in CcdReceive</title>
+  <description>selects a branch in CcdReceive Stock ROM option $031E mask $08.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x248" flags="0x0">
-  <title>Options031E bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $10</description>
+  <title>Options031E bit $10 downstream O2 sensor 1 fitted</title>
+  <description>downstream O2 sensor 1 fitted (ClosedLoopManager, O2HeaterMonitor, O2UpdateDownstream) Stock ROM option $031E mask $10.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x249" flags="0x0">
-  <title>Options031E bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $20</description>
+  <title>Options031E bit $20 downstream O2 sensor 2 fitted</title>
+  <description>downstream O2 sensor 2 fitted (ClosedLoopManager, O2HeaterMonitor, O2DownResponseMonitor, O2UpdateDownstream) Stock ROM option $031E mask $20.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24A" flags="0x0">
-  <title>Options031E bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $40</description>
+  <title>Options031E bit $40 upstream O2 sensor 2 fitted, second bank</title>
+  <description>upstream O2 sensor 2 fitted, second bank (ClosedLoopManager, FuelSysTooRich2Monitor, FuelSysTooLean2Monitor, PurgeVaporLearn and others) Stock ROM option $031E mask $40.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24B" flags="0x0">
-  <title>Options031E bit $80 AcPressureSensor</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $031E mask $80</description>
+  <title>Options031E bit $80 upstream O2 sensor 1 fitted</title>
+  <description>upstream O2 sensor 1 fitted (ClosedLoopManager, FuelSysTooRich1Monitor, FuelSysTooLean1Monitor, O2HeaterMonitor, PurgeCellTrimFilter) Stock ROM option $031E mask $80.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x31E" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
- <XDFCONSTANT uniqueid="0x24C" flags="0x0">
-  <title>Options0321</title>
-  <description>Option byte (bit 4: output-compare set-up at reset and in the PIT code) $0321</description>
+ 
+ 
+ 
+ <XDFFLAG uniqueid="0x24C" flags="0x0">
+  <title>Options0321 bit $02 fan relay variant</title>
+  <description>fan relay variant (FanControl, ActuatorTestMain) Stock ROM option $0321 mask $02.</description>
   <CATEGORYMEM index="0" category="45" />
-  <EMBEDDEDDATA mmedaddress="0x321" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
-  <outputtype>1</outputtype>
-  <MATH equation="X">
-   <VAR id="X" />
-  </MATH>
- </XDFCONSTANT>
+  <EMBEDDEDDATA mmedaddress="0x321" mmedelementsizebits="8" />
+  <mask>0x02</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x526" flags="0x0">
+  <title>Options0321 bit $08 fan control variant</title>
+  <description>fan control variant (FanMain, AcCutLogic) Stock ROM option $0321 mask $08.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x321" mmedelementsizebits="8" />
+  <mask>0x08</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x527" flags="0x0">
+  <title>Options0321 bit $10 output driver variant</title>
+  <description>output driver variant (QspiOutputStatus, Isr_PIT) Stock ROM option $0321 mask $10.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x321" mmedelementsizebits="8" />
+  <mask>0x10</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x528" flags="0x0">
+  <title>Options0321 bit $20 transmission-related variant</title>
+  <description>transmission-related variant (GearStateUpdate, TccMonitor, SpeedCtlShift, IdleRpmTarget, AcCutControl, CcdTransmit and others) Stock ROM option $0321 mask $20.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x321" mmedelementsizebits="8" />
+  <mask>0x20</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x529" flags="0x0">
+  <title>Options0321 bit $80 fan output control on</title>
+  <description>fan output control on (FanOutputControl) Stock ROM option $0321 mask $80.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x321" mmedelementsizebits="8" />
+  <mask>0x80</mask>
+ </XDFFLAG>
  <XDFFLAG uniqueid="0x24D" flags="0x0">
-  <title>Options0323 bit $01 IdleDipKickMode</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $01</description>
+  <title>Options0323 bit $01 part-throttle fuel</title>
+  <description>part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse) Stock ROM option $0323 mask $01.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24E" flags="0x0">
-  <title>Options0323 bit $02</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $02</description>
+  <title>Options0323 bit $02 selects a branch in ReadMap</title>
+  <description>selects a branch in ReadMap Stock ROM option $0323 mask $02.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x24F" flags="0x0">
-  <title>Options0323 bit $04</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $04</description>
+  <title>Options0323 bit $04 surge control on</title>
+  <description>surge control on (SurgeControl); set in 04887051 (manual), clear in 04887050 Stock ROM option $0323 mask $04.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x250" flags="0x0">
-  <title>Options0323 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $08</description>
+  <title>Options0323 bit $08 speed limiter on</title>
+  <description>speed limiter on (FuelCutControl) Stock ROM option $0323 mask $08.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x251" flags="0x0">
-  <title>Options0323 bit $10 SurgeSparkOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $10</description>
+  <title>Options0323 bit $10 surge spark control variant</title>
+  <description>surge spark control variant (SurgeSparkControl, Reset) Stock ROM option $0323 mask $10.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x252" flags="0x0">
-  <title>Options0323 bit $20 SpeedLimitOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $20</description>
+  <title>Options0323 bit $20 closed loop off</title>
+  <description>closed loop off: the O2 control and learning are skipped (ClosedLoopMain, O2LearnEnable, O2UpdateUpstream, PurgeVaporLearn, FuelCorrections) Stock ROM option $0323 mask $20.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x253" flags="0x0">
-  <title>Options0323 bit $40 SpeedDampOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $40</description>
+  <title>Options0323 bit $40 spark/dwell variant</title>
+  <description>spark/dwell variant (CalcSpark, DwellCalc, Isr_GPT_OC2, CalcEngineRpm, OcOutputsReset, Reset) Stock ROM option $0323 mask $40.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x254" flags="0x0">
-  <title>Options0323 bit $80 EventSparkOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0323 mask $80</description>
+  <title>Options0323 bit $80 per-event spark on</title>
+  <description>per-event spark on (EventSparkControl, EventCorrections); also the cam signal handling (Isr_GPT_IC4OC5); set in 04887050 (automatic) Stock ROM option $0323 mask $80.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x323" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
+ 
+ 
+ 
+ 
+ 
+ 
+ <XDFFLAG uniqueid="0x52A" flags="0x0">
+  <title>Options0324 bit $01 flex fuel on</title>
+  <description>flex fuel on: ethanol content, flex factors and flex spark are used (FuelCorrections, FlexSensorCheck, FlexSparkCalc, O2FlexOffset and others) Stock ROM option $0324 mask $01.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
+  <mask>0x01</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x52B" flags="0x0">
+  <title>Options0324 bit $02 speed control switch variant</title>
+  <description>speed control switch variant (SpeedCtlControl, SpeedCtlSwitchRead) Stock ROM option $0324 mask $02.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
+  <mask>0x02</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x52C" flags="0x0">
+  <title>Options0324 bit $04 speed control switch variant</title>
+  <description>speed control switch variant; also used by EquipmentDetect Stock ROM option $0324 mask $04.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
+  <mask>0x04</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x52D" flags="0x0">
+  <title>Options0324 bit $08 selects a branch in EquipmentDetect</title>
+  <description>selects a branch in EquipmentDetect Stock ROM option $0324 mask $08.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
+  <mask>0x08</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x52E" flags="0x0">
+  <title>Options0324 bit $10 selects a branch in SpeedCtlControl</title>
+  <description>selects a branch in SpeedCtlControl Stock ROM option $0324 mask $10.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
+  <mask>0x10</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x52F" flags="0x0">
+  <title>Options0324 bit $20 knock enrichment on</title>
+  <description>knock enrichment on (KnockEnrichment, SparkHook) Stock ROM option $0324 mask $20.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
+  <mask>0x20</mask>
+ </XDFFLAG>
  <XDFFLAG uniqueid="0x255" flags="0x0">
-  <title>Options0324 bit $40 FlexFuelOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $40</description>
+  <title>Options0324 bit $40 selects a branch in GearStateUpdate</title>
+  <description>selects a branch in GearStateUpdate; set in 04887050 (automatic) Stock ROM option $0324 mask $40.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x256" flags="0x0">
-  <title>Options0324 bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0324 mask $80</description>
+  <title>Options0324 bit $80 purge variant</title>
+  <description>purge variant (PurgeRampControl, PurgeVaporLearn) Stock ROM option $0324 mask $80.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x324" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
+ <XDFFLAG uniqueid="0x530" flags="0x0">
+  <title>Options0325 bit $01 tip-in retard hold</title>
+  <description>tip-in retard hold (TipInSparkControl) Stock ROM option $0325 mask $01.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
+  <mask>0x01</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x531" flags="0x0">
+  <title>Options0325 bit $02 selects a branch in FinishFuelPulse</title>
+  <description>selects a branch in FinishFuelPulse Stock ROM option $0325 mask $02.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
+  <mask>0x02</mask>
+ </XDFFLAG>
  <XDFFLAG uniqueid="0x257" flags="0x0">
-  <title>Options0325 bit $04</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $04</description>
+  <title>Options0325 bit $04 alternative purge duty table</title>
+  <description>alternative purge duty table (PurgeRampControl, with bit 3) Stock ROM option $0325 mask $04.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x258" flags="0x0">
-  <title>Options0325 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $08</description>
+  <title>Options0325 bit $08 alternative purge duty table</title>
+  <description>alternative purge duty table (PurgeRampControl, with bit 2) Stock ROM option $0325 mask $08.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x259" flags="0x0">
-  <title>Options0325 bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $10</description>
+  <title>Options0325 bit $10 selects a branch in KnockSample</title>
+  <description>selects a branch in KnockSample Stock ROM option $0325 mask $10.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25A" flags="0x0">
-  <title>Options0325 bit $20</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $20</description>
+  <title>Options0325 bit $20 manual transmission</title>
+  <description>manual transmission: the gear state, park/neutral and automatic-only paths are skipped (GearStateUpdate, PnSwitchMonitor, IdleRpmTarget and others); set in 04887051 Stock ROM option $0325 mask $20.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25B" flags="0x0">
-  <title>Options0325 bit $40 ManualTransmission</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $40</description>
+  <title>Options0325 bit $40 EGR monitor variant</title>
+  <description>EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor, ObdRequest and others); clear in 04887050/51 Stock ROM option $0325 mask $40.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25C" flags="0x0">
-  <title>Options0325 bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0325 mask $80</description>
+  <title>Options0325 bit $80 O2 cell selection variant</title>
+  <description>O2 cell selection variant (O2CellSelect3x3, O2CellSelect) Stock ROM option $0325 mask $80.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
+ 
+ 
+ 
+ 
  <XDFFLAG uniqueid="0x25D" flags="0x0">
-  <title>Options0326 bit $01</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $01</description>
+  <title>Options0326 bit $01 fan relay variant</title>
+  <description>fan relay variant (FanRelayControl) Stock ROM option $0326 mask $01.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25E" flags="0x0">
-  <title>Options0326 bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $08</description>
+  <title>Options0326 bit $08 (unverified inherited mask)</title>
+  <description>Inherited mask; meaning not independently verified for this ROM family. Do not assume reference-family semantics. Stock ROM option $0326 mask $08.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25F" flags="0x0">
-  <title>Options0326 bit $10 AcSparkOn</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $10</description>
+  <title>Options0326 bit $10 cam/crank offset relearn</title>
+  <description>cam/crank offset relearn (CamCrankRelation) Stock ROM option $0326 mask $10.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
+ <XDFFLAG uniqueid="0x532" flags="0x0">
+  <title>Options0326 bit $20 O2 cross check on</title>
+  <description>O2 cross check on (O2CrossCheck) Stock ROM option $0326 mask $20.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
+  <mask>0x20</mask>
+ </XDFFLAG>
  <XDFFLAG uniqueid="0x260" flags="0x0">
-  <title>Options0326 bit $40</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $40</description>
+  <title>Options0326 bit $40 selects a branch in IdleRpmTarget</title>
+  <description>selects a branch in IdleRpmTarget Stock ROM option $0326 mask $40.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x261" flags="0x0">
-  <title>Options0326 bit $80</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $0326 mask $80</description>
+  <title>Options0326 bit $80 idle flare check off</title>
+  <description>idle flare check off (IdleFlareCheck skips when set) Stock ROM option $0326 mask $80.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x326" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
- <XDFCONSTANT uniqueid="0x262" flags="0x0">
-  <title>Options0329</title>
-  <description>Option byte copied to Options033FCopy at reset; bits 7-4 enable monitor branches in ObdReadiness and O2HeaterMonitor $0329</description>
+ 
+ 
+ 
+ <XDFFLAG uniqueid="0x262" flags="0x0">
+  <title>Options0329 bit $01 EGR monitor test supported</title>
+  <description>EGR monitor test supported (EgrMonitorTask) Stock ROM option $0329 mask $01.</description>
   <CATEGORYMEM index="0" category="45" />
-  <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" mmedtypeflags="0x00" />
-  <units />
-  <decimalpl>0</decimalpl>
-  <outputtype>1</outputtype>
-  <MATH equation="X">
-   <VAR id="X" />
-  </MATH>
- </XDFCONSTANT>
+  <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" />
+  <mask>0x01</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x533" flags="0x0">
+  <title>Options0329 bit $02 O2 heater monitor supported</title>
+  <description>O2 heater monitor supported (O2HeaterMonitor) Stock ROM option $0329 mask $02.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" />
+  <mask>0x02</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x534" flags="0x0">
+  <title>Options0329 bit $04 misfire monitor variant</title>
+  <description>misfire monitor variant (MisfireEnableCheck) Stock ROM option $0329 mask $04.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" />
+  <mask>0x04</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x535" flags="0x0">
+  <title>Options0329 bit $08 purge flow test variant</title>
+  <description>purge flow test variant (PurgeFlowTest) Stock ROM option $0329 mask $08.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" />
+  <mask>0x08</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x536" flags="0x0">
+  <title>Options0329 bit $10 catalyst monitor bank 1 supported</title>
+  <description>catalyst monitor bank 1 supported (CatMonitorBank1) Stock ROM option $0329 mask $10.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" />
+  <mask>0x10</mask>
+ </XDFFLAG>
+ <XDFFLAG uniqueid="0x537" flags="0x0">
+  <title>Options0329 bit $20 purge flow test on</title>
+  <description>purge flow test on (PurgeFlowTest) Stock ROM option $0329 mask $20.</description>
+  <CATEGORYMEM index="0" category="45" />
+  <EMBEDDEDDATA mmedaddress="0x329" mmedelementsizebits="8" />
+  <mask>0x20</mask>
+ </XDFFLAG>
  <XDFFLAG uniqueid="0x263" flags="0x0">
-  <title>Options032B bit $01</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $01</description>
+  <title>Options032B bit $01 O2 activity check variant</title>
+  <description>O2 activity check variant (O2NoActivityCold) Stock ROM option $032B mask $01.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x01</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x264" flags="0x0">
-  <title>Options032B bit $02</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $02</description>
+  <title>Options032B bit $02 fuel sender monitor on</title>
+  <description>fuel sender monitor on (FuelSenderMonitor) Stock ROM option $032B mask $02.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x02</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x265" flags="0x0">
-  <title>Options032B bit $04</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $04</description>
+  <title>Options032B bit $04 cam/crank sync monitor on</title>
+  <description>cam/crank sync monitor on (CamCrankSyncMonitor) Stock ROM option $032B mask $04.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x04</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x266" flags="0x0">
-  <title>Options032B bit $08</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $08</description>
+  <title>Options032B bit $08 power steering switch monitor on</title>
+  <description>power steering switch monitor on (PspSwitchMonitor) Stock ROM option $032B mask $08.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x08</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x267" flags="0x0">
-  <title>Options032B bit $10</title>
-  <description>Option byte (global configuration); bits used are listed with their names where known $032B mask $10</description>
+  <title>Options032B bit $10 closed-loop temperature</title>
+  <description>closed-loop temperature (coolant warm-up) monitor on (CoolantWarmupMonitor, P0125) Stock ROM option $032B mask $10.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x10</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x268" flags="0x0">
-  <title>Options032B bit $20</title>
-  <description>spark calculation hook on (SparkCalcHookOn); also used by dwell and cam/crank measurement. Option byte (global configuration); bits used are listed with their names where known $032B mask $20</description>
+  <title>Options032B bit $20 (unverified inherited mask)</title>
+  <description>Inherited mask; meaning not independently verified for this ROM family. Do not assume reference-family semantics. Stock ROM option $032B mask $20.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x20</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x269" flags="0x0">
-  <title>Options032B bit $40</title>
-  <description>dwell from the battery-voltage table on (DwellBatteryOn); also selects output-compare channels 2-4 in the spark and knock code. Option byte (global configuration); bits used are listed with their names where known $032B mask $40</description>
+  <title>Options032B bit $40 park/neutral switch monitor on</title>
+  <description>park/neutral switch monitor on (PnSwitchMonitor, PnSwitchMonitor2); set in 04887050 (automatic) Stock ROM option $032B mask $40.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x40</mask>
  </XDFFLAG>
  <XDFFLAG uniqueid="0x26A" flags="0x0">
-  <title>Options032B bit $80</title>
-  <description>event layout variant: segment times, fuel accounting, spark events. Option byte (global configuration); bits used are listed with their names where known $032B mask $80</description>
+  <title>Options032B bit $80 idle rpm monitor on</title>
+  <description>idle rpm monitor on (IdleRpmMonitor) Stock ROM option $032B mask $80.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x32B" mmedelementsizebits="8" />
   <mask>0x80</mask>
  </XDFFLAG>
+ 
+ 
+ 
+ 
+ 
+ 
  <XDFCONSTANT uniqueid="0x26B" flags="0x0">
   <title>ObdPidSupport1</title>
   <description>OBD-II mode $01: first byte of the supported-PID bit map for PIDs $01-$20 (sent for PID $00) $032D</description>

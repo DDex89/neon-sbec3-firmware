@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 from analyse import Analysis
 from gen_source import Calibration, Names, annotation_set, load
 from xref import Xref
+from stock_xdf_options import apply_stock_options
 
 BITS = {k: v for k, v in load("bits.json").items() if isinstance(v, dict)}
 
@@ -287,6 +288,8 @@ def main():
         SubElement(e, "decimalpl").text = str(dec)
         SubElement(e, "outputtype").text = "1"
         Xdf.math(e, eq)
+    apply_stock_options(X.root, pn)
+    n_flags = sum(e.tag == "XDFFLAG" for e in X.root)
     X.write(out)
     print("%s: %d tables (%d named), %d constants, %d flags, %d categories" % (
         out, n_tables, n_named, len(cal.scalars), n_flags, len(X.cats)))

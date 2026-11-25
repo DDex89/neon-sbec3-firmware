@@ -16,6 +16,8 @@ jobs:
         run: python3 tools/build.py
       - name: Check that the TunerPro definitions are well-formed XML
         run: python3 -c "import glob, xml.etree.ElementTree as ET; [ET.parse(f) for f in glob.glob('xdf/*.xdf')]; print(len(glob.glob('xdf/*.xdf')), 'XDF files OK')"
+      - name: Verify reviewed stock option bits in six family A/B/C XDFs
+        run: python3 tools/stock_xdf_options.py --check
       - name: Edit test (source edit, XDF addresses, checksum repair)
         run: python3 tools/edittest.py
       - name: Inventory tool runs on a 128 KB and a 256 KB image

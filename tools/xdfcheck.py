@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ET
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from analyse import Analysis
 from gen_source import Calibration, Names, annotation_set, load
+from stock_xdf_options import hand_options, verify
 
 RANGES = [  # unit text pattern -> (low, high) of plausible physical values
     (r"^rpm", (0, 12000)), (r"deg C", (-60, 260)), (r"kPa", (0, 310)), (r"^V$|volt", (0, 30)),
@@ -70,6 +71,10 @@ def main():
     for a, v in cal.scalars.items():
         spans[v["name"]] = (a, a + v.get("size", 1), dict(v, kind="scalar"))
     root = ET.parse(xdf).getroot()
+    pn = os.path.splitext(os.path.basename(rom))[0]
+    reviewed = hand_options(pn)
+    if reviewed:
+        verify(root, pn)
     errors, warnings, owner = [], [], {}
     ids = set()
     n = 0
@@ -140,7 +145,8 @@ def main():
                     errors.append("%s: %dx%d cells, header says %dx%d" % (title, rows, cols, data[lo], data[lo + 1]))
         if e.tag == "XDFFLAG":
             m = e.findtext("mask")
-            if m is None or ("%02X" % int(m, 0)) not in item.get("bits", []):
+            if m is None or (("%02X" % int(m, 0)) not in item.get("bits", [])
+                             and int(m, 0) not in reviewed.get(base, {})):
                 errors.append("%s: mask %s is not a bit the code tests" % (title, m))
     # every laid-out table and constant should be in the XDF; 2D axes must be ordered for Lookup2D
     titles = {e.findtext("title").split(" bit $")[0] for e in root if e.tag in ("XDFTABLE", "XDFCONSTANT", "XDFFLAG")}

@@ -87,3 +87,24 @@ python3 tools/fixsum.py edited.bin --fix
 
 which sets the correction byte (header + 13) so that the 8-bit sum of the image equals the last byte
 of the part number again. Without `--fix` it only checks.
+
+## Stock option metadata correction (2026-11-25)
+
+The six stock family A/B/C definitions now follow their own reviewed hand option-bit
+annotations, rather than the reference-family names inherited by scalar porting.
+For A/B, FlexFuel is $0324 mask $01, not $40; manual transmission is $0325 mask $20,
+not $40. For C, manual transmission is $0324 mask $08. The 62 reviewed bits per
+A/B ROM and 87 per C ROM are exposed individually. Retained inherited masks
+without a reviewed meaning are explicitly marked unverified, not safe switches.
+The generator applies the same correction and CI checks it with
+`python3 tools/stock_xdf_options.py --check`. The other five definitions were
+compared with their existing per-ROM bit annotations: 101 single-bit option
+descriptions per image match; three composite masks per image are not independently
+reviewed here. No changes to those five, unrelated tables, ROM bytes or historical
+DinoFuel XDFs. No new RAM symbol is made editable in a stock ROM XDF.
+
+Synced from [ReCore stock metadata commit 7ea74e5](https://github.com/DDex89/recore-sbec3/commit/7ea74e5ae66f9f1e39f16069705a929bb426816f);
+ReCore CI [45701378266](https://github.com/DDex89/recore-sbec3/actions/runs/45701378266)
+build job 139512178237 passed byte-identical build, XML parsing, stock option
+metadata and edit regression. This does not establish full XDF semantics or TunerPro GUI validation.
+This repository remains the stock reference; experimental ReCore code is not imported.
