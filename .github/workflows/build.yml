@@ -220,3 +220,14 @@ jobs:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/v2/resource_survey.py ${{ matrix.pn }}
+  spark-v2-event-q4-machine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 patches/spark/v2/spark_event_q4_contract.py
+      - run: python3 patches/spark/v2/event_gate_audit.py
+      - run: python3 patches/spark/v2/knock_precision_audit.py
+      - run: python3 patches/spark/v2/spark_event_q4_machine.py
