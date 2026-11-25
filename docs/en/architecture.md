@@ -213,6 +213,26 @@ decode cleanly and end in RTS (the skipped block falls through to the code after
 `annotations/analysis.json` (`unreached_code`) and disassembled; their names start with `Unused`.
 The string `COPYRIGHT 1996 CHRYSLER CORPORATION` sits at $07000.
 
+## 128 KiB GPT/CCD computed RAM destinations (2026-11-26)
+
+Source-derived review for **04887050 and 05293013AC only**, with stock Z bank F.
+
+`PeriodChangeTrack` has nine direct call sites in each ROM (five in bank 0 and four in bank 1). It sets X/Y bank extensions from Z while retaining their low words. It writes one byte at Y and conditionally one byte each at X and X+1.
+
+| Use | 04887050 X destinations | 05293013AC X destinations |
+|---|---|---|
+| Reference period | $F8362–F8363 | $F837C–F837D |
+| Vehicle speed | $F8356–F8357, $F835C–F835D | $F8370–F8371, $F8376–F8377 |
+| Cam / IC4 | $F840E–F840F | $F8428–F8429 |
+
+The GPT callers use Y=$F80F0; the foreground callers use Y=$F81F0 and mask interrupts before the call. These are shared scratch bytes, not spare RAM. The fixed Z-relative scratch inventory alone misses this indirect store. See also [SCI/PIT](sci-obd-128k.md) for the separate conditional Scratch0 conflict.
+
+The direct IRQ4 CCD receive store bounds the incoming byte index to 0–5 in two contiguous buffers. Its write domain is $F844C–F8457 / $F8466–F8471, respectively. The called BusTxByte routine moves and clears three words per literal queue pair: its complete union of possible computed destinations is $F8428–F8457 / $F8442–F8471 (48 bytes each). These are runtime buffers, not ROM calibration fields.
+
+The stock IC4 entry requires Options0323 bit 7 ($81 in 04887050, $05 in 05293013AC); consequently the reviewed 1997 manual ROM has this body disabled. Its conditional enabled history branch stores four bytes at $F8700–F8703 with stock CylinderCount=4. Do not infer the same gate for automatic variants or modified calibration.
+
+[ReCore source audit and enumerated bounds](https://github.com/DDex89/recore-sbec3/blob/e18ac2ccdc55c52be0da7be2d6df0e58ad672af3/patches/spark/v2/INTEGRATION_GATE.md#gpt-periodchangetrack-and-irq4-computed-writes-2026-11-26). These are source-level conclusions, not newly executed CPU16 tests; actual asynchronous scratch and stack safety remain open.
+
 ## Open questions
 
 - The exact part used as the CS2 device.
