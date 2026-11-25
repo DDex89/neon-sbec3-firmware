@@ -238,6 +238,49 @@ def conditional_audit(pn, sources):
     print("Table index bounds, bank state and asynchronous nesting are not certified.")
 
 
+def mainloop_audit(pn, sources):
+    # Normal main-loop entry invariant: SP=$F87FE; HardwareCheck is
+    # called directly, so its entry SP=$F87FA. Recovery of a corrupt
+    # SP is a separate path and is intentionally not certified here.
+    stock = stock_sources(pn, sources)
+    lines = stock[0].splitlines()
+    start = lines.index("MainLoop:")
+    end = lines.index("JMP MainLoop", start)
+    roots = list(dict.fromkeys(x[4:] for x in lines[start:end]
+                               if x.startswith("JSR ")))
+    h = lines.index("HardwareCheck:")
+    t = lines.index("TBSK", h)
+    assert lines[t-2:t+3] == ["LDAB #$0F", "TBZK", "TBSK",
+                               "LDZ #$8000", "CPS #$87FA"]
+    target = "L0D5CC" if pn == "04887050" else "L0D71A"
+    assert lines[t+3] == "BEQ " + target
+    assert "LDS #$87FA" in lines[t+4:lines.index(target + ":", t)]
+    lines[t] = "NORMAL_SKB"
+    lines[t+3] = "BRA " + target
+    code, labels = parse(["\n".join(lines), stock[1]])
+    analyzer = Analyzer(code, labels, reviewed_dispatch(code, labels, pn))
+    complete, pending = {}, {}
+    for name in roots:
+        r = analyzer.root(name)
+        peak = r.peak + 4  # include MainLoop JSR frame
+        if r.returns and not r.issues:
+            complete[name] = peak
+        else:
+            pending[name] = (peak, sorted(r.issues))
+    expected = 131 if pn == "04887050" else 132
+    assert len(roots) == expected
+    assert len(complete) == expected-6
+    assert max(complete.values()) == 42
+    assert complete["SpeedCtlControl"] == 42
+    assert set(pending) == {"ClosedLoopMain", "SpeedCtlSwitchRead",
+        "ObdMonitorMain", "BusDataRequest", "ActuatorTestMain", "CheckPowerDown"}
+    print(f"{pn}: main loop {len(complete)}/{len(roots)} direct roots balanced; "
+          f"maximum among closed roots {max(complete.values())} bytes")
+    for name, info in pending.items():
+        print(f"{pn}: main loop OPEN {name}: {info}")
+    print("Main loop result assumes normal initial SP and reviewed dispatch; not a global bound.")
+
+
 def audit(pn):
     base = ROOT / "src" / pn
     sources = [(base / name).read_text() for name in ("bank0.asm", "bank1.asm")]
@@ -250,6 +293,7 @@ def audit(pn):
         r = a.root(name)
         print(f"{pn}: {name}: partial peak {r.peak}; unresolved {sorted(r.issues)}")
     conditional_audit(pn, sources)
+    mainloop_audit(pn, sources)
     print("No global maximum: computed dispatch, stack reset paths, IRQ nesting and stack writes remain open.")
 
 
