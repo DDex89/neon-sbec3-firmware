@@ -164,6 +164,7 @@ jobs:
       - run: python3 patches/spark/v2/precision.py
       - run: python3 patches/spark/v2/profile_precision.py
       - run: python3 patches/spark/v2/fine_event.py
+      - run: python3 patches/spark/v2/scheduler_guard.py
 
   spark-v2-publication-contract:
     runs-on: ubuntu-latest
