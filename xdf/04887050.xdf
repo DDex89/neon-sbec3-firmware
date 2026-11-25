@@ -12705,7 +12705,7 @@
  </XDFFLAG>
  <XDFFLAG uniqueid="0x25B" flags="0x0">
   <title>Options0325 bit $40 EGR monitor variant</title>
-  <description>EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor, ObdRequest and others); clear in 04887050/51 Stock ROM option $0325 mask $40.</description>
+  <description>EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor and others); clear in 04887050/51. In reviewed 04887050, bit 6 set also blocks ObdRequest at entry Stock ROM option $0325 mask $40.</description>
   <CATEGORYMEM index="0" category="45" />
   <EMBEDDEDDATA mmedaddress="0x325" mmedelementsizebits="8" />
   <mask>0x40</mask>

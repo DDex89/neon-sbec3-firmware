@@ -60,7 +60,7 @@
  },
  "Options0325": {
   "7": "O2 cell selection variant (O2CellSelect3x3, O2CellSelect)",
-  "6": "EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor, ObdRequest and others); clear in 04887050/51",
+  "6": "EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor and others); clear in 04887050/51. In reviewed 04887050, bit 6 set also blocks ObdRequest at entry",
   "5": "manual transmission: the gear state, park/neutral and automatic-only paths are skipped (GearStateUpdate, PnSwitchMonitor, IdleRpmTarget and others); set in 04887051",
   "4": "selects a branch in KnockSample",
   "3": "alternative purge duty table (PurgeRampControl, with bit 2)",
