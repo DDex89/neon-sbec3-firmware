@@ -3,9 +3,105 @@ name: build
 on:
   push:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'fast = smoke all modules; full = exhaustive regression; release = exhaustive release gate (no publishing)'
+        type: choice
+        options:
+          - fast
+          - full
+          - release
+        default: full
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.select.outputs.mode }}
+      full: ${{ steps.select.outputs.full }}
+      fuel: ${{ steps.select.outputs.fuel }}
+      spark: ${{ steps.select.outputs.spark }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Select conservative test scope
+        id: select
+        env:
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import subprocess
+
+          def scope(paths):
+              # Unknown or shared changes select everything, fail closed.
+              if not paths:
+                  return True, True
+              fuel = spark = False
+              for path in paths:
+                  if path.startswith("patches/dinofuel/"):
+                      fuel = spark = True  # Spark depends on fuel Q11
+                  elif path.startswith("patches/spark/"):
+                      spark = True
+                  elif path.startswith("docs/") or path in ("README.md", "LICENSE"):
+                      pass
+                  else:
+                      fuel = spark = True
+              return fuel, spark
+
+          assert scope(["patches/spark/v2/precision.py"]) == (False, True)
+          assert scope(["patches/dinofuel/v2/simulate.py"]) == (True, True)
+          assert scope(["tools/cpu16sim.py"]) == (True, True)
+          assert scope(["profiles/modules.json"]) == (True, True)
+          assert scope(["patches/common/resource_check.py"]) == (True, True)
+          assert scope(["src/04887050/bank1.asm"]) == (True, True)
+          assert scope([".github/workflows/build.yml"]) == (True, True)
+          assert scope(["README.md"]) == (False, False)
+          assert scope([]) == (True, True)
+          assert scope(["README.md", "patches/spark/v2/fine_event.py"]) == (False, True)
+
+          e = os.environ
+          event, ref = e["EVENT"], e["REF"]
+          if event == "workflow_dispatch":
+              mode = e["REQUESTED_MODE"]
+          elif ref.startswith("refs/tags/"):
+              mode = "release"
+          elif event == "push" and ref == "refs/heads/" + e["DEFAULT_BRANCH"]:
+              mode = "full"
+          else:
+              mode = "fast"
+          assert mode in ("fast", "full", "release"), mode
+          full = mode != "fast"
+          fuel = spark = True
+          if not full and event in ("push", "pull_request"):
+              base = e["PUSH_BEFORE"] if event == "push" else e["PR_BASE"]
+              try:
+                  if not base or not base.strip("0"):
+                      raise ValueError("missing baseline")
+                  # On pull_request, HEAD is the checked-out merge commit.
+                  raw = subprocess.check_output(
+                      ["git", "diff", "--name-only", "-z", "--no-renames", base, "HEAD", "--"])
+                  paths = [p.decode("utf-8", "surrogateescape") for p in raw.split(b"\0") if p]
+                  fuel, spark = scope(paths)
+                  print("Changed paths:", repr(paths))
+              except (ValueError, subprocess.CalledProcessError) as err:
+                  print("Cannot determine changes; running both module suites:", err)
+          with open(e["GITHUB_OUTPUT"], "a") as out:
+              print("mode=" + mode, file=out)
+              for key, value in (("full", full), ("fuel", fuel), ("spark", spark)):
+                  print(key + "=" + str(value).lower(), file=out)
+          print(f"CI mode={mode}, exhaustive={full}, fuel={fuel}, spark={spark}")
+          PY
+
   build:
+    needs: plan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -22,9 +118,15 @@ jobs:
         run: python3 tools/revision.py build/05007038.bin && python3 tools/revision.py build/05293190AC.bin
       - name: Simulator self-test (stock Lookup3D and CalcFuelPulse against models)
         run: python3 tools/simtest.py build/05293190AC.bin && python3 tools/simtest.py build/04887050.bin
+      - name: Experimental DinoFuel 128 KB port — smoke grid and edge tests
+        if: needs.plan.outputs.full != 'true' && needs.plan.outputs.fuel == 'true'
+        run: python3 patches/dinofuel/dinofuel128.py build/04887050.bin && python3 patches/dinofuel/dinofuel128.py build/05293013AC.bin
       - name: Experimental DinoFuel 128 KB port — dense grid and edge tests
+        if: needs.plan.outputs.full == 'true'
         run: python3 patches/dinofuel/dinofuel128.py build/04887050.bin --full && python3 patches/dinofuel/dinofuel128.py build/05293013AC.bin --full
   dinofuel-profile:
+    needs: plan
+    if: needs.plan.outputs.fuel == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -38,6 +140,8 @@ jobs:
       - name: DinoFuel CPU16 timing and stack profile
         run: python3 patches/dinofuel/timing.py 04887050 && python3 patches/dinofuel/timing.py 05293013AC
   dinofuel-boundaries:
+    needs: plan
+    if: needs.plan.outputs.fuel == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -49,6 +153,8 @@ jobs:
       - name: Profile stock and patched jumps at MAP transitions
         run: python3 patches/dinofuel/boundarycheck.py
   dinofuel-v2-smoke:
+    needs: plan
+    if: needs.plan.outputs.fuel == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -63,6 +169,8 @@ jobs:
       - run: python3 patches/dinofuel/v2/check_calibration.py ${{ matrix.pn }}
       - run: python3 patches/dinofuel/v2/simulate.py ${{ matrix.pn }}
   dinofuel-v2-full:
+    needs: plan
+    if: needs.plan.outputs.full == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -76,6 +184,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/dinofuel/v2/simulate.py ${{ matrix.pn }} --full
   modular-spark:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -90,6 +200,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/simulate.py ${{ matrix.pn }}
   modular-spark-full:
+    needs: plan
+    if: needs.plan.outputs.full == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -103,6 +215,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/simulate.py ${{ matrix.pn }} --full
   spark-v11:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -116,6 +230,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/simulate_v11.py ${{ matrix.pn }}
   spark-v11-full:
+    needs: plan
+    if: needs.plan.outputs.full == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -129,6 +245,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/simulate_v11.py ${{ matrix.pn }} --full
   spark-event-contract:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -142,6 +260,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/eventcheck.py ${{ matrix.pn }}
   spark-timer-arithmetic:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -155,6 +275,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/timercheck.py ${{ matrix.pn }}
   spark-v2-precision-research:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -167,6 +289,8 @@ jobs:
       - run: python3 patches/spark/v2/scheduler_guard.py
 
   spark-v2-publication-contract:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -180,6 +304,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/v2/publicationcheck.py ${{ matrix.pn }}
   spark-v2-map-precision:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -195,6 +321,8 @@ jobs:
       - run: python3 patches/spark/v2/event_timing_limit.py ${{ matrix.pn }}
       - run: python3 patches/spark/v2/knock_coordinate.py ${{ matrix.pn }}
   spark-v2-byte-interpolation:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -206,8 +334,10 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 tools/build.py ${{ matrix.pn }}
-      - run: python3 patches/spark/v2/byte_interp.py ${{ matrix.pn }} --full
+      - run: python3 patches/spark/v2/byte_interp.py ${{ matrix.pn }} ${{ needs.plan.outputs.full == 'true' && '--full' || '' }}
   spark-v2-resource-survey:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -221,6 +351,8 @@ jobs:
       - run: python3 tools/build.py ${{ matrix.pn }}
       - run: python3 patches/spark/v2/resource_survey.py ${{ matrix.pn }}
   spark-v2-event-q4-machine:
+    needs: plan
+    if: needs.plan.outputs.spark == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
