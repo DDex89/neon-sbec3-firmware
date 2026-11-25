@@ -132,10 +132,146 @@ def reader_protocol():
           f"{unsafe} torn unprotected observations; not machine validation")
 
 
+def machine_protocol():
+    """Assembled CPU16 fixture, with explicit *modeled* IPL semantics.
+
+    The base simulator has no interrupt delivery and hard-codes IPL=7.
+    Extend only this fixture. Synthetic RAM offsets are NOT ECU reservations.
+    Only ORP #$00E0 is implemented here, not general CCR semantics.
+    """
+    import sys
+    from tempfile import TemporaryDirectory
+    sys.path.insert(0,str(ROOT/"patches/dinofuel"))
+    from dinofuel128 import assemble, CPU
+
+    asm="""
+org $01000
+Publish:
+        PSHM CCR
+        ORP #$00E0
+        STE >$0100,Z
+        STAB >$0102,Z
+        PULM CCR
+        RTS
+org $01040
+Snapshot:
+        PSHM CCR
+        ORP #$00E0
+        LDE >$0100,Z
+        LDAB >$0102,Z
+        PULM CCR
+        RTS
+org $01080
+UnprotectedSnapshot:
+        LDE >$0100,Z
+        LDAB >$0102,Z
+        RTS
+"""
+    with TemporaryDirectory() as tmp:
+        src=Path(tmp)/"publication_fixture.asm"
+        src.write_text(asm)
+        image=assemble([str(src)],0x20000)
+
+    class FixtureCPU(CPU):
+        def reset_regs(self):
+            super().reset_regs()
+            self.ipl=0
+            self.boundaries=[]
+            self.inject=None
+
+        def ccr(self):
+            return (super().ccr()&~0x00E0)|(self.ipl<<5)
+
+        def set_ccr(self,v,pk=True):
+            super().set_ccr(v,pk)
+            self.ipl=(v>>5)&7
+
+        def op_ORP(self,ins,f,nxt):
+            require(f["jjkk"]==0x00E0,"Unexpected fixture ORP")
+            self.ipl=7
+
+        def state(self):
+            return (self.ram_byte(0x102),self.ram_word(0x100))
+
+        def step(self,pc):
+            if self.inject is not None:
+                cut,priority,new=self.inject
+                if self.steps==cut and priority>self.ipl:
+                    # Atomic higher-priority publisher; not hardware ISR delivery.
+                    self.ram_byte(0x102,new[0])
+                    self.ram_word(0x100,new[1])
+            super().step(pc)
+            self.boundaries.append((self.ipl,self.state()))
+
+    cpu=FixtureCPU(image,0x800)
+    allowed={0xF8100,0xF8101,0xF8102}
+    old=(0xFF,0xFFF8)
+    new=(0x01,0x0008)
+    observations=publish_cases=read_cases=unsafe=0
+
+    def prepare(ipl):
+        cpu.reset_regs()
+        cpu.ipl=ipl
+        cpu.n,cpu.z,cpu.v,cpu.c,cpu.h=1,0,1,1,1
+        cpu.ix,cpu.iy=0x1234,0x5678
+        cpu.d=0xA500|new[0]
+        cpu.e=new[1]
+        cpu.ram_byte(0x102,old[0])
+        cpu.ram_word(0x100,old[1])
+
+    def flags():
+        return cpu.ccr()&0xFFF0
+
+    def check_restore(sp,ccr):
+        require(cpu.sp==sp and flags()==ccr,"Fixture stack/CCR restoration")
+        require(cpu.ix==0x1234 and cpu.iy==0x5678 and
+                cpu.iz==0x8000 and cpu.zk==15,"Fixture register corruption")
+
+    for initial in range(8):
+        prepare(initial)
+        sp,ccr=cpu.sp,flags()
+        cpu.call(0x1000)
+        check_restore(sp,ccr)
+        require(cpu.state()==new and cpu.e==new[1] and
+                cpu.d==0xA500|new[0],"Fixture publication result")
+        require((cpu.writes&allowed)==allowed and
+                all(a in allowed or 0xF8700<=a<0xF8800 for a in cpu.writes),
+                "Unexpected fixture publication write")
+        for mask,pair in cpu.boundaries:
+            for priority in range(1,7):
+                if priority>mask:
+                    require(pair in (old,new),"Torn assembled publication")
+                    observations+=1
+        publish_cases+=1
+        for entry,nsteps in ((0x1040,6),(0x1080,3)):
+            for cut in range(nsteps):
+                for priority in range(1,7):
+                    prepare(initial)
+                    sp,ccr=cpu.sp,flags()
+                    cpu.inject=(cut,priority,new)
+                    cpu.call(entry)
+                    require(cpu.sp==sp,"Snapshot stack restoration")
+                    require(cpu.a==0xA5 and cpu.ix==0x1234 and
+                            cpu.iy==0x5678,"Snapshot register corruption")
+                    require(not(cpu.writes&allowed),"Snapshot wrote angle")
+                    pair=(cpu.b,cpu.e)
+                    if entry==0x1040:
+                        check_restore(sp,ccr)
+                        require(pair in (old,new),"Torn assembled snapshot")
+                        read_cases+=1
+                    elif pair not in (old,new):
+                        unsafe+=1
+    require(unsafe>0,"Assembled reader negative control missing")
+    print(f"CPU16 assembled fixture: {publish_cases} publications, "
+          f"{observations} observable writer boundaries, {read_cases} snapshots; "
+          f"{unsafe} torn unprotected snapshots. Modeled IPL, no real ISR timing.")
+
+
 def check(pn):
     audit(pn)
     protocol()
     reader_protocol()
+    machine_protocol()
 
 
 if __name__=="__main__":
