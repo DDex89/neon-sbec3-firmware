@@ -93,9 +93,19 @@ exists. This is not approval to remove or relocate production code.
   Do not label a runtime overflow as proven yet.
 - [ ] DTC table entries associate FaultSet0B bits 4/5 with P0179/P0178
   (fuel composition sensor high/low). Factory Options0324 bit 0 is clear
-  in both targets ($72/$32). Trace all direct, indirect, diagnostic and
-  multi-byte writers, including BusModuleFlags bit 4; prove baseline
-  reachability or exclusion rather than assuming configuration is sufficient.
+  in both targets ($72/$32). ReportFault uses descriptor bytes 4/5 to
+  update indexed fault RAM (group base $0133/$0163). Group $0D mask $10
+  corresponds to P0176 (BusModuleFlags bit 4), descriptor $38ED/$3918.
+  P0179/P0178 descriptors are $384D/$3857 and $3878/$3882 respectively.
+  The factory sensor-check entries $11212/$11112 gate all three reporting
+  paths on Options0324 bit 0. Trace restore, diagnostic and other indirect
+  writers; prove baseline reachability or exclusion.
+- [ ] All reviewed O2LearnEnable learning-condition branches converge on
+  the fault check ($09DB0/$09EB2), before the local closed-loop-disable
+  check. The backward reset path does not explicitly clear the triggering
+  flags and can issue another JSR O2LearnEnable. Verify instruction encoding,
+  persistent-fault execution and interrupt/watchdog effects; distinguish a
+  conditional stack-growth proof from observed hardware failure.
 - [ ] Validate the observed STFT-based ethanol fallback, LTFT learning
   inhibition and actual closed/open-loop state under sensor faults.
   Compare the 1999 reference implementation. Resolve any confirmed
