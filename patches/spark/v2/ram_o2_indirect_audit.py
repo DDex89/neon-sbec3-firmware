@@ -29,8 +29,8 @@ def audit(pn):
     start=lines.index("ClosedLoopManager:")
     i=lines.index(f"LDY #${desc:04X}",start)
     assert i-start<200
-    assert lines[i-3].startswith("LBHI ")
-    assert lines[i-4]=="CPE #$0003"
+    assert lines[i-2].startswith("LBHI ")
+    assert lines[i-3]=="CPE #$0003" and lines[i-1]=="PSHM E"
     assert lines[i+1:i+7]==["LDD #$000E","EMUL","ADY","TPD","TBYK","CLRB"]
     block=lines[i:i+60]
     for op in ("LDE $0000,Y","LDE $0002,Y","LDAA E,Z","STAA E,Z",
@@ -45,7 +45,8 @@ def audit(pn):
         assert raw<0x800 and timer<0x800,(pn,index,raw,timer)
         assert not CANDIDATE.intersection((0x8000+raw,0x8000+timer)),(pn,index,raw,timer)
         # X bank is zero here, so both thresholds are ROM reads.
-        assert all(0<=v<0x10000 for v in thresholds)
+        assert lines[i+6:i+8]==["CLRB","TBXK"]
+        assert all(v<len(rom) for v in thresholds)
         print(f"{pn} O2 descriptor {index}: raw RAM ${0x8000+raw:04X}, "
               f"timer RAM ${0x8000+timer:04X}, ROM thresholds "
               f"${thresholds[0]:04X}/${thresholds[1]:04X}")
@@ -75,4 +76,7 @@ def audit(pn):
     print("Does not prove other X/Y/E indexed paths, diagnostic aliases or global allocation.")
 
 if __name__=="__main__":
-    for pn in CONFIG:audit(pn)
+    import argparse
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("pn",choices=CONFIG)
+    audit(ap.parse_args().pn)
