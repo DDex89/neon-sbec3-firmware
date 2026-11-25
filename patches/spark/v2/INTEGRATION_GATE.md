@@ -55,3 +55,34 @@ priority behavior must be verified before writing any production hook.
 
 No new RAM address, production hook, module reservation, timer modification
 or flashable image is introduced.
+
+## Reader-side preemption and shared candidate follow-up
+
+Source review on 281f0e7: both variants call CalcSpark from the
+background task (bank0 L0D276 / L0D3B6), and SparkEventCalc from the
+IC1 path at L04988. OC2 and OC4 explicitly raise the mask to 7;
+IC1 initially ORs the mask with 3. These are mask operations, not
+proof of configured interrupt priorities. The final event angle has
+readers in both banks; a future reader requiring both angle formats
+must take a coherent snapshot, not merely assume writer-side masking
+is sufficient. Legacy-only readers need not acquire the new word.
+
+The additional reader_protocol experiment checks preemption between
+three individual byte reads, even when the higher-priority writer
+commits atomically. The standalone host function found 126 torn
+unprotected observations and 294 protected observations with no torn
+snapshot. This is an abstract negative control, not CPU16 execution.
+Do not extend interrupt masking to the complete angle calculation.
+
+For offsets 05F2..05FF, both equate inventories contain no named
+symbol in that interval. A source scan of the four banks found no
+literal matching those offsets or their 85xx addresses in instruction
+text; this does not exclude computed offsets, ROM pointer tables,
+or multi-byte operations spanning the candidate. The preceding named
+fuel fields end at WotDelayTimer (05ED, 1996) and AccelTpsBaroFactor
+(05EF, 1997); the next named group begins at 0600 in both variants.
+A diagnostic indexed memory read is visible in bank1
+(L133F0 / L16610, LDAA $00,X). DiagRamAddrAllowed is called from
+the EEPROM-address path, so its name alone cannot establish a
+general RAM access whitelist. Debug execution and reset must be
+treated separately. No new address is approved by this review.
