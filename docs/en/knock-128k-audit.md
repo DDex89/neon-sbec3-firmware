@@ -50,3 +50,25 @@ Reset directly initializes learned-noise bytes F8011..F8015 / F8013..F8017 from 
 Correction of preceding KnockRetardMaxMap note: after coolant/RPM minimum guards, throttle BELOW threshold branches to MAP lookup; otherwise RPM BELOW second threshold branches to KnockRetardMaxLow; otherwise falls through to MAP lookup. Thus MAP lookup when throttle below threshold OR RPM at/above second threshold. Earlier "RPM below" wording was incorrect. With stock equal minimum/second RPM thresholds the low branch cannot be reached after minimum guard under stable sampled inputs. Verify metadata accordingly.
 
 Remaining: exact-ROM fixtures for recovery counter boundary, signed learned cell clamp, reset valid/invalid checksum, alias/feature state and scratch integrity. No CI, source-level only.
+
+## Follow-up: recovery, two separate learning arrays, reset initialization
+
+Source comparison confirms matching MainLoop call sites and control structure for KnockLearnUpdate (1996 1D27E) and Sub_153E0 (1997 153E0); proposed port label KnockLearnUpdate. Existing caller comment "Reset" is imprecise: explicit JSR in MainLoop. The byte F8373/F838D is a recovery delay counter (candidate KnockLearnRecoveryCounter). It is cleared on coolant/MAP gate failure or sufficient nonzero knock signal/event count; insufficient nonzero signal/events leave it unchanged. When KnockSignalLearn is zero with gates satisfied, increment and compare unsigned with ROM 1CD7/1CEF; on reaching threshold clear and visit ten signed learned-retard cells F8067..F8070 / F8068..F8071. Cells more negative than saturated negation of ROM 1CDA/1CF2 are advanced by ROM 1CD9/1CF1 with signed target clamp. Exact machine arithmetic, including pathological calibration values, remains pending.
+
+KnockRpmBand producer: Scratch6 starts zero; two increments per iteration, with X moving from 1CCB to 1CCF / 1CE3 to 1CE7. Final one or two decrements select 0..9. Prior KnockLearnCellIndex influences RPM/MAP hysteresis; even/odd low/high MAP selection depends on comparison. Under normal registers this bounds KnockLearn indexed access to the same ten-byte learned-retard array. KnockLearnDecayFlag also visits all ten bytes once when its flags allow, moving negative cells toward zero. CalcSpark calls KnockLearn and stores the returned byte in KnockRetard (F8604/F8612); this is distinct from the per-cylinder slots and the five background-noise bytes. Confirm all producer paths and async Scratch6/index integrity; no global allocation conclusion.
+
+### Incorrect EGR naming in the exact 128 KB images
+
+Reset initializes five background-noise bytes from contiguous ROM bytes:
+
+| | 1996 | 1997 |
+|---|---|---|
+| ROM initialization | 1CF9..1CFD | 1D11..1D15 |
+| RAM learned noise | F8011..F8015 | F8013..F8017 |
+| bytes | 1C 1C 1C 3A 3A | 1C 1C 1C 3A 3A |
+
+The first byte of each ROM/RAM range is currently labeled EgrZeroPositionInit/EgrZeroPos. Direct source references in each bank0/bank1 pair show EgrZeroPos only written at Reset; KnockThresholdCalc reads the five-byte array and KnockCylinderRetard updates it by RPM-band selection. Candidate names KnockNoiseInit0 / KnockLearnedNoise0 and array KnockLearnedNoise[5]. This is a confirmed knock role; exclusive ownership and other family EGR semantics require indirect-access and variant review. Do not globally rename all EgrZeroPos symbols. Check XDF/category/hand annotations for the mislabeled first ROM byte and four neighboring unlabeled bytes; document stock initializer values without changing them. Distinguish these positive background-noise samples from the ten signed retard cells.
+
+- [ ] Verify reset cold/warm branch entry and indirect aliases, including diagnostic descriptors and EEPROM/NV lifecycle for both arrays.
+- [ ] Check all KnockRpmBand callers and Scratch6 interrupt liveness; add exact-ROM counter threshold, recovery/clamp, index 0..9 and noise initialization/read/update fixtures to the consolidated pending test batch. CI held.
+- [ ] Reconcile candidate recovery symbols, EGR mislabels, and both arrays with exact-ROM annotation/EN/RU/XDF/Turbonator Wiki documentation; preserve stock bytes and options.
