@@ -72,3 +72,27 @@ The first byte of each ROM/RAM range is currently labeled EgrZeroPositionInit/Eg
 - [ ] Verify reset cold/warm branch entry and indirect aliases, including diagnostic descriptors and EEPROM/NV lifecycle for both arrays.
 - [ ] Check all KnockRpmBand callers and Scratch6 interrupt liveness; add exact-ROM counter threshold, recovery/clamp, index 0..9 and noise initialization/read/update fixtures to the consolidated pending test batch. CI held.
 - [ ] Reconcile candidate recovery symbols, EGR mislabels, and both arrays with exact-ROM annotation/EN/RU/XDF/Turbonator Wiki documentation; preserve stock bytes and options.
+
+## Follow-up: NV checksum, reset and EEPROM descriptor ownership
+
+The Reset branch checks the 16-bit additive NvChecksum (unsigned byte sum modulo 65536) against ResetCheckWord F8006, stores marker 4AB5 on match or 4AB6 on mismatch, then selects a different clear start at 0CAFE/0CC34. The terms warm/cold below mean valid/invalid retained-RAM checksum, not coolant temperature or physical power state.
+
+| Exact stock image | 04887050 | 05293013AC |
+|---|---|---|
+| NvChecksum entry | 0E6BC | 0E7BC |
+| Checked byte range inclusive | F8008..F8109 (258) | F8008..F8139 (306) |
+| Result scratch word | F83B0 | F82FE |
+| Valid-checksum branch skips noise init; clear range | F810A..F86FF | F813A..F8725 |
+| Invalid-checksum branch initializes noise; clear range | F8032..F86FF | F8034..F8725 |
+
+Both five-byte background-noise and ten-byte signed learned-retard arrays are inside the checksummed retention region. A valid checksum bypasses the explicit initializer and the clearing loop preserves both arrays; a failed checksum loads noise bytes 1C 1C 1C 3A 3A and zeroes the learned-retard array. All six current retard slots, recovery counter and raw/filtered signal bytes are in the ordinary reset clear domain in both cases. These statements concern the traced Reset branch/loop, not every subsequent asynchronous or diagnostic writer. CheckPowerDown calculates and stores NvChecksum before power removal and again on its restart path. Hardware retention across battery loss is not established. Candidate F85F2..F85FF is reset-cleared on both paths, not persistent NV RAM.
+
+EepromReadInit/EepromWriteQueue share paired word tables. Parsed contiguous dc.b data after EepromReadByte RTS from each bank1 source (204/320 bytes, 51/80 pairs, respectively). 1996 source word table 13F84..13FE9 and destination offset table 13FEA..1404F; 1997 171A6..17245 and 17246..172E5. All destination words unique; ranges of offsets 0062..04B8 and 0353..0723, respectively. Zero entries target either knock learning array or F85F2..F85FF. Thus these ordinary table-driven EEPROM paths do not directly reload either knock learning array. No claim about arbitrary diagnostic writes, other indirect paths or physical retention. Exact binary fetch via roms/<PN>.bin returned 404; this is source-data extraction, not independent binary verification.
+
+## Follow-up: activation and downstream dependency
+
+Both reviewed stock images contain ROM 031F=B0 (mask C0 active, bit 6 clear): KnockSample, KnockCylinderRetard and the foreground knock preparation block are enabled, with channel 1 selected for KnockSignal and the channel-2 filtered diagnostic branch bypassed. Both raw ADC bytes are still captured. MainLoop calls KnockNoiseCalc, KnockLearnDecayFlag, KnockRetardMaxCalc, KnockThresholdCalc, KnockRpmBand in that order before CalcSpark. KnockEnrichment in bank0 reads the signed negative KnockRetard magnitude and the maximum signed per-cylinder slot (under mask ORP 00E0, then ANDP FF1F), adds with overflow clamp, multiplies by ROM 0F58/0F6B, and combines additional spark correction-derived terms. Thus changing knock semantics can affect fuel as well as spark; do not alter stock behavior. Verify caller mask restoration assumptions and exact arithmetic in pending fixtures.
+
+Correction to earlier source-audit TODO wording: KnockRetardMaxCalc uses MAP lookup after coolant and minimum-RPM gates if throttle is BELOW its threshold OR RPM is AT/ABOVE the second threshold. Otherwise (throttle at/above threshold AND RPM below second threshold) it uses KnockRetardMaxLow. This follows CMPB/BCS to MAP, then CMPA/BCS to Low. For both stock images the two RPM thresholds have the same value (23/1C), so after the minimum-RPM gate the Low branch is unreachable under the stable input assumption. Existing XDF prose and scalar descriptions need reconciliation; no calibration changes.
+
+- [ ] Verify all remaining reset/monitor/diagnostic computed writers, EEPROM table provenance against original bytes, and IRQ/Scratch6/mask timing. Add retained/invalid NV checksum branch, reset bounds, activation and enrichment controls to consolidated pending fixtures; no CI due to quota.
