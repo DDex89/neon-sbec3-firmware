@@ -17,7 +17,7 @@
 | EepromFlags byte | $F848A | $F84A6 |
 | table cursor | $F848B | $F84A7 |
 
-EepromWrite947 aliases the low byte of EepromAddr (address alignment test), EepromWrite949 aliases the low byte of EepromData (second data byte), and EepromWrite94B is a byte offset into the readback table, not a demonstrated retry counter. Flag bit 1 schedules rereading the matching table entry; both successful and error write completions can enter that path. Rename/comment review only, preserve existing symbols until all users checked. Flag bit 0 not established by this service.
+EepromWrite947 aliases the low byte of EepromAddr (address alignment test), EepromWrite949 aliases the low byte of EepromData (second data byte), and EepromWrite94B is a byte offset into the readback table, not a demonstrated retry counter. Flag bit 1 schedules rereading the matching table entry; both successful and error write completions can enter that path. The three identifiers have since been migrated in the reviewed A/B sources; see the migration note below. Flag bit 0 not established by this service.
 
 Write service accepts byte addresses 0..511. For an aligned word request (address low two bits zero) it submits both data bytes in one QSPI sequence; otherwise it clears bit 6, sets bit 4 and uses two byte transactions. The second transaction increments address, copies the low data byte to the first data byte and clears bit 4. Successful first-byte verification can retain bit 7 while clearing bit 5 and invalidating address to FFFF; **critical review item:** next pass increments FFFF to 0000 unless another caller restores address. Verify the intervening queue/foreground state and exact ROM trace before classifying this as a stock defect. Error path reinitializes QSPI and reports fault when not already set, then clears request and in-progress flags; no bounded retry count proved. Invalid-address branch also clears bits 7/5 and sets address FFFF. Check residual bit 4/6 on errors.
 
@@ -25,7 +25,7 @@ Readback table: paired source words and destination offsets, A at $13F84/$13FEA 
 
 ## Power-down path
 
-CheckPowerDown calls EepromPowerDownWrite separately, after stopping QSPI. This routine clears all EEPROM flags, submits a single byte, performs watchdog service and DelayLoop($1388), reads back and compares; success/failure both invalidate address. It is not a generic pending-word flush. In both variants one caller conditionally stores FlexEthanol to EEPROM $00C if absolute difference from RAM PowerDownCount is >= $18, option enabled and EEPROM fault clear; the RAM name PowerDownCount is misleading in this use. Review other consumers before renaming. Sudden power loss is not equivalent to this controlled path. No atomicity or data-retention guarantee established.
+CheckPowerDown calls EepromPowerDownWrite separately, after stopping QSPI. This routine clears all EEPROM flags, submits a single byte, performs watchdog service and DelayLoop($1388), reads back and compares; success/failure both invalidate address. It is not a generic pending-word flush. In both variants one caller conditionally stores FlexEthanol to EEPROM $00C if absolute difference from RAM PowerDownCount is >= $18, option enabled and EEPROM fault clear; the RAM name PowerDownCount is misleading in this use. Direct zero-test consumers now traced; see the migration note below. Sudden power loss is not equivalent to this controlled path. No atomicity or data-retention guarantee established.
 
 ## Follow-up regression gates
 
@@ -181,3 +181,9 @@ EEPROM byte address → RAM offset from Z ($F8000); table order preserved. Not a
 | $0DE | $71D |
 | $0DF | $71E |
 | $0E0 | $71F |
+
+## Canonical A/B symbol migration
+
+Stock [4e9cfff](https://github.com/DDex89/neon-sbec3-firmware/commit/4e9cfff96a3018d99b125c0ed9bff58f129408b8) and ReCore [9359bc6](https://github.com/DDex89/recore-sbec3/commit/9359bc64a21efbc3de45fe4bc227277b33c38f82) migrate EepromWrite947 -> EepromAddrLow, EepromWrite949 -> EepromDataLow, EepromWrite94B -> EepromReadbackTableOffset in the A/B hand overlays, four port RAM/bit maps, and both checked-in bank1/equates sources. Addresses remain fixed; all 16 changed file blobs match between repositories. Nine instruction references and three stale inline bit comments per ROM updated. Inverse-name normalized source comparison and JSON parsing passed; no ROM/XDF changes. Full generator/build and exact-ROM regression remain pending. Other families retain legacy identifiers until independently audited.
+
+PowerDownCount follow-up: all direct named zero-test consumers reviewed. RunModeSwitch $15200/$124E0 and B-only MonTaskB $1894E test nonzero RAM, defer while EepromFlags.7 is set, otherwise queue zero to EEPROM $00C. Together with EepromReadInit mapping $00C -> $F8344/$F835E and CheckPowerDown storing FlexEthanol there, this supports StoredFlexEthanol as the descriptive name. Indirect accesses and actual value scaling not exhaustively verified; identifier retained for a separate migration.
