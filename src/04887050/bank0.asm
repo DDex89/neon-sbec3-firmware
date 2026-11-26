@@ -3347,7 +3347,7 @@ KnockLearnCoolantMin:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockSensorCheckRpm ($1C63): 2D table, 1 points, unsigned
-; Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm
+; A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior. Legacy name; not a diagnostic signal threshold.
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1D452
@@ -3378,8 +3378,8 @@ KnockRpmSteps:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockWindowRpm ($1C7F): 2D table, 2 points, unsigned
-; Knock sampling window length factor (KnockWindowFactor) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried
-; x: raw, y: raw (units: docs/en/calibration.md)
+; A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockWindowFactor. Complementary coefficient weights KnockSignal. Legacy name; not a direct sampling-window duration.
+; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1D462
 ;---------------------------------------------------------------------------------------------------
@@ -3391,8 +3391,8 @@ KnockWindowRpm:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockNoiseLearnWeight ($1C8B): 2D table, 5 points, unsigned
-; Filter weight of the learned knock noise level per rpm band (KnockNoiseLevel)
-; x: rpm32, y: mult256 (units: docs/en/calibration.md)
+; A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA7 and used as the lower clamp in KnockCylinderRetard. Legacy name; not a filter weight.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1D442
 ;---------------------------------------------------------------------------------------------------
@@ -3403,7 +3403,7 @@ KnockNoiseLearnWeight:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockNoiseMax ($1C97): 2D table, 5 points, unsigned
-; Upper limit of the learned knock noise level against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried
+; A/B: upper bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA6 and used as the upper clamp in KnockCylinderRetard.
 ; x: raw, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1D432
@@ -6255,8 +6255,8 @@ KnockSignalMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockRetardMaxRpm ($3DAD): 2D table, 1 points, unsigned
-; Limit of the per-cylinder knock retard (KnockCylRetardMax) against engine rpm
-; x: rpm32, y: spark (units: docs/en/calibration.md)
+; A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorCheck. A filtered value below this or at/above KnockSignalMax enters fault qualification. Legacy name; not a retard angle.
+; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $1D472
 ;---------------------------------------------------------------------------------------------------
