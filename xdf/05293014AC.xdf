@@ -6395,7 +6395,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1A9" flags="0x0">
   <title>KnockSensorCheckRpm</title>
-  <description>Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm $1C7B, 2D; inputs: EngineRpm</description>
+  <description>A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior. Legacy name; not a diagnostic signal threshold. Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm $1C7B, 2D; inputs: EngineRpmC7B, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6470,7 +6470,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AB" flags="0x0">
   <title>KnockWindowRpm</title>
-  <description>Knock sampling window length factor (KnockWindowFactor) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried $1C97, 2D; inputs: EngineRpm</description>
+  <description>A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockWindowFactor. Complementary coefficient weights KnockSignal. Legacy name; not a direct sampling-window duration. Knock sampling window length factor (KnockWindowFactor) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried $1C97, 2D; inputs: EngineRpmC97, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6496,17 +6496,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1C9A" mmedelementsizebits="8" mmedrowcount="2" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units />
-   <decimalpl>0</decimalpl>
+   <units>factor</units>
+   <decimalpl>3</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X">
+   <MATH equation="X/256">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AC" flags="0x0">
   <title>KnockNoiseLearnWeight</title>
-  <description>Filter weight of the learned knock noise level per rpm band (KnockNoiseLevel) $1CA3, 2D; inputs: EngineRpm</description>
+  <description>A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA7 and used as the lower clamp in KnockCylinderRetard. Legacy name; not a filter weight. Filter weight of the learned knock noise level per rpm band (KnockNoiseLevel) $1CA3, 2D; inputs: EngineRpmCA3, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -6532,17 +6532,17 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x1CA6" mmedelementsizebits="8" mmedrowcount="5" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>factor</units>
-   <decimalpl>3</decimalpl>
+   <units />
+   <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X/256">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
  </XDFTABLE>
  <XDFTABLE uniqueid="0x1AD" flags="0x0">
   <title>KnockNoiseMax</title>
-  <description>Upper limit of the learned knock noise level against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried $1CAF, 2D; inputs: EngineRpm</description>
+  <description>A/B: upper bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA6 and used as the upper clamp in KnockCylinderRetard. Upper limit of the learned knock noise level against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried $1CAF, 2D; inputs: EngineRpmCAF, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11525,7 +11525,7 @@
  </XDFTABLE>
  <XDFTABLE uniqueid="0x22E" flags="0x0">
   <title>KnockRetardMaxRpm</title>
-  <description>Limit of the per-cylinder knock retard (KnockCylRetardMax) against engine rpm $3DD8, 2D; inputs: EngineRpm</description>
+  <description>A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorCheck. A filtered value below this or at/above KnockSignalMax enters fault qualification. Legacy name; not a retard angle. $3DD8, 2D; inputs: EngineRpm</description>
   <CATEGORYMEM index="0" category="17" />
   <XDFAXIS id="x" uniqueid="0x0">
    <units />
@@ -11551,10 +11551,10 @@
   </XDFAXIS>
   <XDFAXIS id="z">
    <EMBEDDEDDATA mmedtypeflags="0x00" mmedaddress="0x3DDB" mmedelementsizebits="8" mmedrowcount="1" mmedcolcount="1" mmedmajorstridebits="16" mmedminorstridebits="0" />
-   <units>deg BTDC</units>
-   <decimalpl>1</decimalpl>
+   <units />
+   <decimalpl>0</decimalpl>
    <outputtype>1</outputtype>
-   <MATH equation="X/2">
+   <MATH equation="X">
     <VAR id="X" />
    </MATH>
   </XDFAXIS>
