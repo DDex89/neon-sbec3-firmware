@@ -1212,17 +1212,17 @@
   "1C8B": {
    "name": "KnockNoiseLearnWeight",
    "category": "Knock",
-   "desc": "Filter weight of the learned knock noise level per rpm band (KnockNoiseLevel)",
+   "desc": "A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA7 and used as the lower clamp in KnockCylinderRetard. Legacy name; not a filter weight.",
    "x": "rpm32",
-   "y": "mult256",
+   "y": "raw",
    "auto": false
   },
   "1C7F": {
    "name": "KnockWindowRpm",
    "category": "Knock",
-   "desc": "Knock sampling window length factor (KnockWindowFactor) against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried",
+   "desc": "A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockWindowFactor. Complementary coefficient weights KnockSignal. Legacy name; not a direct sampling-window duration.",
    "x": "raw",
-   "y": "raw",
+   "y": "mult256",
    "auto": false
   },
   "1CA3": {
@@ -1251,9 +1251,9 @@
   "3DAD": {
    "name": "KnockRetardMaxRpm",
    "category": "Knock",
-   "desc": "Limit of the per-cylinder knock retard (KnockCylRetardMax) against engine rpm",
+   "desc": "A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorCheck. A filtered value below this or at/above KnockSignalMax enters fault qualification. Legacy name; not a retard angle.",
    "x": "rpm32",
-   "y": "spark",
+   "y": "raw",
    "auto": false
   },
   "1D96": {
@@ -1847,7 +1847,7 @@
   "1C63": {
    "name": "KnockSensorCheckRpm",
    "category": "Knock",
-   "desc": "Minimum filtered knock signal for the sensor check (KnockSensorCheck) against engine rpm",
+   "desc": "A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior. Legacy name; not a diagnostic signal threshold.",
    "x": "rpm32",
    "y": "raw",
    "auto": false
@@ -1944,7 +1944,7 @@
   "1C97": {
    "name": "KnockNoiseMax",
    "category": "Knock",
-   "desc": "Upper limit of the learned knock noise level against engine rpm; read here with another input than in 05293190AC, so the x unit is not carried",
+   "desc": "A/B: upper bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA6 and used as the upper clamp in KnockCylinderRetard.",
    "x": "raw",
    "y": "raw",
    "auto": false
