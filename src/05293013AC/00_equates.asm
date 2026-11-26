@@ -658,9 +658,9 @@ CrankPeriodPrev  equ $0382        ; $F8382
 VssBusValue2     equ $0384        ; $F8384
 BattTempModelAcc equ $0386        ; $F8386
 KnockMapThreshold equ $0388        ; $F8388
-KnockWindowFactor equ $0389        ; $F8389
-KnockNoiseDA6    equ $038A        ; $F838A
-KnockNoiseDA7    equ $038B        ; $F838B
+KnockNoiseFilterWeight equ $0389        ; $F8389
+KnockNoiseUpperBound    equ $038A        ; $F838A
+KnockNoiseLowerBound    equ $038B        ; $F838B
 KnockEventCount  equ $038C        ; $F838C
 KnockRetardMax   equ $038E        ; $F838E
 KnockSignalLearn equ $038F        ; $F838F
@@ -671,7 +671,7 @@ KnockSampleDAF   equ $0393        ; $F8393
 KnockSampleDB0   equ $0394        ; $F8394
 KnockSampleDB1   equ $0395        ; $F8395
 KnockLearnCellIndex equ $0396        ; $F8396
-KnockSensorCheck equ $0397        ; $F8397
+KnockSensorSignalMin equ $0397        ; $F8397
 MtvFlags         equ $0398        ; $F8398
 ;                 bit 5: engine rpm at or above the switch point at MtvTimingC06 (MtvTiming)
 ;                 bit 4: manifold tuning valve off: below the switch point or not at WOT (MtvTiming, set at reset)
