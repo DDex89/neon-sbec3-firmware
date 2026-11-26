@@ -8,5 +8,9 @@
  "0033": "VssQualifiedEventCounterLow",
  "0344": "StoredFlexEthanol",
  "0002": "UnexpectedEventContextWord0",
- "0004": "UnexpectedEventContextWord1"
+ "0004": "UnexpectedEventContextWord1",
+ "0370": "KnockNoiseUpperBound",
+ "0371": "KnockNoiseLowerBound",
+ "036F": "KnockNoiseFilterWeight",
+ "037D": "KnockSensorSignalMin"
 }
