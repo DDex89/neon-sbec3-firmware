@@ -245,6 +245,19 @@ For 04887050 and 05293013AC, the synchronous call graph in the live selector win
 
 OC3/OC4 write $F80F0 with coil timing bytes, but share nominal IPL3 with IC1; their exclusion is conditional on normal interrupt masking. Higher-level IRQ4's reviewed indexed buffer writes exclude the selector; IRQ5/6/7 have fixed diagnostic writes at $F8000–F8005. Ordinary exception entries instead lead to the reset continuation. Actual asynchronous recognition, saved frame/SP validity and remaining ISR paths are not established by this source review. [Detailed pinned evidence](https://github.com/DDex89/recore-sbec3/blob/e5291bc33df08a800fafc027fa5dfff00572391d/patches/spark/v2/INTEGRATION_GATE.md#ic1-live-coil-selector-synchronous-transitive-and-interrupt-source-review-2026-11-26). No new CI or calibration changes.
 
+### IC1 event counters and history (2026-11-26)
+
+For 04887050 / 05293013AC only, EventCounters ($0EA12 / $0EB22) uses two fixed ROM tables of byte destinations. The four decrement-to-zero counters are $F8192–F8195 / $F81CB–F81CE. The eight increment-to-$FF destinations are:
+
+| 04887050 | 05293013AC |
+|---|---|
+| $F85C9, $F85CA, $F8553, $F8198 | $F85D9, $F85DA, $F8562, $F81D1 |
+| $F85B1, $F85B0, $F858E, $F85E3 | $F85C1, $F85C0, $F859E, $F8603 |
+
+The increment table has eight four-byte records (RAM offset and limit $00FF), starting at $E9EA / $EAFA. The decrement table has four two-byte offsets at $EA0A / $EB1A. Source-derived address enumeration and all 256 inputs per record were checked; later direct branches can reset individual counters. These are runtime RAM fields, not ROM calibration fields.
+
+In the stock four-cylinder 05293013AC, EventHistoryShift ($0871C) shifts $F8706–F8709 when EventSparkFlags.5 is set and FuelModeFlags.3 is clear. The two further bytes $F870A–F870B shift only for a six-cylinder configuration. EventTableCheck ($0878E) reads $F8700–F8703 when FuelModeFlags.3 is set; if all four bytes are zero, it clears that flag, EventSparkFlags.5 and $F8597. It does not write to the history page. [Pinned source audit](https://github.com/DDex89/recore-sbec3/blob/2be4473b360617f03e4f807abe1ee77024ad0d33/patches/spark/v2/INTEGRATION_GATE.md#ic1-eventcounters-and-1997-event-history-lifecycle-2026-11-26). New machine fixtures are pending; no firmware or calibration change.
+
 ## Open questions
 
 - The exact part used as the CS2 device.
