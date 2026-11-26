@@ -258,6 +258,12 @@ The increment table has eight four-byte records (RAM offset and limit $00FF), st
 
 In the stock four-cylinder 05293013AC, EventHistoryShift ($0871C) shifts $F8706–F8709 when EventSparkFlags.5 is set and FuelModeFlags.3 is clear. The two further bytes $F870A–F870B shift only for a six-cylinder configuration. EventTableCheck ($0878E) reads $F8700–F8703 when FuelModeFlags.3 is set; if all four bytes are zero, it clears that flag, EventSparkFlags.5 and $F8597. It does not write to the history page. [Pinned source audit](https://github.com/DDex89/recore-sbec3/blob/2be4473b360617f03e4f807abe1ee77024ad0d33/patches/spark/v2/INTEGRATION_GATE.md#ic1-eventcounters-and-1997-event-history-lifecycle-2026-11-26). New machine fixtures are pending; no firmware or calibration change.
 
+### Injector publication and cylinder-mask table (2026-11-26)
+
+For exact stock 04887050 and 05293013AC, Options031D=$02 selects DECB / ANDB #3 in StartInjectorPulse ($077E6 / $07810). ROM masks at $4804 are 20 08 04 10; low-word pointers at $4808 are 8830 8828 8824 882C. With stock Y bank F, original B=0/1/2/3 selects IoOcChan2/3/1/0 at $F882C/$F8830/$F8828/$F8824. All 256 raw byte inputs reduce to the same four word destinations. FinishFuelPulse writes working bytes $F80F3–F80F9 and FuelEventCalc uses $F80FC; these are not free RAM.
+
+In 05293013AC, CylinderBit ($086EA) explicitly sets XK=1. The three six-byte tables are **bank 1** addresses $15B7C (03 02 00 01 FF FF), $15B82 (02 01 03 00 FF FF) and $15B88 (04 05 00 01 02 03). Stock option selects the first. Valid indices 0–3 give masks 04,08,02,01; EventFuelScaleApply ($0875E) conditionally decrements $F8702,$F8703,$F8701,$F8700 respectively. The search lacks a length guard. Forced invalid indices 4/5 first match at offsets 12/13, after the byte mask becomes zero; the following shift loop lacks a zero-mask exit. This is a conditional source finding, not a confirmed field fault. The only identified direct setter of FuelModeFlags.3 is the IC4 alternate-edge branch, gated off by exact stock Options0323=$05, and reset clears that RAM byte. Computed aliases, diagnostic writes and other ROM variants remain unproven. [Pinned source audit](https://github.com/DDex89/recore-sbec3/blob/753eccd29f68796cc13afa06c715899751f52ec9/patches/spark/v2/INTEGRATION_GATE.md#ic1-fuel-pulse-publication-and-1997-cylinderbit-domain-2026-11-26). New machine fixtures are pending; no firmware or calibration change.
+
 ## Open questions
 
 - The exact part used as the CS2 device.
