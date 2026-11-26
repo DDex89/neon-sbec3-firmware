@@ -8,6 +8,31 @@
   "1CCB": {
    "name": "KnockRetardMaxMap",
    "desc": "KnockRetardMaxCalc: MAP-indexed retard limit when coolant >= KnockCoolantMin and rpm >= KnockRetardMaxRpmMin, and either throttle above closed < KnockRetardMaxThrottle or rpm >= KnockRetardMaxRpm2; otherwise zero or KnockRetardMaxLow."
+  },
+  "1CA3": {
+   "name": "KnockNoiseLearnWeight",
+   "desc": "A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA7 and used as the lower clamp in KnockCylinderRetard. Legacy name; not a filter weight.",
+   "y": "raw"
+  },
+  "1C97": {
+   "name": "KnockWindowRpm",
+   "desc": "A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockWindowFactor. Complementary coefficient weights KnockSignal. Legacy name; not a direct sampling-window duration.",
+   "y": "mult256"
+  },
+  "3DD8": {
+   "name": "KnockRetardMaxRpm",
+   "desc": "A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorCheck. A filtered value below this or at/above KnockSignalMax enters fault qualification. Legacy name; not a retard angle.",
+   "y": "raw"
+  },
+  "1C7B": {
+   "name": "KnockSensorCheckRpm",
+   "desc": "A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior. Legacy name; not a diagnostic signal threshold.",
+   "y": "raw"
+  },
+  "1CAF": {
+   "name": "KnockNoiseMax",
+   "desc": "A/B: upper bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA6 and used as the upper clamp in KnockCylinderRetard.",
+   "y": "raw"
   }
  },
  "scalars": {
