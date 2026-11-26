@@ -254,3 +254,46 @@ quantize/cap/subtract operation, and 8,960 combinations of accumulator
 high byte, five low-word boundaries and seven addition boundaries for the
 24-bit saturating add model; zero mismatches against the corresponding
 integer invariants. No CPU16 execution or timing proof in this pass.
+
+### CCD $84 scheduler, local interrupt exclusion, and possible sample loss
+
+Source audit of 04887050 and 05293013AC. Isr_PIT ($0541A/$05426) calls
+CcdTransmit ($14A72/$193BC) only after ORP #$00E0 sets IPL 7, then executes
+ANDP #$FF7F to return to IPL 3. The countdown reload is $18 (24 active PIT
+ticks); O2HeaterSample bypasses this scheduler branch. PITR=$0007 and
+PICR=$0338 match the documented nominal 28/32768-second tick.
+
+The contiguous 256-byte schedule preceding the 18-entry jump table
+is at $144B6/$18DEC; the jump table is at $145B6/$18EEC.
+Reconstructed all 128 schedule words in each source: CcdTx84FuelUsed
+($14B98/$194E2) appears at zero-based slots 1,17,33,49,65,81,97,113.
+The index arithmetic uses the low byte of 2*(index+1); thus the schedule
+address wraps within its 256-byte window, even for arbitrary raw index bytes.
+Nominal builder interval: 16*24 PIT ticks = 328.125 ms (~3.048 Hz),
+not a measured delivery interval. The builder jump slots are $145C2/$18EF8.
+
+DistancePulses is a byte at $F8466/$F8480. Isr_GPT_IC3 increments it after
+a pin-level check; the CCD builder reads and clears it. No saturation
+guard on the INC is present: increments wrap modulo 256. Physical
+pulses per kilometre and fuel units remain unverified.
+Each fuel payload count represents 2048 raw accumulator counts
+(8 units of the upper 16-bit word); the cap of 255 leaves excess fuel
+counts in the accumulator, not in the payload. Frame layout is
+ID $84, fuel byte, distance byte, additive checksum modulo 256.
+
+Important: CcdTransmit invokes the builder BEFORE checking whether
+any of the three queue buffers is free (CcdRxFlags bits 4,3,2).
+If all are busy, no new frame is stored, although the builder has
+already deducted fuel and cleared distance. No rollback is seen in
+this branch. This is a conditional source-level loss mechanism, not
+a measured normal bus loss rate. An external trip computer cannot
+recover those increments merely from the next $84 frame.
+
+Local mask evidence: CCD builder runs with IPL7; the foreground
+InjectorFuelAccount raises IPL7 before its timer/accumulator RMW;
+IC1 runs at IPL3 (same nominal priority as PIT), and IC3 increments
+distance with IPL7. Ordinary maskable interrupt preemption between
+these reviewed accumulator operations is excluded under their
+entry/mask invariants. IRQ7, exception behavior, computed aliases,
+foreground caller-mask contract, and actual bus timing are not
+established by this local proof. No CPU16 execution or bench capture.
