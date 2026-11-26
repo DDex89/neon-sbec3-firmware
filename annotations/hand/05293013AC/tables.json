@@ -3,7 +3,37 @@
  "tables": {
   "51FF": {
    "name": "FuelEventOffset",
-   "desc": "FuelEventCalc: FuelEventOffsetIn to column 0..2 (stock curve); added to 3 * CylinderIndex to index the 12-byte per-cylinder table at $51F3."
+   "desc": "FuelEventCalc: Lookup2D of FuelEventOffsetIn ($05AC); stock column 0..2 added to FuelEventCylFactor * CylinderIndex to index 12-byte per-cylinder table at $51F3."
+  },
+  "1CCB": {
+   "name": "KnockRetardMaxMap",
+   "desc": "KnockRetardMaxCalc: MAP-indexed retard limit when coolant >= KnockCoolantMin and rpm >= KnockRetardMaxRpmMin, and either throttle above closed < KnockRetardMaxThrottle or rpm >= KnockRetardMaxRpm2; otherwise zero or KnockRetardMaxLow."
+  }
+ },
+ "scalars": {
+  "05AC": {
+   "name": "FuelEventOffsetIn",
+   "desc": "Input event code for FuelEventOffset and other fuel event timing branches. A/B directly read this byte; no alternate input selection established in these reviewed paths."
+  },
+  "1CC7": {
+   "name": "KnockRetardMaxRpmMin",
+   "desc": "Below this rpm KnockRetardMaxCalc returns zero; at or above, evaluate the throttle/rpm2 gates after coolant qualification."
+  },
+  "1CC8": {
+   "name": "KnockRetardMaxThrottle",
+   "desc": "Throttle above closed below this threshold selects KnockRetardMaxMap after coolant and minimum-rpm gates; at or above, rpm2 selects map versus low limit."
+  },
+  "1CC9": {
+   "name": "KnockRetardMaxRpm2",
+   "desc": "With throttle at or above KnockRetardMaxThrottle and other gates satisfied, rpm below this threshold selects KnockRetardMaxLow, otherwise KnockRetardMaxMap."
+  },
+  "1CCA": {
+   "name": "KnockRetardMaxLow",
+   "desc": "Fixed retard limit when coolant and minimum-rpm gates pass, throttle is at or above threshold and rpm is below KnockRetardMaxRpm2."
+  },
+  "1CF0": {
+   "name": "KnockCoolantMin",
+   "desc": "KnockRetardMaxCalc returns zero below this coolant threshold; equality passes this gate. Other callers not reclassified."
   }
  }
 }
