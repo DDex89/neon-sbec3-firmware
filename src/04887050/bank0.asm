@@ -17911,9 +17911,9 @@ UnexpectedInterrupt:
         STD     <UnexpectedIrqFlags,Z
         TSX
         LDD     $06,X
-        STD     <UnexpectedIrqStack6,Z
+        STD     <UnexpectedEventContextWord1,Z
         LDD     $04,X
-        STD     <UnexpectedIrqStack4,Z
+        STD     <UnexpectedEventContextWord0,Z
         PULM    K,X,D
         RTI
 
@@ -17986,10 +17986,10 @@ L0C6F0:
         TSX
         LDD     $02,X
         STD     >Scratch2,Z
-        STD     <UnexpectedIrqStack6,Z
+        STD     <UnexpectedEventContextWord1,Z
         LDD     $00,X
         STD     >Scratch4,Z
-        STD     <UnexpectedIrqStack4,Z
+        STD     <UnexpectedEventContextWord0,Z
         LDAB    #$0F
         TBSK
         LDS     #$87FE
@@ -18235,9 +18235,9 @@ L0CA42:
         LDD     >Scratch0,Z
         STD     <UnexpectedIrqFlags,Z
         LDD     >Scratch2,Z
-        STD     <UnexpectedIrqStack6,Z
+        STD     <UnexpectedEventContextWord1,Z
         LDD     >Scratch4,Z
-        STD     <UnexpectedIrqStack4,Z
+        STD     <UnexpectedEventContextWord0,Z
         LDAA    #$E3
         STAA    $0F,Z
         LDAA    #$CC

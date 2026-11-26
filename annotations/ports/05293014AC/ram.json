@@ -1,8 +1,8 @@
 {
  "_comment": "Carried over from 05293190AC (gaps filled through 05007038) by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
  "0000": "UnexpectedIrqFlags",
- "0002": "UnexpectedIrqStack4",
- "0004": "UnexpectedIrqStack6",
+ "0002": "UnexpectedEventContextWord0",
+ "0004": "UnexpectedEventContextWord1",
  "0006": "ResetCheckWord",
  "0008": "SystemFlags00A",
  "0009": "ThrottleClosed",

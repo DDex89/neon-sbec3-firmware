@@ -5,5 +5,7 @@
  "04A7": "EepromReadbackTableOffset",
  "0034": "VssQualifiedEventCounter",
  "0035": "VssQualifiedEventCounterLow",
- "035E": "StoredFlexEthanol"
+ "035E": "StoredFlexEthanol",
+ "0002": "UnexpectedEventContextWord0",
+ "0004": "UnexpectedEventContextWord1"
 }
