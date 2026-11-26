@@ -239,6 +239,12 @@ Both reviewed ROMs contain 12 explicit indexed stores in the direct IC1 body (ex
 
 The coil selector is published to the shared Temp4F0 byte at $F80F0. Three direct producers construct 0/1 from CrankSyncFlags.5 and Options031D.2; the alternate-coil path XORs the selector with 1. On one path SparkEventCalc executes before the saved selector is read, so transitive scratch preservation and actual interrupt/exception timing still require verification. This is a direct-body source analysis, not a global RAM or hardware-safety proof. [Pinned evidence](https://github.com/DDex89/recore-sbec3/blob/2e734674c366acd27ab43c870d1486f9909dae28/patches/spark/v2/INTEGRATION_GATE.md#ic1-direct-computed-store-inventory-and-batched-gptccd-fixtures-2026-11-26). No stock code or calibration edits.
 
+### IC1 coil-selector lifetime (source follow-up, 2026-11-26)
+
+For 04887050 and 05293013AC, the synchronous call graph in the live selector window is SparkEventCalc → AcSparkRate / Lookup2D, with AcSparkRate also calling Lookup2D. The complete fixed non-stack write union contains 22 bytes per ROM, including scratch words at $F80F2–F80F5 and $F80F8–F80FD, but excludes $F80F0–F80F1. No computed non-stack stores occur in these three routines. The selector at $F80F0 is therefore preserved across this synchronous call under stock Z and a valid non-overlapping stack. Maximum local stack consumption is 15 bytes inside SparkEventCalc, 19 including its caller's return frame (consistent with the earlier corrected CFG check).
+
+OC3/OC4 write $F80F0 with coil timing bytes, but share nominal IPL3 with IC1; their exclusion is conditional on normal interrupt masking. Higher-level IRQ4's reviewed indexed buffer writes exclude the selector; IRQ5/6/7 have fixed diagnostic writes at $F8000–F8005. Ordinary exception entries instead lead to the reset continuation. Actual asynchronous recognition, saved frame/SP validity and remaining ISR paths are not established by this source review. [Detailed pinned evidence](https://github.com/DDex89/recore-sbec3/blob/e5291bc33df08a800fafc027fa5dfff00572391d/patches/spark/v2/INTEGRATION_GATE.md#ic1-live-coil-selector-synchronous-transitive-and-interrupt-source-review-2026-11-26). No new CI or calibration changes.
+
 ## Open questions
 
 - The exact part used as the CS2 device.
