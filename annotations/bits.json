@@ -233,8 +233,8 @@
   "4": "misfire record taken (MisfireCount), cleared by DiagModeTimer",
   "3": "misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer",
   "2": "freeze frame to be updated (ObdFaultProcess)",
-  "1": "cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it",
-  "0": "cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it"
+  "1": "current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)",
+  "0": "current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)"
  },
  "DriveFlags": {
   "7": "drive engagement handling in progress (GearStateUpdate), probably",
@@ -725,13 +725,17 @@
   "1": "cleared with the misfire records; read by MisfireCount",
   "0": "misfire start delay elapsed (MisfireEnableMain)"
  },
+ "MonStatusO2Heater": {
+  "0": "heater primary condition group failed; start path exits (O2HeaterMonitor)",
+  "1": "heater secondary condition group failed; prevents clearing sensor monitor enable bits at completion (O2HeaterMonitor)"
+ },
  "MisfireFlags2": {
   "6": "throttle open state seen by the misfire transient filter (MisfireTransient)",
   "4": "misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it",
   "3": "crank period deviation negative (MisfireDeviation)",
   "2": "misfire transient hold running (MisfireSegmentTime)",
-  "1": "misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)",
-  "0": "misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)"
+  "1": "secondary condition list failed; recorded by MisfireEnableCheck without immediate return",
+  "0": "primary condition list failed; MisfireEnableCheck returns not enabled on this path"
  },
  "MisfireFlags4": {
   "6": "set by IdleTargetControl at the end of a gear idle step; read by MisfireDeviation"
