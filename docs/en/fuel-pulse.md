@@ -101,3 +101,114 @@ peripherals and no timing: RAM and registers are set by the caller and read back
 routine returns, so the stock routine and a patch can be compared over any grid of inputs.
 `tools/simtest.py` checks the simulator against independent models of `Lookup3D` (within 1
 count) and of `CalcFuelPulse` (above), and runs in CI on 05293190AC and 04887050.
+
+## Downstream injection and cylinder-count audit (1996/1997)
+
+Source-level evidence for 04887050 and 05293013AC; not an exact-ROM execution or
+bench validation. The stock code contains four- and six-cylinder paths; changing the count byte
+alone does not convert the Neon calibration to six cylinders.
+
+- Both images have `CylinderCount = $04`. The IC1 cylinder counter and fuel
+  scheduler wrap at this count. `FuelEventCalc` explicitly tests count == 6
+  before writing `IoInjector4/5` in addition to 0..3. Startup and hardware
+  checks also cover those registers; key-off clears all six in the 1997 image.
+- In 05293013AC, `IoInjector0..5` are 16-bit registers at $F8856, $F8858,
+  $F885A, $F885C, $F885E, $F8860. Hardware-check identifiers $0049..$004E
+  correspond to these registers; these are internal codes, not OBD DTCs.
+- `StartInjectorPulse` ($077E6 / $07810) uses a separate four-entry output
+  pointer table at $4808 in the Neon calibration: $8830, $8828, $8824, $882C
+  (Z-derived bank F). `Options031D = $02` selects the DECB / ANDB #$03
+  transformation in both images. The table entries are not the injector
+  configuration registers above. Six-cylinder pin mapping, compatible option
+  bytes, firing order, crank/cam synchronization and calibration remain open.
+- `FinishFuelPulse` ($078B2 / $078E8) selects its two correction factors and
+  final pulse bank by injector index bit 0. Both factor producers include
+  oxygen adaptation and short-term trim. Normalizing symbolic operands and
+  branch labels yields 177 / 174 instruction lines; 1996 has three additional
+  instructions testing EventSparkFlags bit 5, loading $1D30, and calling
+  ScaleByFraction before the FinishFuel6D4 store. Preserve this variant.
+  This is textual source comparison, not a binary equivalence proof.
+- In both images the six-byte hot-enrichment mask rows at $6409, $640F,
+  $6415 are respectively 04 08 10 20 01 02; 02 01 04 08 10 20;
+  01 04 08 02 10 20. These are masks, not physical firing order.
+
+| Symbol | 04887050 | 05293013AC |
+|---|---|---|
+| CylinderIndex | $F83A4 | $F83BE |
+| InjectorIndex | $F8570 | $F857F |
+| FuelPulse | $F85BA | $F85CA |
+| FuelPulseBank1/2 | $F857A/$F857C | $F858A/$F858C |
+| FinishFuel78C/796 | $F85A3/$F85AA | $F85B3/$F85BA |
+| FinishFuel6D4 | $F8169 | $F819F |
+| FlexFuelFactor | $F8578 | $F8588 |
+| FuelPulseAdder | $F858B | $F859B |
+| AccelFuel | $F85BC | $F85CC |
+| HotEnrich | $F85D8 | $F85E8 |
+
+### 1997 event-history and indirect accesses
+
+`CylinderBit` ($086EA) explicitly sets XK=1. Reconstructing the trailing
+18 data bytes immediately before SciRequestReceive ($15B8E) gives:
+$15B7C = 03 02 00 01 FF FF; $15B82 = 02 01 03 00 FF FF;
+$15B88 = 04 05 00 01 02 03. The stock option $02 selects the first
+row. The first two rows contain four valid zero-based indices and FF padding;
+the third is a six-index permutation. Equivalent bytes exist at
+$129A8/$129AE/$129B4 in the 1996 image, but the same consumers are not
+established there. The 1996 StartInjectorPulse lacks the 1997 call to
+EventFuelScaleApply; do not transplant the 1997 path unconditionally.
+
+CylinderBit scans without a bound and shifts an eight-bit mask. The
+IC4/OC5 history consumer rejects FF before calling it, but EventFuelScaleApply
+uses InjectorIndex directly. A missing value can cause a scan beyond the
+selected row; a zero mask can make the subsequent LSRB loop nonterminating.
+Reachability for stock valid indices is not a demonstrated failure.
+A future bounded implementation needs an explicit invalid-index policy and
+caller validation; do not silently clamp or wrap.
+
+In 1997 the IC4/OC5 history scan and counter initialization, EventFuelScaleApply
+and EventTableCheck address $F8700..$F8705 (count-dependent counters) and
+$F8706..$F870B (history). EventHistoryShift shifts four or six entries;
+the history initializer sets all six to FF. These are live scratch/history accesses, not a global alias or asynchronous
+integrity proof.
+The four-entry output pointers and the 12-byte stock per-cylinder event
+table at $51F3 (four rows of three) require independent six-cylinder evidence.
+
+Evidence: [1996 bank 0](../../src/04887050/bank0.asm),
+[1997 bank 0](../../src/05293013AC/bank0.asm),
+[1997 bank 1](../../src/05293013AC/bank1.asm),
+[1997 equates](../../src/05293013AC/00_equates.asm).
+No firmware bytes, RAM allocation, XDF, or simulator semantics changed.
+Exact-ROM fixtures and hardware mapping remain pending.
+
+### Injector output accounting and event-offset correction
+
+`InjectorFuelAccount` ($06DDA / $06DF2) has 48 identical symbolic instruction
+lines in both images after branch-label normalization. Called by TipInFuelControl,
+it adjusts the selected output timer for tip-in enrichment, accounting for dead
+time and the output status bit, and updates the 24-bit fuel-used accumulator
+(`FuelUsedAccum:FuelUsedWord`, saturating at $FFFFFF). It is not a measurement
+of physical fuel flow. The caller makes three cyclic channel calls for count 4,
+four otherwise. The table reads in bank 0 and output pointers in bank F are
+distinct: $4800 = 08 02 01 04 (IoStatus3 masks); $4804 = 20 08 04 10
+(OutputDriverFaults masks); $4808 = 8830 8828 8824 882C (16-bit pointers).
+Both images share these bytes. The stock $02 option remaps the incoming index
+as (B-1) & 3. This cannot independently address six channels.
+
+The ported FuelEventOffset description retains a reference-image table address
+$ABC3, not the actual 128 KB destination. For 04887050 the lookup curve at
+$51F3 feeds the table at $51E7; for 05293013AC the curve at $51FF feeds $51F3.
+Both curves contain pairs (6,0), (36,1), (66,2); FuelEventCylFactor = 3 at
+$51FB/$5207. Both 12-byte tables are
+01 02 03 / 02 03 00 / 03 00 01 / 00 01 02.
+Index = 3*CylinderIndex + lookup result (the latter is 0..2 for the stock
+curve); only the four stock rows are present. No evidence supports extending
+the index into the following table header.
+
+In 1997 EventFuelScaleApply consumes the RAM InjectorIndex, while
+StartInjectorPulse takes the requested channel in B, including calls from
+FuelEventCalc which need not write InjectorIndex first. Its scaling path is
+gated by FuelModeFlags bit 3, set in IC4/OC5 and cleared by EventTableCheck
+once the counters are zero. Whether a stale index is reachable with this
+flag set is still open. 1996 lacks these consumers in the reviewed paths.
+
+Source-level findings only; exact-image execution and hardware verification pending.
