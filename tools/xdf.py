@@ -246,10 +246,10 @@ def main():
             for r in range(n):
                 q = a + 1 + 4 * r
                 off = (d[q] << 8) | d[q + 1]
-                labels.append("%s %s" % (names.ram.get(off, "$%04X" % off), {0: "clear", 2: "all set", 4: "above"}.get(d[q + 2], "test %d" % d[q + 2])))
+                labels.append("%s %s" % (names.ram.get(off, "$%04X" % off), {0: "clear", 2: "all set", 4: "above", 6: "below"}.get(d[q + 2], "unknown test %d" % d[q + 2])))
             e = X.item("XDFTABLE", t["name"], "Condition list for ConditionTable: per row RAM offset (2 bytes), test "
-                       "(0 = mask bits must be clear, 2 = all set, 4 = value above), mask. Clearing a mask bit drops "
-                       "that condition. $%04X" % a, ["Diagnostics"])
+                       "(0 = mask bits clear, 2 = all set, 4 = unsigned value strictly above, "
+                       "6 = unsigned value strictly below), mask or threshold. $%04X" % a, ["Diagnostics"])
             X.label_axis(e, "x", ["addr hi", "addr lo", "test", "mask"])
             X.label_axis(e, "y", labels)
             X.zdata(e, a + 1, n, 4, "raw", False, output="3")
