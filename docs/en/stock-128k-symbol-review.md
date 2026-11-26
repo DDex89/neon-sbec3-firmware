@@ -1,6 +1,6 @@
 # Stock A/B engineering symbol and dependency review (2026-11-26)
 
-Scope: 04887050 and 05293013AC only. Stock SBEC3 and ReCore had identical bank0, bank1 and equates blobs at stock 144e67b3f76e6778c25573dfe24e663c129fc501 and ReCore 221e73e1fc4c627cca8dbc5c80eba22840d83419. All eleven stock XDF blobs matched. ReCore-specific XDFs are separate. Preserve calibration, RAM addresses and executable instructions. The three confirmed EEPROM names are canonical in A/B after the migration below; other descriptive candidates remain aliases.
+Scope: 04887050 and 05293013AC only. Stock SBEC3 and ReCore had identical bank0, bank1 and equates blobs at stock 144e67b3f76e6778c25573dfe24e663c129fc501 and ReCore 221e73e1fc4c627cca8dbc5c80eba22840d83419. All eleven stock XDF blobs matched. ReCore-specific XDFs are separate. Preserve calibration, RAM addresses and executable instructions. Confirmed EEPROM, retained ethanol and VSS names are canonical in A/B after the migrations below; other descriptive candidates remain aliases.
 
 | Historical or existing symbol | Canonical name or interpretation | A address | B address | Dependency |
 |---|---|---|---|---|
@@ -10,8 +10,9 @@ Scope: 04887050 and 05293013AC only. Stock SBEC3 and ReCore had identical bank0,
 | EepromWrite949 | EepromDataLow | F8489 | F84A5 | Second payload byte |
 | EepromFlags | Service flags | F848A | F84A6 | 7 request, 6 word, 5 in progress, 4 split continuation; 1 readback-table work, not retry count |
 | EepromWrite94B | EepromReadbackTableOffset | F848B | F84A7 | FE initial, 66/A0 terminal |
-| PowerDownCount | StoredFlexEthanol (candidate) | F8344 | F835E | EEPROM 00C; compared to FlexEthanol at shutdown; zero tests queue clearing |
-| Unnamed VSS event word | VssQualifiedEventCounter (candidate) | F8032 | F8034 | IC3; low byte feeds ResetCheckWord |
+| PowerDownCount | StoredFlexEthanol | F8344 | F835E | EEPROM 00C; compared to FlexEthanol at shutdown; zero tests queue clearing |
+| Unnamed VSS event word | VssQualifiedEventCounter | F8032 | F8034 | IC3; low byte feeds ResetCheckWord |
+| VSS event low byte | VssQualifiedEventCounterLow | F8033 | F8035 | Alias of word, read by MainLoop |
 | DistancePulses | CCD distance delta | F8466 | F8480 | Byte modulo 256, cleared before queue admission |
 | SriMileage | Service-mileage ring request | F801E | F8020 | Updated before durable commit, not absolute odometer |
 | RpmForBus / QSPI RX | Context-dependent receive word | FFD18 | FFD18 | MMIO, also used for SRI at reset |
@@ -29,4 +30,8 @@ See [EEPROM](eeprom-128k-audit.md), [architecture](architecture.md), [SCI/PIT](s
 
 Stock [4e9cfff](https://github.com/DDex89/neon-sbec3-firmware/commit/4e9cfff96a3018d99b125c0ed9bff58f129408b8) and ReCore [9359bc6](https://github.com/DDex89/recore-sbec3/commit/9359bc64a21efbc3de45fe4bc227277b33c38f82) migrate EepromWrite947 -> EepromAddrLow, EepromWrite949 -> EepromDataLow, EepromWrite94B -> EepromReadbackTableOffset in the A/B hand overlays, four port RAM/bit maps, and both checked-in bank1/equates sources. Addresses remain fixed; all 16 changed file blobs match between repositories. Nine instruction references and three stale inline bit comments per ROM updated. Inverse-name normalized source comparison and JSON parsing passed; no ROM/XDF changes. Full generator/build and exact-ROM regression remain pending. Other families retain legacy identifiers until independently audited.
 
-PowerDownCount follow-up: all direct named zero-test consumers reviewed. RunModeSwitch $15200/$124E0 and B-only MonTaskB $1894E test nonzero RAM, defer while EepromFlags.7 is set, otherwise queue zero to EEPROM $00C. Together with EepromReadInit mapping $00C -> $F8344/$F835E and CheckPowerDown storing FlexEthanol there, this supports StoredFlexEthanol as the descriptive name. Indirect accesses and actual value scaling not exhaustively verified; identifier retained for a separate migration.
+PowerDownCount follow-up: all direct named zero-test consumers reviewed. RunModeSwitch $15200/$124E0 and B-only MonTaskB $1894E test nonzero RAM, defer while EepromFlags.7 is set, otherwise queue zero to EEPROM $00C. Together with EepromReadInit mapping $00C -> $F8344/$F835E and CheckPowerDown storing FlexEthanol there, this supports StoredFlexEthanol as the descriptive name. Indirect accesses and actual value scaling not exhaustively verified; identifier is now canonical in A/B.
+
+## Retained ethanol and VSS canonical names
+
+Stock [2d52496](https://github.com/DDex89/neon-sbec3-firmware/commit/2d5249633efdaaa3e843d75ab7d9ae53595d49a6), ReCore [ae9007d](https://github.com/DDex89/recore-sbec3/commit/ae9007d377e5468faa0415a003d5d7e8b92f3078). A/B hand and four port RAM maps now name StoredFlexEthanol at F8344/F835E (one byte), VssQualifiedEventCounter at F8032/F8034 (big-endian word), and VssQualifiedEventCounterLow at F8033/F8035 (alias used by MainLoop). Direct Z-relative scan included adjacent offsets; no other named or numeric direct overlapping word access identified in the reviewed banks. EEPROM readback table maps 00C to the retained ethanol byte. CheckPowerDown compares the live ethanol byte against this copy, writes at difference >=18 hex, and stores successful returned readback; RunModeSwitch and B MonTaskB request zeroing. VSS four direct word operations and one byte load per ROM retain original operand widths. Seven ethanol operands and ten VSS operands changed in total; exact inverse substitution recovered original bank text, equates validated with unchanged offsets. ReCore source fixture updated for symbolic operands; execution and full regeneration pending. Indirect aliases not exhaustively excluded; physical VSS and ethanol scaling unresolved. No global rename outside A/B.
