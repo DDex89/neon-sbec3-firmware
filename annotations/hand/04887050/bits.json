@@ -87,7 +87,7 @@
  },
  "EepromFlags": {
   "0": "unresolved; no single-bit 01 access found in reviewed A/B banks",
-  "1": "readback-table work pending; EepromWrite94B is the table byte offset (EepromWriteService / EepromWriteQueue)",
+  "1": "readback-table work pending; EepromReadbackTableOffset is the table byte offset (EepromWriteService / EepromWriteQueue)",
   "2": "bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)",
   "3": "bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)",
   "4": "second byte of a word write in progress (EepromWriteService)",

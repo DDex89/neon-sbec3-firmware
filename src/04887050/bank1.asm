@@ -5956,8 +5956,8 @@ L14062:
         TZY
         TPD
         TBXK
-        LDAB    >EepromWrite94B,Z
-        BRSET   >EepromFlags,Z,#$02,L1409E               ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
+        LDAB    >EepromReadbackTableOffset,Z
+        BRSET   >EepromFlags,Z,#$02,L1409E               ; bit 1: readback-table work pending; EepromReadbackTableOffset is the table byte offset (EepromWriteService / EepromWriteQueue)
         LDAA    >BusMsg91Byte1,Z
         BRCLR   >EepromFlags,Z,#$08,L1408C               ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
         BCLR    >EepromFlags,Z,#$08                      ; bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
@@ -5975,14 +5975,14 @@ L1408C:
         BNE     L140AA
         BRA     L140A2
 L1409E:
-        BCLR    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
+        BCLR    >EepromFlags,Z,#$02                      ; bit 1: readback-table work pending; EepromReadbackTableOffset is the table byte offset (EepromWriteService / EepromWriteQueue)
 L140A2:
         INCB
         INCB
         CMPB    #$66
         BCC     L140C6
 L140AA:
-        STAB    >EepromWrite94B,Z
+        STAB    >EepromReadbackTableOffset,Z
         LDX     #$3F84
         ABX
         LDE     $0000,X
@@ -5993,7 +5993,7 @@ L140AA:
         BRA     L140E8
 L140C6:
         LDAA    #$FE
-        STAA    >EepromWrite94B,Z
+        STAA    >EepromReadbackTableOffset,Z
         LDD     #$0300
         STD     >TRB,Z
         PSHM    CCR
@@ -6011,7 +6011,7 @@ L140E8:
 ;---------------------------------------------------------------------------------------------------
 EepromReadInit:
         LDAB    #$FE
-        STAB    >EepromWrite94B,Z
+        STAB    >EepromReadbackTableOffset,Z
         TZY
         TPD
         TBXK
@@ -6097,7 +6097,7 @@ EepromWriteService:
         BRCLR   >EepromFlags,Z,#$10,L141AA               ; bit 4: second byte of a word write in progress (EepromWriteService)
         BCLR    >EepromFlags,Z,#$10                      ; bit 4: second byte of a word write in progress (EepromWriteService)
         INCW    >EepromAddr,Z
-        LDAA    >EepromWrite949,Z
+        LDAA    >EepromDataLow,Z
         STAA    >EepromData,Z
 L141AA:
         LDD     #$0006
@@ -6122,9 +6122,9 @@ L141AA:
         LDAB    >EepromData,Z
         STD     >TR6,Z
         BRCLR   >EepromFlags,Z,#$40,L14214               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        BRSET   >EepromWrite947,Z,#$03,L1420C
+        BRSET   >EepromAddrLow,Z,#$03,L1420C
         BSET    >CR6,Z,#$80
-        LDAB    >EepromWrite949,Z
+        LDAB    >EepromDataLow,Z
         STD     >TR7,Z
         LDD     #$0705
         BRA     L1421C
@@ -6163,7 +6163,7 @@ L14250:
         BRSET   >EepromFlags,Z,#$10,L14292               ; bit 4: second byte of a word write in progress (EepromWriteService)
         BRCLR   >EepromFlags,Z,#$40,L1428E               ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
         BCLR    >EepromFlags,Z,#$40                      ; bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
-        CMPB    >EepromWrite949,Z
+        CMPB    >EepromDataLow,Z
         BEQ     L1428E
 L1427C:
         JSR     QspiCommandInit
@@ -6186,8 +6186,8 @@ L142A0:
         CMPB    #$66
         BCS     L142A0
 L142AE:
-        STAB    >EepromWrite94B,Z
-        BSET    >EepromFlags,Z,#$02                      ; bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
+        STAB    >EepromReadbackTableOffset,Z
+        BSET    >EepromFlags,Z,#$02                      ; bit 1: readback-table work pending; EepromReadbackTableOffset is the table byte offset (EepromWriteService / EepromWriteQueue)
 L142B6:
         BCLR    >EepromFlags,Z,#$A0                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set); bit 5: write in progress (EepromWriteService)
         BSETW   >EepromAddr,Z,#$FFFF

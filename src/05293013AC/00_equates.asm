@@ -952,9 +952,9 @@ OutputStatusWord equ $049A        ; $F849A
 OutputStatusPrev equ $049C        ; $F849C
 AsdRelay940      equ $049E        ; $F849E
 EepromAddr       equ $04A2        ; $F84A2
-EepromWrite947   equ $04A3        ; $F84A3
+EepromAddrLow    equ $04A3        ; $F84A3
 EepromData       equ $04A4        ; $F84A4
-EepromWrite949   equ $04A5        ; $F84A5
+EepromDataLow    equ $04A5        ; $F84A5
 EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
 ;                 bit 6: word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)
@@ -962,9 +962,9 @@ EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 4: second byte of a word write in progress (EepromWriteService)
 ;                 bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
 ;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
-;                 bit 1: readback-table work pending; EepromWrite94B is the table byte offset (EepromWriteService / EepromWriteQueue)
+;                 bit 1: readback-table work pending; EepromReadbackTableOffset is the table byte offset (EepromWriteService / EepromWriteQueue)
 ;                 bit 0: unresolved; no single-bit 01 access found in reviewed A/B banks
-EepromWrite94B   equ $04A7        ; $F84A7
+EepromReadbackTableOffset equ $04A7        ; $F84A7
 SecurityStatus   equ $04A8        ; $F84A8
 OutputTest94D    equ $04A9        ; $F84A9
 CamCrank950      equ $04AC        ; $F84AC
