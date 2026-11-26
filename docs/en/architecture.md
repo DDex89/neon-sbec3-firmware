@@ -233,6 +233,12 @@ The stock IC4 entry requires Options0323 bit 7 ($81 in 04887050, $05 in 05293013
 
 [ReCore source audit and enumerated bounds](https://github.com/DDex89/recore-sbec3/blob/e18ac2ccdc55c52be0da7be2d6df0e58ad672af3/patches/spark/v2/INTEGRATION_GATE.md#gpt-periodchangetrack-and-irq4-computed-writes-2026-11-26). These are source-level conclusions, not newly executed CPU16 tests; actual asynchronous scratch and stack safety remain open.
 
+### IC1 direct indexed writes (2026-11-26)
+
+Both reviewed ROMs contain 12 explicit indexed stores in the direct IC1 body (excluding called routines). Ten word stores use the ROM pointer table at $4816: entries $F91A and $F918, interpreted in bank F as timer MMIO $FF918–$FF91B. Two byte stores use a base of $F8065 (04887050) or $F8066 (05293013AC) plus the coil selector 0/1; the respective RAM bounds are $F8065–$F8066 and $F8066–$F8067. These bounds assume preservation of the selector, index banks and saved registers.
+
+The coil selector is published to the shared Temp4F0 byte at $F80F0. Three direct producers construct 0/1 from CrankSyncFlags.5 and Options031D.2; the alternate-coil path XORs the selector with 1. On one path SparkEventCalc executes before the saved selector is read, so transitive scratch preservation and actual interrupt/exception timing still require verification. This is a direct-body source analysis, not a global RAM or hardware-safety proof. [Pinned evidence](https://github.com/DDex89/recore-sbec3/blob/2e734674c366acd27ab43c870d1486f9909dae28/patches/spark/v2/INTEGRATION_GATE.md#ic1-direct-computed-store-inventory-and-batched-gptccd-fixtures-2026-11-26). No stock code or calibration edits.
+
 ## Open questions
 
 - The exact part used as the CS2 device.
