@@ -19739,23 +19739,23 @@ KnockNoiseCalc:
         LDAA    >EngineRpm,Z
         LDX     #KnockNoiseMax
         JSR     Lookup2D
-        STAA    >KnockNoiseDA6,Z
+        STAA    >KnockNoiseUpperBound,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockNoiseLearnWeight
+        LDX     #KnockNoiseMin
         JSR     Lookup2D
-        STAA    >KnockNoiseDA7,Z
+        STAA    >KnockNoiseLowerBound,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockSensorCheckRpm
+        LDX     #KnockMapThresholdRpm
         JSR     Lookup2D
         STAA    >KnockMapThreshold,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockWindowRpm
+        LDX     #KnockNoiseFilterWeightRpm
         JSR     Lookup2D
-        STAA    >KnockWindowFactor,Z
+        STAA    >KnockNoiseFilterWeight,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRetardMaxRpm
+        LDX     #KnockSensorSignalMinRpm
         JSR     Lookup2D
-        STAA    >KnockSensorCheck,Z
+        STAA    >KnockSensorSignalMin,Z
         RTS
         dc.b    $01,$00,$02,$03,$00,$02,$03,$01,$05,$00,$01,$02,$03,$04
 
@@ -19794,7 +19794,7 @@ L1D4D2:
         STAB    >KnockSample6CE,Z
         CMPB    >KnockSignalMax
         BCC     L1D4EC
-        CMPB    >KnockSensorCheck,Z
+        CMPB    >KnockSensorSignalMin,Z
         BCC     L1D4F6
 L1D4EC:
         BRSET   >FaultSet06,Z,#$08,L1D4F6
@@ -19807,7 +19807,7 @@ L1D4F6:
         STAB    >KnockSample6CF,Z
         CMPB    >KnockSignalMax
         BCC     L1D516
-        CMPB    >KnockSensorCheck,Z
+        CMPB    >KnockSensorSignalMin,Z
         BCC     L1D520
 L1D516:
         BRSET   >FaultSet0B,Z,#$08,L1D544
@@ -19988,12 +19988,12 @@ L1D702:
         BLS     L1D6DA
         BRA     L1D74C
 L1D70E:
-        LDAB    >KnockWindowFactor,Z
+        LDAB    >KnockNoiseFilterWeight,Z
         LDAA    $00,Y
         MUL
         ADCA    #$00
         STAA    >Temp4F6,Z
-        LDAB    >KnockWindowFactor,Z
+        LDAB    >KnockNoiseFilterWeight,Z
         COMB
         ADDB    #$01
         BCC     L1D728
@@ -20005,10 +20005,10 @@ L1D728:
         BCC     L1D736
         LDAA    #$FF
 L1D736:
-        LDAB    >KnockNoiseDA6,Z
+        LDAB    >KnockNoiseUpperBound,Z
         CBA
         BCC     L1D74A
-        LDAB    >KnockNoiseDA7,Z
+        LDAB    >KnockNoiseLowerBound,Z
         CBA
         BCS     L1D74A
         STAA    $00,Y
