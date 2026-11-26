@@ -84,5 +84,15 @@
   "5": "speed control fitted: set by EquipmentDetect once the speed control switch inputs were seen, or by EquipmentProbe when the probed input answers",
   "6": "A/C fitted: set by EquipmentDetect once an A/C request was seen (AcPresentCounter)",
   "7": "power steering pressure switch fitted: set by EquipmentDetect once the switch input was seen (PspPresentCounter); used by the idle code and PspSwitchMonitor"
+ },
+ "EepromFlags": {
+  "0": "unresolved; no single-bit 01 access found in reviewed A/B banks",
+  "1": "readback-table work pending; EepromWrite94B is the table byte offset (EepromWriteService / EepromWriteQueue)",
+  "2": "bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)",
+  "3": "bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)",
+  "4": "second byte of a word write in progress (EepromWriteService)",
+  "5": "write in progress (EepromWriteService)",
+  "6": "word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)",
+  "7": "EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)"
  }
 }

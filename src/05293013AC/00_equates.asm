@@ -962,8 +962,8 @@ EepromFlags      equ $04A6        ; $F84A6
 ;                 bit 4: second byte of a word write in progress (EepromWriteService)
 ;                 bit 3: bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)
 ;                 bit 2: bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)
-;                 bit 1: write retry pending, retry count at EepromWrite94B (EepromWriteService)
-;                 bit 0: write started, waiting for the EEPROM to finish (EepromWriteService)
+;                 bit 1: readback-table work pending; EepromWrite94B is the table byte offset (EepromWriteService / EepromWriteQueue)
+;                 bit 0: unresolved; no single-bit 01 access found in reviewed A/B banks
 EepromWrite94B   equ $04A7        ; $F84A7
 SecurityStatus   equ $04A8        ; $F84A8
 OutputTest94D    equ $04A9        ; $F84A9

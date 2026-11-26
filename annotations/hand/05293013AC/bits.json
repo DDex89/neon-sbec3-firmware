@@ -20,12 +20,12 @@
   "7": "upstream O2 sensor 1 fitted (ClosedLoopManager, FuelSysTooRich1Monitor, FuelSysTooLean1Monitor, O2HeaterMonitor, PurgeCellTrimFilter)"
  },
  "Options0321": {
+  "0": "copied to EquipmentFlags bit 1 at reset",
   "1": "fan relay variant (FanControl, ActuatorTestMain)",
   "3": "fan control variant (FanMain, AcCutLogic)",
   "4": "output driver variant (QspiOutputStatus, Isr_PIT)",
   "5": "transmission variant: at reset an automatic gets EquipmentFlags bit 4 instead of bit 5 and transmission type 3 instead of 4; also GearStateUpdate, TccMonitor, SpeedCtlShift, IdleRpmTarget and others",
-  "7": "fan output control on (FanOutputControl)",
-  "0": "copied to EquipmentFlags bit 1 at reset"
+  "7": "fan output control on (FanOutputControl)"
  },
  "Options0323": {
   "0": "part-throttle fuel: MAP is held at the first x point of PartThrottleMapScale as a minimum (CalcFuelPulse)",
@@ -85,5 +85,15 @@
   "3": "copy of calibration bit $032C.7 at reset",
   "4": "automatic transmission, variant: set at reset instead of bit 5 when Options0321 bit 5 is set",
   "5": "automatic transmission: set at reset unless Options0325 bit 5 (manual) or Options0321 bit 5"
+ },
+ "EepromFlags": {
+  "0": "unresolved; no single-bit 01 access found in reviewed A/B banks",
+  "1": "readback-table work pending; EepromWrite94B is the table byte offset (EepromWriteService / EepromWriteQueue)",
+  "2": "bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)",
+  "3": "bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)",
+  "4": "second byte of a word write in progress (EepromWriteService)",
+  "5": "write in progress (EepromWriteService)",
+  "6": "word write: two bytes to write (set with bit 7 by NvWriteRequest, SriMileageStore)",
+  "7": "EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)"
  }
 }
