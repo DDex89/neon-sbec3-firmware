@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 from analyse import Analysis
 from syntax16 import format_insn
 import caltables
+from fault_helpers import fault_table_bounds, fault_row_code, fault_bits
 
 BANK = 0x10000
 ANN = os.path.join(ROOT, "annotations")
@@ -121,8 +122,8 @@ class Names:
             for k, v in own("bits.json").items():
                 if isinstance(v, dict):
                     self.bits[k] = v
-        if ref:
-            self.bits.update(fault_bits(data))
+        self.fault_table = fault_table_bounds(data, own("tables.json"))
+        self.bits.update(fault_bits(data, self.fault_table))
 
     def name(self, a):
         if a in self.labels_ann:
@@ -184,24 +185,6 @@ class Names:
             self.used[s] = off
             return s
         return z
-
-
-FAULT_TABLE, FAULT_ROWS = 0x4052, 224
-
-
-def fault_bits(data):
-    """FaultSetNN / FaultMemNN bit -> P-code, from the fault table of the reference image
-    (row: index, count, ?, flags, bit mask, byte offset, P-code)."""
-    out = collections.defaultdict(dict)
-    for r in range(FAULT_ROWS):
-        row = data[FAULT_TABLE + 10 * r:FAULT_TABLE + 10 * r + 10]
-        if row[0] != r or bin(row[4]).count("1") != 1 or row[5] >= 0x1C:
-            continue
-        code = "P%02X%02X" % (row[6], row[7])
-        text = code if code != "P0000" else "fault row $%02X, no P-code" % r
-        for arr in ("FaultSet", "FaultMem"):
-            out["%s%02X" % (arr, row[5])][str(row[4].bit_length() - 1)] = text
-    return out
 
 
 BIT_OPS = ("BSET", "BCLR", "BRSET", "BRCLR", "BSETW", "BCLRW")
@@ -423,7 +406,7 @@ class Calibration:
                 p = a + r * t["row_size"]
                 b = d[p:p + t["row_size"]]
                 w = [(b[i] << 8) | b[i + 1] for i in range(0, len(b), 2)]
-                pc = "P%02X%02X" % (d[w[0] + 6], d[w[0] + 7]) if FAULT_TABLE <= w[0] < FAULT_TABLE + 10 * FAULT_ROWS else "$%04X" % w[0]
+                pc = fault_row_code(d, w[0], self.names.fault_table) or "$%04X" % w[0]
                 note = "%s: %s & $%02X" % (pc, self.names.ram.get(w[1], "$%04X,Z" % w[1]), w[2] & 0xFF)
                 if w[3]:
                     note += ", %s & $%02X" % (self.names.ram.get(w[3], "$%04X,Z" % w[3]), w[4] & 0xFF)
@@ -436,8 +419,9 @@ class Calibration:
                     return self.names.labels.get((c["code_bank"] << 16) | w, "$%X%04X" % (c["code_bank"], w))
                 if w in self.names.ram:
                     return self.names.ram[w]
-                if FAULT_TABLE <= w < FAULT_TABLE + 10 * FAULT_ROWS and (w - FAULT_TABLE) % 10 == 0:
-                    return "P%02X%02X row" % (d[w + 6], d[w + 7])
+                code = fault_row_code(d, w, self.names.fault_table)
+                if code:
+                    return code + (" row" if code.startswith("P") else "")
                 return "$%04X" % w
             n = t["size"]
             for p in range(a, a + n, 8):
@@ -464,12 +448,11 @@ class Calibration:
                 p = a + r * t["row_size"]
                 b = d[p:p + t["row_size"]]
                 w = [(b[i] << 8) | b[i + 1] for i in range(0, len(b), 2)]
-                fr = self.data[w[3]:w[3] + 10]
                 conds = ", ".join(self.items[x]["name"] if x in self.items else "$%04X" % x for x in w[4:7])
                 note = "%s, %s, run when MainLoopCounter & $%02X = 0; conditions %s; result %s & $%02X" % (
                     self.names.ram.get(w[1], "$%04X,Z" % w[1]),
-                    "P%02X%02X" % (fr[6], fr[7]) if FAULT_TABLE <= w[3] < FAULT_TABLE + 10 * FAULT_ROWS and (w[3] - FAULT_TABLE) % 10 == 0
-                    else "data " + self.names.ram.get(w[3], "$%04X" % w[3]),
+                    fault_row_code(d, w[3], self.names.fault_table)
+                    or "data " + self.names.ram.get(w[3], "$%04X" % w[3]),
                     b[5] & 0x3F, conds, self.names.ram.get(w[8], "$%04X" % w[8]), w[9] & 0xFF)
                 out.append("        dc.b    " + ",".join("$%02X" % x for x in b[:10]) + " ; " + note)
                 out.append("        dc.b    " + ",".join("$%02X" % x for x in b[10:]))
