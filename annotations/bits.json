@@ -252,8 +252,8 @@
   "4": "second byte of a word write in progress (EepromWriteService)",
   "3": "bus message $91 write request, first kind (BusEepromWrite -> EepromWriteQueue)",
   "2": "bus message $91 write request, second kind (BusEepromWrite -> EepromWriteQueue)",
-  "1": "write retry pending, retry count at EepromWrite94B (EepromWriteService)",
-  "0": "write started, waiting for the EEPROM to finish (EepromWriteService)"
+  "1": "A/B 128 KiB: readback-table work pending; EepromWrite94B is a table byte offset, not a retry count (other ROMs not independently reviewed)",
+  "0": "legacy interpretation: write started / waiting; not established by reviewed A/B EepromWriteService"
  },
  "EgrFlags": {
   "5": "EGR held off by a stored EGR-related fault (FaultMem04 bit 6 or FaultMem03 bit 1)",

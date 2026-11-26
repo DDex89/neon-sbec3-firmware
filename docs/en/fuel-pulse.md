@@ -105,8 +105,9 @@ count) and of `CalcFuelPulse` (above), and runs in CI on 05293190AC and 04887050
 ## Downstream injection and cylinder-count audit (1996/1997)
 
 Source-level evidence for 04887050 and 05293013AC; not an exact-ROM execution or
-bench validation. The stock code contains four- and six-cylinder paths; changing the count byte
-alone does not convert the Neon calibration to six cylinders.
+bench validation. Preserve both four- and six-cylinder architecture in ReCore;
+initial production targets remain the stock four-cylinder Neon. Changing the
+count byte alone does not convert this calibration to six cylinders.
 
 - Both images have `CylinderCount = $04`. The IC1 cylinder counter and fuel
   scheduler wrap at this count. `FuelEventCalc` explicitly tests count == 6
@@ -168,8 +169,10 @@ caller validation; do not silently clamp or wrap.
 In 1997 the IC4/OC5 history scan and counter initialization, EventFuelScaleApply
 and EventTableCheck address $F8700..$F8705 (count-dependent counters) and
 $F8706..$F870B (history). EventHistoryShift shifts four or six entries;
-the history initializer sets all six to FF. These are live scratch/history accesses, not a global alias or asynchronous
-integrity proof.
+the history initializer sets all six to FF. For valid indices and supported
+table rows, these accesses are outside candidate $F85F2..$F85FF; that is
+not a global alias or asynchronous integrity proof. Keep the entire
+$F8700..$F87FF page excluded from persistent allocation.
 The four-entry output pointers and the 12-byte stock per-cylinder event
 table at $51F3 (four rows of three) require independent six-cylinder evidence.
 
@@ -178,7 +181,7 @@ Evidence: [1996 bank 0](../../src/04887050/bank0.asm),
 [1997 bank 1](../../src/05293013AC/bank1.asm),
 [1997 equates](../../src/05293013AC/00_equates.asm).
 No firmware bytes, RAM allocation, XDF, or simulator semantics changed.
-Exact-ROM fixtures and hardware mapping remain pending.
+Exact-ROM fixtures and hardware mapping remain pending; CI held per AGENTS.md.
 
 ### Injector output accounting and event-offset correction
 
@@ -297,3 +300,22 @@ these reviewed accumulator operations is excluded under their
 entry/mask invariants. IRQ7, exception behavior, computed aliases,
 foreground caller-mask contract, and actual bus timing are not
 established by this local proof. No CPU16 execution or bench capture.
+
+### VSS distance delta versus service-mileage retention (128 KB)
+
+The same qualified IC3 event increments both the byte DistancePulses
+and a separate retained 16-bit event word ($F8032/$F8034). The latter
+sets $F830E.2/$F8325.2 on natural wrap or when the option-dependent
+threshold $8333 is exceeded. Its low byte is also the running reset-key
+source; it is not a separate RAM variable. The foreground mileage task
+(SriMileageStore $121B8 / Sub_120DC $120DC) services the latch once per
+256 main-loop passes, deferring while EEPROM request bit 7 is set.
+It examines four QSPI receive words at $FFD18..$FFD1F, picks the largest
+unsigned word having a circular predecessor exactly one smaller modulo
+65536, and queues the next word to a cyclic EEPROM slot (0/2/4/6).
+SriMileage is updated at request time, not after confirmed durable write.
+The latch can coalesce events; this ring is not a lossless trip-distance
+source. Physical distance per event remains uncalibrated. The CCD $84
+schedule and loss limitations above still apply. Exact-ROM ring fixtures
+are pending; stock code and calibration remain unchanged.
+
