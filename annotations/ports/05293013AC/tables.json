@@ -1176,17 +1176,17 @@
    "auto": false
   },
   "1CA3": {
-   "name": "KnockNoiseLearnWeight",
+   "name": "KnockNoiseMin",
    "category": "Knock",
-   "desc": "A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA7 and used as the lower clamp in KnockCylinderRetard. Legacy name; not a filter weight.",
+   "desc": "A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseLowerBound and used as the lower clamp in KnockCylinderRetard.",
    "x": "rpm32",
    "y": "raw",
    "auto": false
   },
   "1C97": {
-   "name": "KnockWindowRpm",
+   "name": "KnockNoiseFilterWeightRpm",
    "category": "Knock",
-   "desc": "A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockWindowFactor. Complementary coefficient weights KnockSignal. Legacy name; not a direct sampling-window duration.",
+   "desc": "A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockNoiseFilterWeight. Complementary coefficient weights KnockSignal. Not a direct sampling-window duration.",
    "x": "raw",
    "y": "mult256",
    "auto": false
@@ -1215,9 +1215,9 @@
    "auto": false
   },
   "3DD8": {
-   "name": "KnockRetardMaxRpm",
+   "name": "KnockSensorSignalMinRpm",
    "category": "Knock",
-   "desc": "A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorCheck. A filtered value below this or at/above KnockSignalMax enters fault qualification. Legacy name; not a retard angle.",
+   "desc": "A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorSignalMin. A filtered value below this or at/above KnockSignalMax enters fault qualification. Not a retard angle.",
    "x": "rpm32",
    "y": "raw",
    "auto": false
@@ -1853,9 +1853,9 @@
    "auto": false
   },
   "1C7B": {
-   "name": "KnockSensorCheckRpm",
+   "name": "KnockMapThresholdRpm",
    "category": "Knock",
-   "desc": "A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior. Legacy name; not a diagnostic signal threshold.",
+   "desc": "A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior.",
    "x": "rpm32",
    "y": "raw",
    "auto": false
@@ -1944,7 +1944,7 @@
   "1CAF": {
    "name": "KnockNoiseMax",
    "category": "Knock",
-   "desc": "A/B: upper bound of learned background knock noise versus EngineRpm; stored in KnockNoiseDA6 and used as the upper clamp in KnockCylinderRetard.",
+   "desc": "A/B: upper bound of learned background knock noise versus EngineRpm; stored in KnockNoiseUpperBound and used as the upper clamp in KnockCylinderRetard.",
    "x": "raw",
    "y": "raw",
    "auto": false
