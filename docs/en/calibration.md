@@ -355,10 +355,10 @@ Equality fails both numeric comparisons. The check returns CCR Z=1 if every entr
 an empty list), and Z=0 on the first failure; callers branch on BEQ/BNE. The four dispatch
 slots are 0, 6, 12, 18 bytes, indexed by test codes 0, 2, 4, 6. The fourth slot is a JSR
 into the previously undecoded `CMPA $03,Y; BCC` sequence (bytes 58 03 B4 00).
-Entry addresses (ConditionTable / proposed ConditionBelow): 04887050 $1F90C/$1F976,
+Entry addresses (ConditionTable / ConditionBelow): 04887050 $1F90C/$1F976,
 05293013AC $1F9DA/$1FA44, reference 05293190AC $20B1C/$20B86.
 Legacy labels `ConditionBitSet` and `ConditionBitsClear` actually implement all-clear and
-all-set respectively; proposed canonical names are `ConditionBitsClear` and
+all-set respectively; canonical names are `ConditionBitsClear` and
 `ConditionBitsAllSet`. This is a naming correction, not a change in firmware behavior. The 48 lists lie in bank 0
 between $33CA and $4015 and are laid out in the source with each entry decoded, for example
 `CatBank1Conds1`: the catalyst monitor runs only while none of 19 bytes of stored faults (`FaultMem*`,

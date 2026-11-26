@@ -110,6 +110,20 @@ class Analysis:
                 if not ok(decode(self.data, a), a):
                     break
                 out.append(a); n += 1
+            # ConditionTable: three JSR/BRA pairs and a final JSR falling
+            # through to the common check. Require the exact relative layout.
+            if stride == 6 and n == 3 and limit >= 4:
+                join = base + 22
+                last = decode(self.data, base + 18)
+                pairs = [decode(self.data, base + 6 * i + 4) for i in range(3)]
+                calls = [decode(self.data, base + 6 * i) for i in range(3)]
+                if (last and last.mn == "JSR" and last.mode == "EXT20"
+                        and last.target() == base + 62
+                        and all(p and p.mn == "BRA" and p.target() == join for p in pairs)
+                        and all(c and c.target() == base + off for c, off in zip(calls, (46, 50, 56)))
+                        and self.data[base + 38:base + 46] == bytes.fromhex("00000006000C0012")
+                        and self.data[base + 62:base + 66] == bytes.fromhex("5803B400")):
+                    out.append(base + 18)
         if not out:
             self.indirect.append(ins.addr)
             return []
