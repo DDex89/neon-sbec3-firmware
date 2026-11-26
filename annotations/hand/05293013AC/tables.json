@@ -1,0 +1,9 @@
+{
+ "_comment": "Family B hand descriptions; verified against 05293013AC source. Address overlay follows the existing tools/port.py family mapping.",
+ "tables": {
+  "51FF": {
+   "name": "FuelEventOffset",
+   "desc": "FuelEventCalc: FuelEventOffsetIn to column 0..2 (stock curve); added to 3 * CylinderIndex to index the 12-byte per-cylinder table at $51F3."
+  }
+ }
+}

@@ -212,3 +212,45 @@ once the counters are zero. Whether a stale index is reachable with this
 flag set is still open. 1996 lacks these consumers in the reviewed paths.
 
 Source-level findings only; exact-image execution and hardware verification pending.
+
+### Injector index lifecycle and CCD fuel accounting
+
+05293013AC has 14 pulse-call sites: eight calls through StartPulseCurrent
+(loads RAM InjectorIndex into B), one direct FuelEventSchedule call immediately
+after STAB InjectorIndex, and five direct FuelEventCalc sites. The latter may
+supply B without updating RAM InjectorIndex. In the forced four-channel group
+model (B=3,2,1,0 with a fixed RAM index 0..3), 12 of 16 B/index pairs differ.
+This is an arithmetic model, not a reachable-state or exact-ROM trace.
+
+The 1997 scaling path is gated by FuelModeFlags bit 3. The reviewed direct
+setter at IC4/OC5 L05FBC is bypassed by BRCLR Options0323,#$80 at ISR entry
+in stock 05293013AC ($05); the reset clears the flag. No normal setter has
+been established; indirect/diagnostic writers and asynchronous integrity
+remain open. The family calibration diff records $81 for 05293014AC, so this
+gate conclusion must not be applied to that sibling. 04887050 has $81 but
+lacks the same EventFuelScaleApply call path; no automatic extrapolation.
+
+Both ROMs also contain CcdTx84FuelUsed in bank 1. It reads the overlapping
+16-bit word beginning at FuelUsedAccum (F8463/F847D), masks with $FFF8,
+caps at $07F8, subtracts this quantity from that word, and reports the
+quantity divided by eight (0..255) in the high payload byte. It reads and
+clears DistancePulses for the other byte. The lowest byte of the 24-bit
+accumulator (F8465/F847F) is not modified by this operation. Named writes to
+FuelUsedAccum/FuelUsedWord occur in InjectorFuelAccount, StartInjectorPulse,
+and this overlapping CCD builder in both ROMs. No claim of exhaustive
+computed-writer coverage.
+
+InjectorFuelAccount has a single direct parent TipInFuelControl in each
+ROM; the latter has one named MainLoop call. It raises IPL to 7 with ORP
+#$00E0 before the timer read/modify/write and accumulator update, then
+clears IPL with ANDP #$FF1F (not a saved-mask restore). Table selection and
+loading the additive pulse precede that critical section. Trace the CCD
+dispatch/mask context and check temporal consistency of the foreground
+and ISR writers before claiming atomicity. Do not infer a live race from
+the overlapping access alone.
+
+Host arithmetic enumeration: all 65,536 possible upper words for the CCD
+quantize/cap/subtract operation, and 8,960 combinations of accumulator
+high byte, five low-word boundaries and seven addition boundaries for the
+24-bit saturating add model; zero mismatches against the corresponding
+integer invariants. No CPU16 execution or timing proof in this pass.

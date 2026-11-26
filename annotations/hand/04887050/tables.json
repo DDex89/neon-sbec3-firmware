@@ -63,6 +63,10 @@
    "y": "pos256",
    "z": "spark",
    "auto": false
+  },
+  "51F3": {
+   "name": "FuelEventOffset",
+   "desc": "FuelEventCalc: FuelEventOffsetIn to column 0..2 (stock curve); added to 3 * CylinderIndex to index the 12-byte per-cylinder table at $51E7."
   }
  }
 }
