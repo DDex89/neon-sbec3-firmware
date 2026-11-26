@@ -17,3 +17,19 @@ NvChecksum — сумма 258/306 байтов, не CRC. SriMileage обнов�
 Миграция: [SBEC3 2d52496](https://github.com/DDex89/neon-sbec3-firmware/commit/2d5249633efdaaa3e843d75ab7d9ae53595d49a6), [ReCore ae9007d](https://github.com/DDex89/recore-sbec3/commit/ae9007d377e5468faa0415a003d5d7e8b92f3078). VssQualifiedEventCounterLow — младший байт $F8033/$F8035. Семь обращений к сохранённому этанолу и десять обращений к счётчику VSS заменены без изменения адресов и ширины операндов. Обратная подстановка восстанавливает исходный текст банков. Проверки ReCore адаптированы, но не исполнены. Уточнение EEPROM: BRSET #03 требует оба бита, поэтому слоты SRI 0/2/4/6 не используют раздельную ветку записи; BCLR #A0 очищает оба флага 7 и 5. См. [аудит](../en/eeprom-128k-audit.md).
 
 Официальные имена контекстных слов и стадии Reset: [аудит Reset](reset-128k-context.md).
+
+## KnockNoiseCalc: семантика таблиц A/B (2026-11-26)
+
+Вход 1D42A/1558C. Все пять Lookup2D используют EngineRpm, последовательность инструкций совпадает. [Адреса RAM, исходные значения и ссылки на ASM](../en/stock-128k-symbol-review.md#knocknoisecalc-ab-lookup-semantics-2026-11-26).
+
+| Старое имя | Предлагаемое имя | A ROM | B ROM |
+|---|---|---|---|
+| KnockNoiseMax | KnockNoiseMax | 1C97 | 1CAF |
+| KnockNoiseLearnWeight | KnockNoiseMin | 1C8B | 1CA3 |
+| KnockSensorCheckRpm | KnockMapThresholdRpm | 1C63 | 1C7B |
+| KnockWindowRpm | KnockNoiseFilterWeightRpm | 1C7F | 1C97 |
+| KnockRetardMaxRpm | KnockSensorSignalMinRpm | 3DAD | 3DD8 |
+
+KnockCylinderRetard взвешивает старый фоновый шум и KnockSignal дополнительным коэффициентом, насыщает результат и ограничивает верхней/нижней границами (сначала проверяет верхнюю). Точная арифметика CPU16 требует теста. KnockSample квалифицирует ошибку при фильтрованном сигнале >= KnockSignalMax или ниже KnockSensorCheck с учетом существующего флага неисправности; второй канал зависит от 031F.6. Штатный нижний порог равен нулю, поэтому нижнее беззнаковое сравнение не вызывает ошибку. MAP: для KnockLearn/KnockLearnUpdate и коррекции KnockSample проходит равенство порогу; для обучения фонового шума KnockCylinderRetard равенство запрещает обучение.
+
+Единицы mult256 у нижней границы и spark у диагностического порога не подтверждаются потребителями. Требуется согласованное исправление hand/port JSON, ASM-комментариев, каталогов и XDF; соседние ROM отдельно не проверены. Данный проход изменяет только документацию. Контекстная адресация Z, остальные мониторы, регенерация и точные ROM-тесты остаются открытыми.
