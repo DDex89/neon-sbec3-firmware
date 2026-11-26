@@ -8018,23 +8018,23 @@ KnockNoiseCalc:
         LDAA    >EngineRpm,Z
         LDX     #KnockNoiseMax
         JSR     Lookup2D
-        STAA    >KnockNoiseDA6,Z
+        STAA    >KnockNoiseUpperBound,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockNoiseLearnWeight
+        LDX     #KnockNoiseMin
         JSR     Lookup2D
-        STAA    >KnockNoiseDA7,Z
+        STAA    >KnockNoiseLowerBound,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockSensorCheckRpm
+        LDX     #KnockMapThresholdRpm
         JSR     Lookup2D
         STAA    >KnockMapThreshold,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockWindowRpm
+        LDX     #KnockNoiseFilterWeightRpm
         JSR     Lookup2D
-        STAA    >KnockWindowFactor,Z
+        STAA    >KnockNoiseFilterWeight,Z
         LDAA    >EngineRpm,Z
-        LDX     #KnockRetardMaxRpm
+        LDX     #KnockSensorSignalMinRpm
         JSR     Lookup2D
-        STAA    >KnockSensorCheck,Z
+        STAA    >KnockSensorSignalMin,Z
         RTS
         dc.b    $01,$00,$02,$03,$00,$02,$03,$01,$05,$00,$01,$02,$03,$04
 
@@ -8073,7 +8073,7 @@ L15634:
         STAB    >KnockSample6CE,Z
         CMPB    >KnockSignalMax
         BCC     L1564E
-        CMPB    >KnockSensorCheck,Z
+        CMPB    >KnockSensorSignalMin,Z
         BCC     L15658
 L1564E:
         BRSET   >FaultSet06,Z,#$08,L15658
@@ -8086,7 +8086,7 @@ L15658:
         STAB    >KnockSample6CF,Z
         CMPB    >KnockSignalMax
         BCC     L15678
-        CMPB    >KnockSensorCheck,Z
+        CMPB    >KnockSensorSignalMin,Z
         BCC     L15682
 L15678:
         BRSET   >FaultSet0B,Z,#$08,L156A6
@@ -8268,12 +8268,12 @@ L15866:
         BLS     L1583E
         BRA     L158B0
 L15872:
-        LDAB    >KnockWindowFactor,Z
+        LDAB    >KnockNoiseFilterWeight,Z
         LDAA    $00,Y
         MUL
         ADCA    #$00
         STAA    >Temp4F6,Z
-        LDAB    >KnockWindowFactor,Z
+        LDAB    >KnockNoiseFilterWeight,Z
         COMB
         ADDB    #$01
         BCC     L1588C
@@ -8285,10 +8285,10 @@ L1588C:
         BCC     L1589A
         LDAA    #$FF
 L1589A:
-        LDAB    >KnockNoiseDA6,Z
+        LDAB    >KnockNoiseUpperBound,Z
         CBA
         BCC     L158AE
-        LDAB    >KnockNoiseDA7,Z
+        LDAB    >KnockNoiseLowerBound,Z
         CBA
         BCS     L158AE
         STAA    $00,Y
