@@ -3337,7 +3337,7 @@ KnockLearnCoolantMin:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockMapThresholdRpm ($1C7B): 2D table, 1 points, unsigned
-; A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior. Legacy name; not a diagnostic signal threshold.
+; A/B: MAP threshold versus EngineRpm; stored in KnockMapThreshold. Used by KnockSample, KnockLearn, KnockLearnUpdate and KnockCylinderRetard with consumer-specific equality behavior.
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $155B4
@@ -3368,7 +3368,7 @@ KnockRpmSteps:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockNoiseFilterWeightRpm ($1C97): 2D table, 2 points, unsigned
-; A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockNoiseFilterWeight. Complementary coefficient weights KnockSignal. Legacy name; not a direct sampling-window duration.
+; A/B: old-sample coefficient for the learned background knock noise filter versus EngineRpm; stored in KnockNoiseFilterWeight. Complementary coefficient weights KnockSignal. Not a direct sampling-window duration.
 ; x: raw, y: mult256 (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $155C4
@@ -3381,7 +3381,7 @@ KnockNoiseFilterWeightRpm:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockNoiseMin ($1CA3): 2D table, 5 points, unsigned
-; A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseLowerBound and used as the lower clamp in KnockCylinderRetard. Legacy name; not a filter weight.
+; A/B: lower bound of learned background knock noise versus EngineRpm; stored in KnockNoiseLowerBound and used as the lower clamp in KnockCylinderRetard.
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $155A4
@@ -6266,7 +6266,7 @@ KnockSignalMax:
 
 ;---------------------------------------------------------------------------------------------------
 ; KnockSensorSignalMinRpm ($3DD8): 2D table, 1 points, unsigned
-; A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorSignalMin. A filtered value below this or at/above KnockSignalMax enters fault qualification. Legacy name; not a retard angle.
+; A/B: lower unsigned filtered knock-signal diagnostic threshold versus EngineRpm; stored in KnockSensorSignalMin. A filtered value below this or at/above KnockSignalMax enters fault qualification. Not a retard angle.
 ; x: rpm32, y: raw (units: docs/en/calibration.md)
 ; Inputs: EngineRpm
 ; Read at $155D4
