@@ -37,3 +37,23 @@ PowerDownCount follow-up: all direct named zero-test consumers reviewed. RunMode
 Stock [2d52496](https://github.com/DDex89/neon-sbec3-firmware/commit/2d5249633efdaaa3e843d75ab7d9ae53595d49a6), ReCore [ae9007d](https://github.com/DDex89/recore-sbec3/commit/ae9007d377e5468faa0415a003d5d7e8b92f3078). A/B hand and four port RAM maps now name StoredFlexEthanol at F8344/F835E (one byte), VssQualifiedEventCounter at F8032/F8034 (big-endian word), and VssQualifiedEventCounterLow at F8033/F8035 (alias used by MainLoop). Direct Z-relative scan included adjacent offsets; no other named or numeric direct overlapping word access identified in the reviewed banks. EEPROM readback table maps 00C to the retained ethanol byte. CheckPowerDown compares the live ethanol byte against this copy, writes at difference >=18 hex, and stores successful returned readback; RunModeSwitch and B MonTaskB request zeroing. VSS four direct word operations and one byte load per ROM retain original operand widths. Seven ethanol operands and ten VSS operands changed in total; exact inverse substitution recovered original bank text, equates validated with unchanged offsets. ReCore source fixture updated for symbolic operands; execution and full regeneration pending. Indirect aliases not exhaustively excluded; physical VSS and ethanol scaling unresolved. No global rename outside A/B.
 
 Canonical context word names and Reset phase semantics: [reset/exception context](reset-128k-context.md).
+
+## KnockNoiseCalc: A/B lookup semantics (2026-11-26)
+
+Exact source: [A bank1](https://github.com/DDex89/neon-sbec3-firmware/blob/d5bb4eb74e91c56257d3bd33578cd8dd3ba91a4d/src/04887050/bank1.asm#L19738), [B bank1](https://github.com/DDex89/neon-sbec3-firmware/blob/d5bb4eb74e91c56257d3bd33578cd8dd3ba91a4d/src/05293013AC/bank1.asm#L8017). Entry 1D42A/1558C. All five Lookup2D calls use EngineRpm; instruction sequence identical.
+
+| Legacy table | Proposed alias | A ROM / RAM | B ROM / RAM |
+|---|---|---|---|
+| KnockNoiseMax | KnockNoiseMax | 1C97 / F8370 | 1CAF / F838A |
+| KnockNoiseLearnWeight | KnockNoiseMin | 1C8B / F8371 | 1CA3 / F838B |
+| KnockSensorCheckRpm | KnockMapThresholdRpm | 1C63 / F836E | 1C7B / F8388 |
+| KnockWindowRpm | KnockNoiseFilterWeightRpm | 1C7F / F836F | 1C97 / F8389 |
+| KnockRetardMaxRpm | KnockSensorSignalMinRpm | 3DAD / F837D | 3DD8 / F8397 |
+
+RAM names in table order: KnockNoiseDA6, KnockNoiseDA7, KnockMapThreshold, KnockWindowFactor, KnockSensorCheck. Identical stock raw decimal (x,y) pairs: max (48,58),(80,58),(112,68),(144,76),(176,76); min (48,22),(80,22),(112,22),(144,27),(176,27); MAP (255,146); weight (83,224),(94,245); diagnostic min (255,0).
+
+KnockCylinderRetard L1D70E/L15872 multiplies old learned noise by the weight and KnockSignal by complementary weight (256-weight, saturated to 255 if overflow); adds high product bytes with carry handling and saturates overflow to 255. The result is bounded to min/max (upper check first); exact CPU16 rounding pending fixtures. KnockWindowRpm is an old-sample retention coefficient, not a direct timer window length. KnockSample L1D4D2/L15634 filters channel 1 by ADD/ROR; filtered signal >= KnockSignalMax OR below KnockSensorCheck qualifies HwErrorFlags.6 unless FaultSet06.3 already set. Channel 2 is analogous (HwErrorFlags.5, FaultSet0B.3), gated by ROM 031F.6. Stock lower threshold zero makes the unsigned lower failure branch impossible. This is not a final DTC lifecycle proof.
+
+MAP equality differs by consumer: KnockLearn/KnockLearnUpdate reject below threshold; KnockSample reloads countdown at MAP >= threshold and rejects retard below threshold; KnockCylinderRetard background-noise learning rejects MAP >= threshold (L1D68E/L157F2).
+
+Existing table descriptions and y units mult256 (lower noise bound) and spark (diagnostic minimum) are misleading. Correct A/B hand overlays, port copies, then generated catalogues and XDF as a coordinated migration; independently audit sibling images before claiming equivalent use. No changes to symbols, units, binary or source instructions in this documentation-only pass. Z-relative contextual address review, remaining monitor conditions, regeneration, exact-ROM fixtures and CI pending.
