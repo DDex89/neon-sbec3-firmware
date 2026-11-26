@@ -270,3 +270,29 @@ In 05293013AC, CylinderBit ($086EA) explicitly sets XK=1. The three six-byte tab
 - Whether IC2 is the second edge of the crank signal (see the interrupt table).
 - Everything else still open (items marked "probably", data not decoded yet) is listed in
   [open-questions.md](open-questions.md). The second bus variant is PCI, which is SAE J1850 VPW.
+
+### 128 KB IC1 O2 trim and MAP/TPS filter address domains
+
+Source-level review limited to 04887050 and 05293013AC. O2UpTrim,
+O2DownTrim, O2SwitchState and O2FlexOffset use X-based RAM blocks at
+$F8500/$F8521 (1996) or $F850F/$F8530 (1997). In both images the 67
+constant-offset X store sites touch 30 distinct byte offsets per block
+after word-width expansion. The additional STAA E,X in O2SwitchState
+uses a pointer from descriptor +$24: $0516/$0537 or $0525/$0546,
+adds $8000 and sets XK=F. The loop increments E by two from 0 to 8
+(exclusive) and LSRE before storing; four bytes are written within
+the same blocks. The ROM descriptors start at $8714/$878C or
+$8802/$887A. With Options031E=$A2 the reviewed update wrappers use
+only the first group. These are conditional address domains, not
+a global RAM ownership proof.
+
+IC1 calls MapTpsFilters with A=$55, selecting the nonzero path.
+FilterWord writes one word at $F8329/$F832D or $F8343/$F8347;
+the other entry path additionally uses $F8331/$F834B. The latter
+path explicitly manipulates IPL, so the entry contract matters.
+O2 helpers also write shared scratch locations; address bounds
+alone do not prove interrupt-time scratch integrity.
+
+No original firmware bytes changed; exact-ROM regression assertions
+remain pending. Source evidence in the ReCore audit at
+[b30503ef](https://github.com/DDex89/recore-sbec3/commit/b30503efcfab33559a578273e9202e806951d51c).
