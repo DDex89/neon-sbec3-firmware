@@ -7743,18 +7743,18 @@ Isr_GPT_IC3:
         LDE     #$FFFF
 L0528C:
         STE     >VssBusValue2,Z
-        INCW    $0034,Z
+        INCW    >VssQualifiedEventCounter,Z
         LDAB    >Options031D
         BITB    #$0A
         BNE     L052A4
-        TSTW    $0034,Z
+        TSTW    >VssQualifiedEventCounter,Z
         BNE     L052B4
         BRA     L052B0
 L052A4:
-        LDD     $34,Z
+        LDD     <VssQualifiedEventCounter,Z
         CPD     #$8333
         BLS     L052B4
-        CLRW    $0034,Z
+        CLRW    >VssQualifiedEventCounter,Z
 L052B0:
         BSET    $0325,Z,#$04
 L052B4:
@@ -19148,7 +19148,7 @@ L0D3B6:
         JSR     Sub_1D806
         JSR     Sub_0757A
         JSR     Sub_1B360
-        LDAA    $35,Z
+        LDAA    <VssQualifiedEventCounterLow,Z
         TAB
         COMB
         STD     <ResetCheckWord,Z
@@ -19281,7 +19281,7 @@ L0D5B4:
         BRSET   >FaultSet07,Z,#$02,L0D5DE
         LDAA    <FlexEthanol,Z
         STAA    >EepromData,Z
-        SUBA    >PowerDownCount,Z
+        SUBA    >StoredFlexEthanol,Z
         BCC     L0D5C8
         NEGA
 L0D5C8:
@@ -19291,7 +19291,7 @@ L0D5C8:
         STD     >EepromAddr,Z
         JSR     EepromPowerDownWrite
         BCS     L0D5DE
-        STAA    >PowerDownCount,Z
+        STAA    >StoredFlexEthanol,Z
 L0D5DE:
         BRCLR   >IoInputs0,Z,#$08,L0D5F2                 ; bit 3: key off, probably: the monitors skip while it is set and CheckPowerDown starts the power-down path
         JSR     EquipmentProbe

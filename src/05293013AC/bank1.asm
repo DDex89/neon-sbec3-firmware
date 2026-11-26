@@ -3594,7 +3594,7 @@ RunModeSwitch:
         CBA
         BNE     L125D2
         BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
-        TST     >PowerDownCount,Z
+        TST     >StoredFlexEthanol,Z
         BEQ     L125B2
         BRSET   >EepromFlags,Z,#$80,L125B2               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
@@ -12883,7 +12883,7 @@ L1898C:
         INC     >MonData643,Z
 L189A4:
         BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
-        TST     >PowerDownCount,Z
+        TST     >StoredFlexEthanol,Z
         BEQ     L189C4
         BRSET   >EepromFlags,Z,#$80,L189C4               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)

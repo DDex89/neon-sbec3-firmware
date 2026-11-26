@@ -7713,7 +7713,7 @@ RunModeSwitch:
         CBA
         BNE     L152E0
         BSET    >OutputTestFlags,Z,#$04                  ; bit 2: key-on output check phase (MonTaskB, RunModeSwitch); OutputTestDispatch reads it
-        TST     >PowerDownCount,Z
+        TST     >StoredFlexEthanol,Z
         BEQ     L152C0
         BRSET   >EepromFlags,Z,#$80,L152C0               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)
         BSET    >EepromFlags,Z,#$80                      ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)

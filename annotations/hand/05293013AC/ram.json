@@ -2,5 +2,8 @@
  "_comment": "Hand names for family B; reviewed against 05293013AC. Names shared by code-identical 05293014AC.",
  "04A3": "EepromAddrLow",
  "04A5": "EepromDataLow",
- "04A7": "EepromReadbackTableOffset"
+ "04A7": "EepromReadbackTableOffset",
+ "0034": "VssQualifiedEventCounter",
+ "0035": "VssQualifiedEventCounterLow",
+ "035E": "StoredFlexEthanol"
 }

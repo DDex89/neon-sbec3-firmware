@@ -45,6 +45,8 @@ SegmentTimePair3 equ $001C        ; $F801C
 MisfirePeriod15  equ $001E        ; $F801E
 SriMileage       equ $0020        ; $F8020
 ReadinessIncomplete equ $0022        ; $F8022
+VssQualifiedEventCounter equ $0034        ; $F8034
+VssQualifiedEventCounterLow equ $0035        ; $F8035
 FlexStartFlags   equ $0036        ; $F8036
 ;                 bit 7: reference event handled since the last rpm update (CalcEngineRpm)
 ;                 bit 5: cold flex start mileage passed: cold start handling over (CheckPowerDown, FlexColdStartMiles)
@@ -627,7 +629,7 @@ MapRawStart      equ $0358        ; $F8358
 ReadMapA81       equ $0359        ; $F8359
 SwitchPolarity   equ $035B        ; $F835B
 FlexEthanolScaled equ $035D        ; $F835D
-PowerDownCount   equ $035E        ; $F835E
+StoredFlexEthanol equ $035E        ; $F835E
 FuelTrimAdjustValue equ $0361        ; $F8361
 MonSteadyAB8     equ $0364        ; $F8364
 MonSteadyRate    equ $0366        ; $F8366

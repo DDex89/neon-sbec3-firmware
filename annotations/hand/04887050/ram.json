@@ -3,5 +3,8 @@
  "01A5": "CatMonFlags",
  "0487": "EepromAddrLow",
  "0489": "EepromDataLow",
- "048B": "EepromReadbackTableOffset"
+ "048B": "EepromReadbackTableOffset",
+ "0032": "VssQualifiedEventCounter",
+ "0033": "VssQualifiedEventCounterLow",
+ "0344": "StoredFlexEthanol"
 }
