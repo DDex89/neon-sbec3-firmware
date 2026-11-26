@@ -1049,15 +1049,16 @@ L20B06:
         LDX     $00,X
         JMP     $20B1E,X
 JumpTable_20B1E:
-        JSR     ConditionBitSet
+        JSR     ConditionBitsClear
         BRA     L20B34
 L20B24:
-        JSR     ConditionBitsClear
+        JSR     ConditionBitsAllSet
         BRA     L20B34
 L20B2A:
         JSR     ConditionAbove
         BRA     L20B34
-        dc.b    $FA,$02,$0B,$5C
+L20B30:
+        JSR     ConditionBelow
 L20B34:
         BNE     L20B40
         ADDE    #$FFFF
@@ -1070,18 +1071,18 @@ L20B40:
         dc.b    $00,$00,$00,$06,$00,$0C,$00,$12
 
 ;---------------------------------------------------------------------------------------------------
-; ConditionBitSet ($20B4C)
+; ConditionBitsClear ($20B4C)
 ; Called from: ConditionTable
 ;---------------------------------------------------------------------------------------------------
-ConditionBitSet:
+ConditionBitsClear:
         BITA    $03,Y
         BRA     L20B66
 
 ;---------------------------------------------------------------------------------------------------
-; ConditionBitsClear ($20B50)
+; ConditionBitsAllSet ($20B50)
 ; Called from: ConditionTable
 ;---------------------------------------------------------------------------------------------------
-ConditionBitsClear:
+ConditionBitsAllSet:
         ANDA    $03,Y
         EORA    $03,Y
         BRA     L20B66
@@ -1094,7 +1095,9 @@ ConditionAbove:
         CMPA    $03,Y
         BHI     L20B60
         BRA     L20B64
-        dc.b    $58,$03,$B4,$00
+ConditionBelow:
+        CMPA    $03,Y
+        BCC     L20B64
 L20B60:
         CLRA
         BRA     L20B66

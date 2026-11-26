@@ -23600,15 +23600,16 @@ L1F966:
         LDX     $00,X
         JMP     $1F97E,X
 JumpTable_1F97E:
-        JSR     ConditionBitSet
+        JSR     ConditionBitsClear
         BRA     L1F994
 L1F984:
-        JSR     ConditionBitsClear
+        JSR     ConditionBitsAllSet
         BRA     L1F994
 L1F98A:
         JSR     ConditionAbove
         BRA     L1F994
-        dc.b    $FA,$01,$F9,$BC
+L1F990:
+        JSR     ConditionBelow
 L1F994:
         BNE     L1F9A0
         ADDE    #$FFFF
@@ -23621,18 +23622,18 @@ L1F9A0:
         dc.b    $00,$00,$00,$06,$00,$0C,$00,$12
 
 ;---------------------------------------------------------------------------------------------------
-; ConditionBitSet ($1F9AC)
+; ConditionBitsClear ($1F9AC)
 ; Called from: ConditionTable
 ;---------------------------------------------------------------------------------------------------
-ConditionBitSet:
+ConditionBitsClear:
         BITA    $03,Y
         BRA     L1F9C6
 
 ;---------------------------------------------------------------------------------------------------
-; ConditionBitsClear ($1F9B0)
+; ConditionBitsAllSet ($1F9B0)
 ; Called from: ConditionTable
 ;---------------------------------------------------------------------------------------------------
-ConditionBitsClear:
+ConditionBitsAllSet:
         ANDA    $03,Y
         EORA    $03,Y
         BRA     L1F9C6
@@ -23645,7 +23646,9 @@ ConditionAbove:
         CMPA    $03,Y
         BHI     L1F9C0
         BRA     L1F9C4
-        dc.b    $58,$03,$B4,$00
+ConditionBelow:
+        CMPA    $03,Y
+        BCC     L1F9C4
 L1F9C0:
         CLRA
         BRA     L1F9C6
