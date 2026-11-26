@@ -349,8 +349,17 @@ monitors (P0135, P0155, P0141, P0161), and the fuel system monitors give P0171/P
 constants were renamed after this (`FuelSysTooLean*`, `FuelSysTooRich*`).
 
 `ConditionTable` ($20B1C) checks such a list: a count, then 4-byte entries of RAM offset, test and
-mask. Test 0 needs the masked bits clear, test 2 needs them all set, test 4 needs the value above
-the mask byte; the check fails at the first entry that does not hold. The 48 lists lie in bank 0
+mask or threshold. Test 0 needs all masked bits clear, test 2 needs all masked bits set,
+test 4 needs the unsigned value strictly above the threshold, and test 6 strictly below it.
+Equality fails both numeric comparisons. The check returns CCR Z=1 if every entry holds (including
+an empty list), and Z=0 on the first failure; callers branch on BEQ/BNE. The four dispatch
+slots are 0, 6, 12, 18 bytes, indexed by test codes 0, 2, 4, 6. The fourth slot is a JSR
+into the previously undecoded `CMPA $03,Y; BCC` sequence (bytes 58 03 B4 00).
+Entry addresses (ConditionTable / proposed ConditionBelow): 04887050 $1F90C/$1F976,
+05293013AC $1F9DA/$1FA44, reference 05293190AC $20B1C/$20B86.
+Legacy labels `ConditionBitSet` and `ConditionBitsClear` actually implement all-clear and
+all-set respectively; proposed canonical names are `ConditionBitsClear` and
+`ConditionBitsAllSet`. This is a naming correction, not a change in firmware behavior. The 48 lists lie in bank 0
 between $33CA and $4015 and are laid out in the source with each entry decoded, for example
 `CatBank1Conds1`: the catalyst monitor runs only while none of 19 bytes of stored faults (`FaultMem*`,
 about 70 P-codes) are set. These lists are calibration: changing them changes which faults suspend
