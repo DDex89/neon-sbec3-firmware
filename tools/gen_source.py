@@ -303,8 +303,8 @@ class Calibration:
         sym = self.names.ram.get(off, "$%04X,Z" % off)
         bits = dict(self.names.bits.get(sym, {}))
         names = [bits.get(str(b), "bit %d" % b) for b in range(7, -1, -1) if m >> b & 1]
-        what = {0: "needs clear", 2: "needs all set", 4: "needs above"}.get(op, "test %d" % op)
-        if op == 4:
+        what = {0: "needs clear", 2: "needs all set", 4: "needs above", 6: "needs below"}.get(op, "unknown test %d" % op)
+        if op in (4, 6) or op not in (0, 2):
             return "%s %s $%02X" % (sym, what, m)
         return "%s %s: %s" % (sym, what, "; ".join(names)) if names else "%s %s $%02X" % (sym, what, m)
 
