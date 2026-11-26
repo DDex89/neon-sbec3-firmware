@@ -4145,7 +4145,7 @@ L12BEA:
         BRCLR   >ControlFlagsC39,Z,#$10,L12C20           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         BRCLR   >EgrMonFlags,Z,#$20,L12C1C               ; bit 5: EGR flow result below the pass window this test
         BRCLR   >EgrMonFlags,Z,#$02,L12C20               ; bit 1: EGR flow test conditions met, test started (EgrFlowMonitor)
-        BRSET   <DiagStatusFlags,Z,#$02,L12C20           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L12C20           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
 L12C1C:
         BSET    $028A,Z,#$80
 L12C20:
@@ -4274,7 +4274,7 @@ L12D68:
         LDAB    <MonStatusEgrFlow,Z
         BITB    #$08
         BEQ     L12D88
-        BRSET   <DiagStatusFlags,Z,#$02,L12D8C           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L12D8C           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
 L12D88:
         ANDB    #$7F
         STAB    <MonStatusEgrFlow,Z
@@ -4516,7 +4516,7 @@ L12FD2:
         LBCS    L13276
         BRSET   >Options0325,#$40,L12FF0                 ; bit 6: EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor, ObdRequest and others); clear in 05293013AC/14AC
         BRCLR   >MonStatusEgrFlow,Z,#$80,L13276          ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 5) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
-        BRSET   >DiagStatusFlags,Z,#$01,L13276           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$01,L13276           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
 L12FF0:
         BRSET   >EgrMonFlags,Z,#$20,L13276               ; bit 5: EGR flow result below the pass window this test
         LDAB    >O2ActiveFlags,Z
@@ -14518,7 +14518,7 @@ Sub_19AE0:
         LBRA    L19C72
 L19AEE:
         BRCLR   <MonStatusFuelSysTooRich1,Z,#$80,L19AFE  ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 13) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
-        BRCLR   <DiagStatusFlags,Z,#$01,L19B06           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRCLR   <DiagStatusFlags,Z,#$01,L19B06           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    $25FA
         STAA    $01CD,Z
 L19AFE:
@@ -14658,7 +14658,7 @@ Sub_19C74:
         LBRA    L19E18
 L19C82:
         BRCLR   <MonStatusFuelSysTooRich2,Z,#$80,L19C92  ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 14) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
-        BRCLR   <DiagStatusFlags,Z,#$01,L19C9A           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRCLR   <DiagStatusFlags,Z,#$01,L19C9A           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    $25FA
         STAA    $01CE,Z
 L19C92:
@@ -14793,7 +14793,7 @@ L19E18:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_19E1A:
-        BRCLR   <DiagStatusFlags,Z,#$01,L19E2E           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRCLR   <DiagStatusFlags,Z,#$01,L19E2E           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    $25FA
         STAA    $01CB,Z
         CLR     >CalcEngine576,Z
@@ -14906,7 +14906,7 @@ L19F5E:
 ; Called from: ObdRunMonitors
 ;---------------------------------------------------------------------------------------------------
 Sub_19F60:
-        BRCLR   <DiagStatusFlags,Z,#$01,L19F74           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRCLR   <DiagStatusFlags,Z,#$01,L19F74           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    $25FA
         STAA    $01CC,Z
         CLR     >FuelSysCount3,Z
@@ -15064,18 +15064,18 @@ O2HeaterMonitor:
         LDY     #CondList2DA8
         JSR     ConditionTable
         BEQ     L1A19E
-        BSET    <MonStatusO2Heater,Z,#$02
+        BSET    <MonStatusO2Heater,Z,#$02             ; bit 1: heater secondary condition group failed; prevents clearing sensor monitor enable bits at completion (O2HeaterMonitor)
         BRA     L1A1A2
 L1A19E:
-        BCLR    <MonStatusO2Heater,Z,#$02
+        BCLR    <MonStatusO2Heater,Z,#$02             ; bit 1: heater secondary condition group failed; prevents clearing sensor monitor enable bits at completion (O2HeaterMonitor)
 L1A1A2:
         LDY     #CondList2D6B
         JSR     ConditionTable
         BEQ     L1A1B2
-        BSET    <MonStatusO2Heater,Z,#$01
+        BSET    <MonStatusO2Heater,Z,#$01             ; bit 0: heater primary condition group failed; start path exits (O2HeaterMonitor)
         BRA     L1A20E
 L1A1B2:
-        BCLR    <MonStatusO2Heater,Z,#$01
+        BCLR    <MonStatusO2Heater,Z,#$01             ; bit 0: heater primary condition group failed; start path exits (O2HeaterMonitor)
         LDAA    >FaultSet03,Z
         BITA    #$38
         BNE     L1A20E
@@ -15294,7 +15294,7 @@ L1A424:
         LDAA    $AB,Z
         LDAB    $B7,Z
         ANDB    #$FB
-        BRSET   <MonStatusO2Heater,Z,#$02,L1A444
+        BRSET   <MonStatusO2Heater,Z,#$02,L1A444      ; bit 1: heater secondary condition group failed; prevents clearing sensor monitor enable bits at completion (O2HeaterMonitor)
         ANDB    #$7F
 L1A444:
         BITA    #$F0
@@ -15800,7 +15800,7 @@ L1A8EC:
         BRSET   $01D5,Z,#$08,L1AA40
         TST     >O2Activity545,Z
         LBNE    L1ACFA
-        BRSET   >DiagStatusFlags,Z,#$01,L1ACD6           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$01,L1ACD6           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    >ThrottleState,Z
         BITA    #$81
         LBNE    L1ACD6
@@ -15892,7 +15892,7 @@ L1A9F2:
         STAA    $01DD,Z
         LBRA    L1AD40
 L1AA40:
-        BRSET   >DiagStatusFlags,Z,#$01,L1ACD6           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$01,L1ACD6           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    <IacPosition,Z
         SUBA    $01D3,Z
         BLS     L1AA56
@@ -16134,7 +16134,7 @@ L1AD1C:
         BCLR    <MonStatusPurge,Z,#$04                   ; bit 2: purge flow test running: idle, closed loop, fan and A/C hold (PurgeFlowTest)
         BRCLR   <MonStatusPurge,Z,#$08,L1AD32            ; bit 3: purge flow monitor failed (PurgeFlowFailCount reached)
         BSET    <MonStatusPurge,Z,#$40                   ; bit 6: purge flow monitor complete this drive cycle
-        BRSET   <DiagStatusFlags,Z,#$02,L1AD40           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L1AD40           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
         BCLR    <MonStatusPurge,Z,#$80                   ; bit 7: purge flow monitor not passed yet (cleared on a pass by PurgeFlowTest); monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 4) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRA     L1AD40
 L1AD32:
@@ -16348,7 +16348,7 @@ L1AFB4:
         STAA    E,Z
         BRA     L1AFF8
 L1AFCA:
-        BRSET   >DiagStatusFlags,Z,#$01,L1AFF8           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$01,L1AFF8           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    >O2MonStableCount,Z
         CMPA    >O2MonStableTime
         LBCS    L1AFF8
@@ -16680,7 +16680,7 @@ O2MonData2Update:
         ANDA    #$FB
         ORAA    #$40
         STAA    E,Z
-        BRSET   >DiagStatusFlags,Z,#$02,L1B2E8           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$02,L1B2E8           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
         ANDA    #$7F
         STAA    E,Z
 L1B2E8:
@@ -17118,7 +17118,7 @@ Sub_1B772:
         BSET    $0217,Z,#$02
         BRSET   $0217,Z,#$04,L1B956
         BRSET   $0217,Z,#$08,L1B94A
-        BRSET   >DiagStatusFlags,Z,#$01,L1B94A           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$01,L1B94A           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         BRSET   >O2Bank1Flags,Z,#$20,L1B94A              ; bit 5: bank 1 closed-loop state read by the flex learning and trim averaging, byte writes only
         BRSET   >O2ActiveFlags,Z,#$88,L1B7C0             ; bit 7: upstream O2 sensor 1 active: output passed O2ActiveLow (latched, cleared when closed loop restarts); bit 3: sensor of bit 7 active now: set with bit 7, cleared with it on a circuit fault (SensorFaultFlags2 bit 3), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LBRA    L1B94A
@@ -17252,7 +17252,7 @@ L1B906:
 L1B90E:
         BSET    >MonStatusCatBank1,Z,#$48
 L1B912:
-        BRSET   <DiagStatusFlags,Z,#$02,L1B956           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L1B956           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
         BRSET   $A4,Z,#$40,L1B942
         BSET    $A4,Z,#$18
         BRA     L1B942
@@ -17268,7 +17268,7 @@ L1B930:
         BSET    >MonStatusCatBank1,Z,#$40
         BCLR    $00A6,Z,#$A0
 L1B93A:
-        BRSET   <DiagStatusFlags,Z,#$02,L1B956           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L1B956           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
         BSET    $A4,Z,#$C0
 L1B942:
         BCLR    >MonStatusCatBank1,Z,#$80                ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
@@ -17325,7 +17325,7 @@ L1B9D4:
         BCLR    $0217,Z,#$02
         BRSET   $0217,Z,#$04,L1BB90
         BRSET   $0217,Z,#$08,L1BB84
-        BRSET   >DiagStatusFlags,Z,#$01,L1BB84           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$01,L1BB84           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         BRSET   >O2Bank2Flags,Z,#$20,L1BB84
         BRSET   >O2ActiveFlags,Z,#$44,L1B9FA             ; bit 6: upstream O2 sensor 2 active (as bit 7); bit 2: sensor of bit 6 active now: set with bit 6, cleared with it on a circuit fault (SensorFaultFlags2 bit 2), and alone when the sensor stays inactive for O2InactiveCountMax (O2ActivityDescriptors, O2InactiveFlags)
         LBRA    L1BB84
@@ -17459,7 +17459,7 @@ L1BB40:
 L1BB48:
         BSET    >MonStatusCatBank2,Z,#$48
 L1BB4C:
-        BRSET   <DiagStatusFlags,Z,#$02,L1BB90           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L1BB90           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
         BRSET   $A5,Z,#$40,L1BB7C
         BSET    $A5,Z,#$18
         BRA     L1BB7C
@@ -17475,7 +17475,7 @@ L1BB6A:
         BSET    >MonStatusCatBank2,Z,#$40
         BCLR    $00A6,Z,#$50
 L1BB74:
-        BRSET   <DiagStatusFlags,Z,#$02,L1BB90           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L1BB90           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
         BSET    $A5,Z,#$C0
 L1BB7C:
         BCLR    >MonStatusCatBank2,Z,#$80                ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 1) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
@@ -18025,22 +18025,22 @@ L1C0F2:
         BLS     L1C12E
 L1C0F8:
         BRCLR   >MonEnableFlags2,Z,#$80,L1C104           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
-        BCLR    >MisfireFlags2,Z,#$03                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck); bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
+        BCLR    >MisfireFlags2,Z,#$03                    ; bit 1: secondary condition list failed; recorded by MisfireEnableCheck without immediate return; bit 0: primary condition list failed; MisfireEnableCheck returns not enabled on this path
         BRA     L1C12A
 L1C104:
-        BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
+        BCLR    >MisfireFlags2,Z,#$02                    ; bit 1: secondary condition list failed; recorded by MisfireEnableCheck without immediate return
         LDY     #CondList3059
         JSR     ConditionTable
         BEQ     L1C116
-        BSET    >MisfireFlags2,Z,#$02                    ; bit 1: misfire monitor blocked by the second condition table at $3C6E (MisfireEnableCheck)
+        BSET    >MisfireFlags2,Z,#$02                    ; bit 1: secondary condition list failed; recorded by MisfireEnableCheck without immediate return
 L1C116:
         LDY     #CondList301C
         JSR     ConditionTable
         BEQ     L1C126
-        BSET    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
+        BSET    >MisfireFlags2,Z,#$01                    ; bit 0: primary condition list failed; MisfireEnableCheck returns not enabled on this path
         BRA     L1C12E
 L1C126:
-        BCLR    >MisfireFlags2,Z,#$01                    ; bit 0: misfire monitor blocked by the condition table at $3C31 (MisfireEnableCheck)
+        BCLR    >MisfireFlags2,Z,#$01                    ; bit 0: primary condition list failed; MisfireEnableCheck returns not enabled on this path
 L1C12A:
         LDAA    #$FF
         BRA     L1C130
@@ -21682,7 +21682,7 @@ LdpMonitor:
         LDAA    >SystemTestMode,Z
         CMPA    #$13
         BEQ     L1E7F6
-        BRSET   >DiagStatusFlags,Z,#$01,L1ED84           ; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$01,L1ED84           ; bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         LDAA    >LdpState,Z
         ANDA    #$0F
         CMPA    #$09
@@ -22182,7 +22182,7 @@ L1ED56:
         BRCLR   $02B5,Z,#$E0,L1ED70
         BRCLR   $02B5,Z,#$04,L1ED70
         BSET    >MonStatusLdp,Z,#$48
-        BRSET   <DiagStatusFlags,Z,#$02,L1ED82           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   <DiagStatusFlags,Z,#$02,L1ED82           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
         BCLR    >MonStatusLdp,Z,#$80                     ; bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 6) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
         BRA     L1ED82
 L1ED70:
@@ -22490,7 +22490,7 @@ L1F19E:
         ANDB    >MainLoopCounter,Z
         LBNE    L1F242
         BRCLR   >MonEnableFlags2,Z,#$80,L1F1E8           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
-        BCLR    <DiagStatusFlags,Z,#$03                  ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BCLR    <DiagStatusFlags,Z,#$03                  ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain); bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         CPX     #$F07E
         BEQ     L1F230
         CPX     #$F056
@@ -23510,7 +23510,7 @@ L1FADE:
 L1FAE8:
         BRCLR   $0000,Y,#$01,L1FC0A
 L1FAEE:
-        BRSET   >DiagStatusFlags,Z,#$02,L1FC18           ; bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BRSET   >DiagStatusFlags,Z,#$02,L1FC18           ; bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain)
 L1FAF4:
         BRSET   >Scratch4,Z,#$80,L1FB04
         CPX     #$F092
@@ -23734,7 +23734,7 @@ L1FCE6:
         LBRA    L1FC70
 L1FCEE:
         LBSR    ObdRecordFlags
-        BCLR    <DiagStatusFlags,Z,#$5F                  ; bit 6: a fault aged out this pass, probably (ObdFaultAging); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer; bit 2: freeze frame to be updated (ObdFaultProcess); bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it; bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
+        BCLR    <DiagStatusFlags,Z,#$5F                  ; bit 6: a fault aged out this pass, probably (ObdFaultAging); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer; bit 2: freeze frame to be updated (ObdFaultProcess); bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain); bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         BCLR    <MonRecordB4,Z,#$80
         BCLR    <MonRecordB8,Z,#$80
         BCLR    <MonRecordBC,Z,#$80
