@@ -295,7 +295,8 @@ fault bit, `ReportPass` ($24160) counts a passed one and clears it; both take in
 | `FuelSenderMonitor` | P0460, P0462, P0463 | fuel level sender stuck, low, high (analog $0A92) |
 | `BrakeSwitchMonitor` | P0703 | brake switch performance |
 | `PnSwitchMonitor` | P1899 | P/N switch stuck |
-| `O2NoActivityCold, O2ActivityWarm` | P0134, P0154, P0140, P0160 | O2 sensors inactive (cold-start soak check and heater-switched check when warm) |
+| `O2NoActivityCold` | P0131, P0151, P0137, P0157 | low O2 signal after a cold soak |
+| `O2ActivityWarm` | P0134, P0154, P0140, P0160 | inactive O2 sensors in the warm check |
 | `PspSwitchMonitor` | P0551 | power steering pressure switch |
 | `MapIdleChangeCheck` | P1297 | no MAP change between start and idle |
 | `TpsMapRationality, ProcessThrottle` | P0121, P0122, P0123 | throttle sensor rationality, low, high |

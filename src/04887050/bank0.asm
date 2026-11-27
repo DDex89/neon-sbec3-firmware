@@ -6130,7 +6130,7 @@ O2NoActivityStartCoolantMax:
 O2NoActivitySoakDiffMax:
         dc.b    $09                                      ; O2 no-activity check: start coolant within this value of the battery temperature (a cold soak)
 O2NoActivityTime:
-        dc.b    $20                                      ; O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported
+        dc.b    $20                                      ; O2 no-activity check at a cold start (O2NoActivityCold): time after start (Count191ms) at which the result is reported
 O2NoActivityLowRaw:
         dc.b    $08                                      ; O2 no-activity check: a reading below this value for 40 counts marks the sensor inactive (also O2HeaterTest)
         dc.b    $74

@@ -213,7 +213,7 @@ gated by FuelModeFlags bit 3, set in IC4/OC5 and cleared by EventTableCheck
 once the counters are zero. Whether a stale index is reachable with this
 flag set is still open. 1996 lacks these consumers in the reviewed paths.
 
-Source-level findings only; exact-image execution and hardware verification pending.
+See the exact-ROM group pulse and IC4/OC5 checks below.
 
 ### Injector index lifecycle and CCD fuel accounting
 
@@ -256,6 +256,32 @@ quantize/cap/subtract operation, and 8,960 combinations of accumulator
 high byte, five low-word boundaries and seven addition boundaries for the
 24-bit saturating add model; zero mismatches against the corresponding
 integer invariants. No CPU16 execution or timing proof in this pass.
+
+### Exact-ROM injector accounting and event index
+
+On `04887050` and `05293013AC`, 432 isolated InjectorFuelAccount calls covered
+the four requested channels, the running-timer boundary at $0005, the pulse
+adjustment boundary and 24-bit carry and saturation. The stock paths only wrote
+the chosen timer word or left it untouched. A further 160 TipInFuelControl calls
+used stock lookup tables and a supplied neutral flex factor. The selected
+throttle delta $02 was ignored. With a delta of $03 and a nonzero FuelPulseBank1,
+the caller reached three successive channels modulo four. With FuelPulseBank1
+zero, it calculated TipInFuel and skipped timer writes and accounting.
+
+Sixteen group cranking cases on `05293013AC` issued B=3,2,1,0 while the
+stored InjectorIndex remained fixed. With the scaling flag supplied, the
+routine repeatedly selected the counter addressed by the fixed RAM index.
+With the flag clear, the counter stayed unchanged. EventTableCheck cleared
+the scaling flag when the counters were exhausted. Sixteen IC4/OC5 cases on
+`05293013AC` and `05293014AC` used the stock handler through RTI. For the
+supplied second-edge state, the $05 option on 05293013AC blocked the setter.
+The $81 option on 05293014AC admitted it with the engine flag, elapsed-count
+and pending-edge guards satisfied. The tests model these states individually.
+Their order and overlap during ordinary operation remain open.
+[Exact-ROM fuel audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_fuel_distance_audit.py)
+
+From the ReCore checkout, run `python patches/spark/v2/stock_fuel_distance_audit.py`
+with `04887050.bin`, `05293013AC.bin` and `05293014AC.bin` in `roms/`.
 
 ### CCD $84 scheduler, local interrupt exclusion, and possible sample loss
 
@@ -320,4 +346,11 @@ The latch can coalesce events; this ring is not a lossless trip-distance
 source. Physical distance per event remains uncalibrated. The CCD $84
 schedule and loss limitations above still apply. Exact-ROM ring fixtures
 are pending; stock code and calibration remain unchanged.
+
+An exact-ROM check ran 80 complete IC3 handlers with already-accepted
+interrupt frames and supplied pin and capture values. A high pin left
+DistancePulses alone. A low pin incremented the byte, including $FF to $00.
+The independent event word and its mileage flag followed the stock $8333
+threshold. Each RTI restored the interrupted context in the frame model.
+[Exact-ROM distance audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_fuel_distance_audit.py)
 

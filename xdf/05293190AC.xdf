@@ -34876,7 +34876,7 @@
  </XDFCONSTANT>
  <XDFCONSTANT uniqueid="0x87C" flags="0x0">
   <title>O2NoActivityTime</title>
-  <description>O2 no-activity check at a cold start (O2NoActivityCold, P0134/P0154/P0140/P0160): time after start (Count191ms) at which the result is reported $4A8B</description>
+  <description>O2 no-activity check at a cold start (O2NoActivityCold): time after start (Count191ms) at which the result is reported $4A8B</description>
   <CATEGORYMEM index="0" category="15" />
   <EMBEDDEDDATA mmedaddress="0x4A8B" mmedelementsizebits="8" mmedtypeflags="0x00" />
   <units />

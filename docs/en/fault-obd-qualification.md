@@ -92,6 +92,67 @@ SwitchMonitors selects TccMonitor on odd counter phases. On four ROMs the unsign
 
 The local audit ran 8,926 cases across the five exact ROMs. It includes 3,865 EGR cases, 1,040 TCC caller cases, five A/C-request controls, 152 fuel-sender threshold and transition cases, 1,280 fuel baseline samples, 2,560 scheduler phase selections, and 24 modeled warm resets. The tests supply sensor values and intermediate monitor state. [Exact-ROM monitor script](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_monitor_audit.py)
 
+## Thermostat, idle speed and power-steering pressure
+
+On the five hash-verified 256 KiB images, the real main-loop counter and
+SwitchMonitors called the P1281 monitor every pass, P1294 every eight
+passes, P0551 every 16 and P0125 every 128. The P1281 branch was enabled
+on all five. It starts within raw coolant [$79,$E4) with battery at least
+$68 and passes at coolant $C7 or higher under the tested conditions.
+At the failure boundary it requires Count3s=$FF, speed at least $38
+and MonSpeedCounter=$FF. The P0125 check passed at coolant $7D or higher.
+With start coolant $63 its stock lookup gave $BD and the failure branch
+required Count3s above $BD.
+
+The idle check treated offsets at −$0320 and +$0640 as inside the accepted
+band. The tested fault required startup delay $C8, idle reference below
+$01E0 and drop count reaching two. The P0551 switch-on failure required
+speed above $64, RPM high byte below $FF and count reaching $C7.
+The switch-off recovery also used $C7.
+
+The enabled routines set the retained first failure on the first qualifying
+run, skipped repeat qualification in the same modeled cycle and recorded a
+new failure after warm reset. A subsequent healthy result cleared the prior
+failure. Cold reset started a new qualification. On 05032017AA,
+Options0340=$20 blocks P0125, P1294 and P0551. The P0551 descriptor remains
+enabled and EquipmentInit sets the equipment flag. The P0125 and P1294
+descriptors are disabled on that ROM.
+
+The audit ran 269 monitor calls, 34 modeled resets, 1,280 dispatch phases
+and five EquipmentInit controls. The tests used supplied inputs and the
+stock routine and reset paths. [Local audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_switch_thermal_audit.py)
+
+## Cold oxygen activity and slow response
+
+On all five images, O2NoActivityCold maps its four channels to
+P0131/P0151/P0137/P0157 and calls ReportFault directly. The four CCD images
+enable P0131 and P0137. Options0340.0 disables the whole cold check on
+05032017AA. In the CCD tests, a past warm condition could arm the retained
+check at coolant $C7 or higher. Sampling needed start coolant below $A6,
+a start-coolant and battery-temperature difference below $07, and a raw O2
+value below $08. The 41st below-limit sample marked the channel once its
+counter had reached $28. Count191ms at $19 or higher admitted reporting
+when the matching shutdown flag was also retained. O2ActivityWarm has its
+own descriptors for P0134/P0154/P0140/P0160.
+
+The catalyst switch-ratio completion path qualified P0133 through
+ObdFaultReport on the four CCD images. In the supplied completion state,
+eight switches passed. Below eight, three retries preceded the first
+qualified failure. Another failure after warm reset and startup delays
+recorded P0133. A healthy result cleared the retained bit. The dedicated
+idle response row separately reached ReportFault directly when the
+simulated window exceeded its limit and the sensor was active and ready.
+P0153 remained disabled on all five. 05032017AA also disabled P0133 in both
+checked paths.
+
+The audit ran 2,867 cold activity, 104 catalyst and 25 idle response cases,
+with 38 modeled resets. Whole-cycle reachability and physical signal timing
+remain open. [Local audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_o2_audit.py)
+
+From the ReCore checkout, with the five archived ROMs in `roms/`, run
+`python patches/spark/v2/stock_obd_o2_audit.py` and
+`python patches/spark/v2/stock_obd_switch_thermal_audit.py`.
+
 ## Distinct monitor-data EEPROM path (reference)
 
 MonEnableCheck clears MonEnableFlags2.7 when its fault/flag/mileage gates fail; when the gates allow and bit 7 was clear, it sets bit 7, clears bit 6, then calls MonDataReset. MonDataReset copies persistent shadow values to working monitor data, masks bits 7 of MonData646/647, clears MonData648 and sets bit 4.

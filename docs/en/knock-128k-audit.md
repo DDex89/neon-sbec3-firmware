@@ -1,6 +1,6 @@
 # Stock 128 KB knock subsystem — source audit (2026-11-26)
 
-Scope: exact stock 04887050 (1996) and 05293013AC (1997). Source-level evidence, not machine/bench validation. No production code, calibration values, option states or RAM allocation changes. Sources: [1996 bank 0](../../src/04887050/bank0.asm), [bank 1](../../src/04887050/bank1.asm), [equates](../../src/04887050/00_equates.asm); [1997 bank 0](../../src/05293013AC/bank0.asm), [bank 1](../../src/05293013AC/bank1.asm), [equates](../../src/05293013AC/00_equates.asm).
+Scope includes exact stock 04887050 (1996) and 05293013AC (1997). The source review is followed by local CPU16 results. [1996 bank 0](../../src/04887050/bank0.asm) · [1996 bank 1](../../src/04887050/bank1.asm) · [1996 equates](../../src/04887050/00_equates.asm) · [1997 bank 0](../../src/05293013AC/bank0.asm) · [1997 bank 1](../../src/05293013AC/bank1.asm) · [1997 equates](../../src/05293013AC/00_equates.asm)
 
 ## RAM dependencies and proposed names
 
@@ -40,6 +40,29 @@ KnockCylinderRetard 1D5FC/1575E: five RPM words 2000,3700,3700,3700,3700 (hex), 
 - [ ] Review misleading table names KnockSensorCheckRpm (1C63/1C7B, produces MAP threshold), KnockNoiseLearnWeight (1C8B/1CA3, lower clamp), KnockRetardMaxRpm (3DAD/3DD8, lower diagnostic threshold), and KnockWindowRpm coefficient description. Trace lookup input/output encoding and other family consumers before rename; sync EN/RU, hand/ported metadata, XDF and Turbonator Wiki.
 - [ ] Compare 1996 KnockLearnUpdate (1D27E) with unnamed 1997 Sub_153E0; matching source structure and countdown at F8373/F838D support a candidate ported routine name and variable description. Verify exact ROM and all references before renaming.
 - [ ] Verify indirect/overlapping accesses, reset initialization, diagnostics, IRQ and shared scratch lifecycle, per-cylinder mapping, calibration units, RPM-cell reachability, exact-ROM CPU16 fixtures and physical timing. CI held due to quota; no new machine test claim.
+
+## Exact-ROM IC1 knock writes
+
+The local audit ran 15 KnockSample, 26 KnockCylinderRetard and four IC1
+continuation cases on each of `04887050` and `05293013AC`. Stock selector
+order is 1,0,2,3. The trigger path writes the selected retard slot and
+broadcasts over four bytes at $F8376–$F8379 or $F8390–$F8393. The supplied
+fault state clears all six slots. The lower-exclusive, upper-inclusive RPM
+comparisons and repeated $3700 limit restrict new learning to the first two
+cells at $F8011/$F8012 or $F8013/$F8014. Below the $3C00 reference-period
+cutoff, checked paths write a word at $F80F0, a byte at $F80F2 and words at
+$F884A/$F884C. The checked writes, including the stack, were disjoint from
+$F85F2–$F85FF.
+
+Four paired controls compared each helper with and without an already-accepted
+IRQ5 at a selected store boundary. The real IC1 call sites and stock IRQ5/RTI
+executed in the raw-frame model. The interrupted register and bank state, CCR,
+PC and SP were restored and the helper outputs matched the controls. Other IC1
+paths, interrupt recognition, actual preemption timing and global ownership
+remain open. [Exact-ROM knock audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ic1_knock_audit.py)
+
+From the ReCore checkout, run `python patches/spark/v2/stock_ic1_knock_audit.py`
+with `04887050.bin` and `05293013AC.bin` in `roms/`.
 
 ## Follow-up: learned-retard recovery, reset and persistent aliases
 
