@@ -28,6 +28,8 @@ Run `python tools/obd_enablement.py` with the eleven archived ROMs or supply par
 | 05293190AC | 12/16 | Reference |
 | 05032017AA | 0/16 | All rows unarmed by ObdRecordFlags in this exact ROM. Other diagnostic paths were outside this check. |
 
+The 12/16 count on 05269833AI and 05269834AJ describes primary monitor arming. In the separate 22-row qualification table, AJ enables P0700, P0703, P1698 and P1899 through FaultTable attributes $C3 where AI has $03. Local tests found 12 enabled qualification rows on AI and 16 on AJ. [Reset and qualification checks](fault-obd-qualification.md#reset-retention-on-the-five-stock-256-kib-images)
+
 ## Family C EVAP fault attributes
 
 The two images have identical primary OBD descriptors, ObdFaultProcess and ObdFaultCondition. Seven FaultTable attributes differ. The values below are the raw bytes in the two exact ROMs.
