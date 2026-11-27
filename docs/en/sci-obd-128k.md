@@ -80,3 +80,9 @@ ReportFault was run for all 208 aligned descriptors in each of 04887050 and 0529
 The earlier match in 04887050 uses bit 1 of PurgeVaporEstimate at $F85E0 to decide whether to advance the freeze-frame counter. Two isolated calls seeded that byte and the descriptor-selected status byte with opposite bit values. The counter followed PurgeVaporEstimate in both cases. This confirms the effect on the isolated 1996 path. The corresponding 1997 trace remains bounded before the computed read and its physical effect is unknown.
 
 See [stock bench validation](sbec3-bench-validation.md) for the verified reset configuration, local exception coverage and evidence to collect on the available boards.
+
+### Verified software paths and bench limits
+
+On 04887050 and 05293013AC, each of 17 FaultListAdd cases covered a possible first match, empty slot or full window. Accesses stayed within the corresponding 11-byte list window (apart from the call stack). All 208 aligned ReportPass rows per ROM were tested with a primed pending expiry. Each path left the history bitmap intact. On 05293013AC both paths exclude $F8092–$F8097. These results close the regular list and report/pass producer checks for aligned stock descriptors and intact register state.
+
+EepromReadInit was traced on 04887050 (51 byte destinations), 05293013AC (80), 05007038 (88) and 05293148AA (88). A supplied byte service modeled a successful restore and a carry-set failure at every possible read position, for 311 cases. Every failure left the failing and subsequent destinations untouched. The 1997 history padding, the 128 KiB ReCore RAM candidate on 04887050/05293013AC, and the two watched family C latch bytes were preserved in their respective cases. The tests stop before QSPI startup and leave peripheral behavior, other computed writers and asynchronous ownership open.

@@ -108,3 +108,12 @@ ReCore CI [45701378266](https://github.com/DDex89/recore-sbec3/actions/runs/4570
 build job 139512178237 passed byte-identical build, XML parsing, stock option
 metadata and edit regression. This does not establish full XDF semantics or TunerPro GUI validation.
 This repository remains the stock reference; experimental ReCore code is not imported.
+
+## Exact-ROM validation follow-up
+
+tools/xdfcheck.py reported zero errors for all eleven stock definitions against their matching ROMs. Five non-monotonic-axis warnings remain in those stock data. Every unsigned byte input was run through the stock Lookup2D entry for each affected ROM and for 05007038 as a family C control.
+
+- 04887050, 04887051, 05293013AC and 05293014AC use ExpectedMapThrottleScale with x values [10, 61, 77, 0, 0]. All 256 inputs returned 0 on each ROM.
+- 05293148AA has LimpRpmThrottle x values [0, 10, 26, 13]. The stock output is 99 at input 13 and 141 at every input from 14 to 255. In 05007038 the corresponding one-point table returns 125 for every input.
+
+The warnings describe real ROM data and remain visible. The checker covers layout and raw values. TunerPro GUI behavior and the intent of the stock calibration were outside this test.
