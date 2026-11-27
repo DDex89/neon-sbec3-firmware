@@ -7141,7 +7141,7 @@ L149E8:
 ;---------------------------------------------------------------------------------------------------
 VssMonitor:
         BRCLR   >EngineStateFlags,Z,#$80,L14ACE          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >MonFlags09D,Z,#$10,L149FC               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >MonFlags09D,Z,#$10,L149FC               ; bit 4: P0500: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BRSET   >MonitorDisableFlags,Z,#$04,L14ACE       ; bit 2: battery voltage at or below MonEnableVoltsMin
 L149FC:
         BRSET   >MonitorDisableFlags,Z,#$02,L14ACE       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -7177,16 +7177,16 @@ L14A60:
         STAA    >Vss65D,Z
         CMPA    >VssCheckCount
         BLS     L14AD6
-        BRSET   <MonFlags09D,Z,#$10,L14A82               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BSET    <MonFlags09D,Z,#$10                      ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+        BRSET   <MonFlags09D,Z,#$10,L14A82               ; bit 4: P0500: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BSET    <MonFlags09D,Z,#$10                      ; bit 4: P0500: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: per-cycle failure latch set by VssMonitor, including on the first failure.
         LDAB    $39BD
         LDAA    #$01
         JSR     FreezeFrameCapture
         BRA     L14AD6
 L14A82:
-        BRSET   >SwitchMonFlags,Z,#$10,L14AD6            ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
-        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+        BRSET   >SwitchMonFlags,Z,#$10,L14AD6            ; bit 4: P0500: per-cycle failure latch set by VssMonitor, including on the first failure.
+        BSET    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: per-cycle failure latch set by VssMonitor, including on the first failure.
         LDY     #$39BD
         JSR     ReportFault
         BRA     L14AD6
@@ -7206,8 +7206,8 @@ L14AA4:
 L14ABC:
         LDY     #$39BD
         JSR     ReportPass
-        BCLR    <MonFlags09D,Z,#$10                      ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BCLR    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+        BCLR    <MonFlags09D,Z,#$10                      ; bit 4: P0500: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BCLR    >SwitchMonFlags,Z,#$10                   ; bit 4: P0500: per-cycle failure latch set by VssMonitor, including on the first failure.
         BRA     L14AD6
 L14ACE:
         CLR     >Vss65D,Z
@@ -8255,8 +8255,8 @@ L155CA:
         CMPA    >IdleMonCount
         BCS     L15632
         BCLR    >IdleMonFlags,Z,#$80
-        BRSET   >MonFlags09D,Z,#$08,L15602               ; bit 3: P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BSET    <MonFlags09D,Z,#$08                      ; bit 3: P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >MonFlags09D,Z,#$08,L15602               ; bit 3: P1294: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BSET    <MonFlags09D,Z,#$08                      ; bit 3: P1294: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BSET    >SwitchMonFlags,Z,#$08                   ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
         LDAA    #$01
         LDAB    $3DC3
@@ -8276,7 +8276,7 @@ L15616:
         LDAA    $3DC3
         JSR     FreezeFrameStore
 L1562A:
-        BCLR    <MonFlags09D,Z,#$08                      ; bit 3: P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BCLR    <MonFlags09D,Z,#$08                      ; bit 3: P1294: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BCLR    >SwitchMonFlags,Z,#$08                   ; bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
 L15632:
         CLR     >PspSwitch667,Z
@@ -8634,21 +8634,21 @@ L15A22:
         CLR     >PnSwitchCounter,Z
 L15A2A:
         BRCLR   >PnSwitchMonFlags,Z,#$30,L15A74
-        BRCLR   >MonFlags09D,Z,#$40,L15A4A               ; bit 6: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >MonFlags09D,Z,#$40,L15A4A               ; bit 6: P1899: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BRSET   >SwitchMonFlags,Z,#$40,L15A74            ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         LDY     #$3CD3
         JSR     ReportFault
         BRA     L15A74
 L15A4A:
-        BSET    <MonFlags09D,Z,#$40                      ; bit 6: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BSET    <MonFlags09D,Z,#$40                      ; bit 6: P1899: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BSET    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         LDAA    #$01
         LDAB    $3CD3
         JSR     FreezeFrameCapture
         BRA     L15A74
 L15A5E:
-        BCLR    <MonFlags09D,Z,#$40                      ; bit 6: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BCLR    <MonFlags09D,Z,#$40                      ; bit 6: P1899: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BCLR    >SwitchMonFlags,Z,#$40                   ; bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
         BRSET   $015C,Z,#$04,L15A74
         LDAA    $3CD3
@@ -8677,8 +8677,8 @@ L15A96:
         CMPA    <Count3s,Z
         BCC     L15AEA
         BSET    >SwitchMonFlags,Z,#$04                   ; bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-        BRSET   >MonFlags09D,Z,#$04,L15AC6               ; bit 2: P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BSET    <MonFlags09D,Z,#$04                      ; bit 2: P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >MonFlags09D,Z,#$04,L15AC6               ; bit 2: P0125: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BSET    <MonFlags09D,Z,#$04                      ; bit 2: P0125: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         LDAA    #$01
         LDAB    $3D5F
         JSR     FreezeFrameCapture
@@ -8693,7 +8693,7 @@ L15AD0:
         JSR     FreezeFrameStore
 L15ADE:
         BCLR    >SwitchMonFlags,Z,#$04                   ; bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-        BCLR    <MonFlags09D,Z,#$04                      ; bit 2: P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BCLR    <MonFlags09D,Z,#$04                      ; bit 2: P0125: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
 L15AE6:
         BSET    >CamCrankFlags,Z,#$40                    ; bit 6: thermostat warm-up fault reported (ThermostatWarmCheck)
 L15AEA:
@@ -9181,21 +9181,21 @@ L16022:
         CLR     >BrakeSwSeenTimer,Z
 L16026:
         BRCLR   >BrakeSwFlags,Z,#$30,L16070              ; bit 5: stop count reached (BrakeSwStopCount); bit 4: drive count reached (BrakeSwDriveCount)
-        BRCLR   >MonFlags09D,Z,#$20,L16046               ; bit 5: P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >MonFlags09D,Z,#$20,L16046               ; bit 5: P0703: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BRSET   >SwitchMonFlags,Z,#$20,L16070            ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         LDY     #$3E4F
         JSR     ReportFault
         BRA     L16070
 L16046:
-        BSET    <MonFlags09D,Z,#$20                      ; bit 5: P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BSET    <MonFlags09D,Z,#$20                      ; bit 5: P0703: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BSET    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         LDAA    #$01
         LDAB    $3E4F
         JSR     FreezeFrameCapture
         BRA     L16070
 L1605A:
-        BCLR    <MonFlags09D,Z,#$20                      ; bit 5: P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BCLR    <MonFlags09D,Z,#$20                      ; bit 5: P0703: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BCLR    >SwitchMonFlags,Z,#$20                   ; bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
         BRSET   $015F,Z,#$01,L16070
         LDAA    $3E4F
@@ -15633,8 +15633,8 @@ L1A460:
         STAA    >TccFailCount,Z
         CMPA    $2D00
         BCS     L1A4CE
-        BRSET   >MonFlags09D,Z,#$80,L1A49C               ; bit 7: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BSET    <MonFlags09D,Z,#$80                      ; bit 7: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >MonFlags09D,Z,#$80,L1A49C               ; bit 7: P0740: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BSET    <MonFlags09D,Z,#$80                      ; bit 7: P0740: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BSET    >SwitchMonFlags,Z,#$80                   ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
         LDAA    #$01
         LDAB    $3E27
@@ -15649,7 +15649,7 @@ L1A49C:
 L1A4B0:
         BSET    >Tcc65C,Z,#$80
         BCLR    >SwitchMonFlags,Z,#$80                   ; bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
-        BCLR    <MonFlags09D,Z,#$80                      ; bit 7: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BCLR    <MonFlags09D,Z,#$80                      ; bit 7: P0740: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BRSET   $0160,Z,#$10,L1A4CA
         LDAA    $3E27
         JSR     FreezeFrameStore
@@ -21251,7 +21251,7 @@ SpeedDampControl:
         BRCLR   >Options032E,#$40,L1E13A                 ; bit 6: speed damping spark on (SpeedDampOn)
         BRSET   >EventSparkFlags,Z,#$08,L1DFD2           ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BRSET   >EventSparkFlags,Z,#$04,L1DFD2           ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BRSET   >MonFlags09D,Z,#$10,L1DFAE               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >MonFlags09D,Z,#$10,L1DFAE               ; bit 4: P0500: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
         BRCLR   >EquipmentFlags,Z,#$20,L1DF5E            ; bit 5: automatic transmission: set at reset with Options0324 bit 1, or by CcdReceive when the transmission module is seen on the bus
         BRSET   >BusModuleFlags,Z,#$01,L1DF5E            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
         BRSET   >BusFlags9CE,Z,#$01,L1DFAE

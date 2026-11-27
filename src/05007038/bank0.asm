@@ -18470,8 +18470,8 @@ L0B6E0:
         BRCLR   >Options0329,#$20,L0B70E                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   $0228,Z,#$01,L0B70A
         BRSET   $022A,Z,#$40,L0B70A
-        BRSET   >MonFlags09D,Z,#$02,L0B70A               ; bit 1: P1281 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BRSET   >O2MonFlags,Z,#$08,L0B70A                ; bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+        BRSET   >MonFlags09D,Z,#$02,L0B70A               ; bit 1: P0138: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BRSET   >O2MonFlags,Z,#$08,L0B70A                ; bit 3: P0137: per-cycle failure latch set by O2LowVoltMonitor, including on the first failure.
         BRSET   $022D,Z,#$02,L0B70A
         BRCLR   >SensorFaultFlags2,Z,#$10,L0B710
 L0B70A:
@@ -18491,8 +18491,8 @@ L0B72E:
         LDAA    $022A,Z
         BITA    #$88
         BNE     L0B754
-        BRSET   >MonFlags09D,Z,#$01,L0B754               ; bit 0: P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        BRSET   >O2MonFlags,Z,#$04,L0B754                ; bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+        BRSET   >MonFlags09D,Z,#$01,L0B754               ; bit 0: P0158: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+        BRSET   >O2MonFlags,Z,#$04,L0B754                ; bit 2: P0157: per-cycle failure latch set by O2LowVoltMonitor, including on the first failure.
         BRSET   $022D,Z,#$04,L0B754
         BRCLR   >FaultSet17,Z,#$40,L0B75A
 L0B754:

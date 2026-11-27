@@ -159,5 +159,40 @@
   "2": "cam/crank sync monitor on (CamCrankSyncMonitor)",
   "1": "brake switch, VSS and purge flow monitors variant",
   "0": "O2 activity checks variant (O2NoActivityCold, O2DownEnable)"
+ },
+ "MonFlags09D": {
+  "0": "P0158: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.",
+  "1": "P0138: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.",
+  "2": "P0125: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.",
+  "3": "P1294: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.",
+  "4": "P0500: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.",
+  "5": "P0703: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.",
+  "6": "P1899: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.",
+  "7": "P0740: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch."
+ },
+ "MonFlags09E": {
+  "0": "P0133: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.",
+  "1": "P0153: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.",
+  "2": "P0157: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.",
+  "3": "P0137: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.",
+  "4": "Meaning unverified for family C.",
+  "5": "Meaning unverified for family C.",
+  "6": "Meaning unverified for family C.",
+  "7": "Meaning unverified for family C."
+ },
+ "SwitchMonFlags": {
+  "0": "P0158: per-cycle failure latch set by O2HighVoltMonitor, including on the first failure.",
+  "1": "P0138: per-cycle failure latch set by O2HighVoltMonitor, including on the first failure.",
+  "4": "P0500: per-cycle failure latch set by VssMonitor, including on the first failure."
+ },
+ "O2MonFlags": {
+  "0": "P0133: per-cycle failure latch set by CatMonSwitchRatio, including on the first failure.",
+  "1": "P0153: per-cycle failure latch set by CatMonSwitchRatio, including on the first failure.",
+  "2": "P0157: per-cycle failure latch set by O2LowVoltMonitor, including on the first failure.",
+  "3": "P0137: per-cycle failure latch set by O2LowVoltMonitor, including on the first failure.",
+  "4": "Meaning unverified for family C.",
+  "5": "Meaning unverified for family C.",
+  "6": "Meaning unverified for family C.",
+  "7": "Meaning unverified for family C."
  }
 }

@@ -215,23 +215,23 @@ O2HeaterWork     equ $00AF        ; $F80AF
 O2HeaterTimer    equ $00B0        ; $F80B0
 O2Heater10C      equ $00B2        ; $F80B2
 MonFlags09D      equ $00B5        ; $F80B5
-;                 bit 7: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 6: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 5: P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 3: P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 2: P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 1: P1281 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 0: P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 7: P0740: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+;                 bit 6: P1899: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+;                 bit 5: P0703: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+;                 bit 4: P0500: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+;                 bit 3: P1294: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+;                 bit 2: P0125: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+;                 bit 1: P0138: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
+;                 bit 0: P0158: prior failure latch used by the family C monitor. Paired result bit in SwitchMonFlags. MonitorFlagsClear clears the latch.
 MonFlags09E      equ $00B6        ; $F80B6
-;                 bit 7: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 6: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 5: P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 4: P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 3: P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 2: P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 1: P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-;                 bit 0: P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+;                 bit 7: Meaning unverified for family C.
+;                 bit 6: Meaning unverified for family C.
+;                 bit 5: Meaning unverified for family C.
+;                 bit 4: Meaning unverified for family C.
+;                 bit 3: P0137: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.
+;                 bit 2: P0157: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.
+;                 bit 1: P0153: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.
+;                 bit 0: P0133: prior failure latch used by the family C monitor. Paired result bit in O2MonFlags. MonitorFlagsClear clears the latch.
 LdpFlags2        equ $00B7        ; $F80B7
 ;                 bit 7: pump switch closed at the purged check (LdpPurgedCheck)
 ;                 bit 5: leak test window counting (LDP state machine)
@@ -816,20 +816,20 @@ SwitchMonFlags   equ $02CE        ; $F82CE
 ;                 bit 7: P0740: torque converter clutch monitor: fault reported (TccMonitor)
 ;                 bit 6: P1899: park/neutral switch monitor: fault reported (PnSwitchMonitor)
 ;                 bit 5: P0703: brake switch monitor: fault reported (BrakeSwitchMonitor)
-;                 bit 4: P0500: vehicle speed monitor: fault reported (VssMonitor)
+;                 bit 4: P0500: per-cycle failure latch set by VssMonitor, including on the first failure.
 ;                 bit 3: P1294: idle rpm monitor: fault reported (IdleRpmMonitor)
 ;                 bit 2: P0125: thermostat warm-up time exceeded: fault reported (ThermostatWarmCheck)
-;                 bit 1: P1281: thermostat monitor running (ThermostatMonitor)
-;                 bit 0: P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)
+;                 bit 1: P0138: per-cycle failure latch set by O2HighVoltMonitor, including on the first failure.
+;                 bit 0: P0158: per-cycle failure latch set by O2HighVoltMonitor, including on the first failure.
 O2MonFlags       equ $02CF        ; $F82CF
-;                 bit 7: P0138 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 6: P0158 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 5: P0140 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 4: P0160 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 1: P0153 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 0: P0133 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
+;                 bit 7: Meaning unverified for family C.
+;                 bit 6: Meaning unverified for family C.
+;                 bit 5: Meaning unverified for family C.
+;                 bit 4: Meaning unverified for family C.
+;                 bit 3: P0137: per-cycle failure latch set by O2LowVoltMonitor, including on the first failure.
+;                 bit 2: P0157: per-cycle failure latch set by O2LowVoltMonitor, including on the first failure.
+;                 bit 1: P0153: per-cycle failure latch set by CatMonSwitchRatio, including on the first failure.
+;                 bit 0: P0133: per-cycle failure latch set by CatMonSwitchRatio, including on the first failure.
 Tcc65C           equ $02D0        ; $F82D0
 PspSwitch667     equ $02D1        ; $F82D1
 IdleMonFlags     equ $02D2        ; $F82D2

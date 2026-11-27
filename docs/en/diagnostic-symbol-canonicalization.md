@@ -51,3 +51,16 @@ The supplied file was named 05293063AC.bin. Its header at $00302 identifies 0529
 The two ROMs differ at 2,214 offsets. All 107,124 bytes identified as instructions in either ROM by tools/analyse.py match, including the entire interval $19C5A–$19CB5. The instruction at $19C5C calls $19CA4. The first routine clears the history and current state at Z+$014D–$0173 and Z+$021C–$023B, and clears MilFaultCount. The called routine clears MIL-related state. The early RAM labels MonFlags09D and MonFlags09E are still at Z+$00B5 and Z+$00B6.
 
 Both checked-in and freshly generated port annotations were tested locally. After running tools/port.py on the extracted ROM in a copy of the annotations, tools/gen_source.py preserved the two canonical routine labels and tools/asm16.py reproduced all 131,072 input bytes. The same assembly check passed using the checked-in annotations. The ROM and generated ASM stayed local.
+
+## Family C monitor latches
+
+05007038 and 05293148AA use inline monitor logic. The prior failure bytes at Z+$00B5/$00B6 pair with result bytes SwitchMonFlags and O2MonFlags at Z+$02CE/$02CF. The two bytes of each pair can be set together on the first failure. A matching prior bit can lead to ReportFault only after the monitor passes its current-cycle guards. MonitorFlagsClear at $19C92 clears all four bytes. The family C bit descriptions override the 256 KB descriptions. The RAM labels are retained because the groups mix monitor classes.
+
+| Prior / result mask | Family C stock evidence |
+|---|---|
+| $00B5 / $02CE, $10 | VssMonitor uses P0500 descriptor $039BD. The first qualifying failure sets both bits and requests freeze-frame capture. A prior failure with a clear result bit reaches ReportFault. The pass path clears both bits. |
+| $00B5 / $02CE, $02 and $01 | O2HighVoltMonitor uses the two Bank 1 descriptors at $14FF2 and $15008. Their mask bytes at +$0F/+$11 select P0138 and P0158, respectively. O2 activity logic tests the prior bits, and the monitor can clear both bits for the matching sensor. |
+| $00B6 / $02CF, $08 and $04 | O2LowVoltMonitor reads the paired masks at +$0E/+$0F of $1526C and $15280 for P0137 and P0157. Its first qualifying failure requests freeze-frame capture, a repeat with the result bit clear reaches ReportFault, and an already-set result bit skips that path. |
+| $00B6 / $02CF, $01 and $02 | CatMonSwitchRatio reads result/prior masks at +$36/+$37 of $170DE and $17128 and fault descriptors for P0133 and P0153. It clears the prior bit after reporting and on the pass path. |
+
+Local CPU16 traces on each hash-verified ROM exercised nine isolated branch slices for P0500, P0137 and P0157, stopping at the capture/report call boundary or the no-call exit. A separate call to MonitorFlagsClear zeroed all four seeded bytes on both ROMs. Both images reassembled byte for byte with the verified comments. Bits 7–4 of the O2 pair and the full drive-cycle liveness of these latches remain open.

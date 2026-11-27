@@ -52,3 +52,11 @@ Checksum addresses are derived from the reviewed response lengths 5, 7, 8, 9, 10
 Both real ROM fault tables have 208 entries (00–CF). 04887050 primary scan checks CF; 05293013AC scans to byte wrap. In 1997 the extra groups D0/E0/F0 read $F8092–$F8097, after the 26-byte real fault bitmap and before the separate list at $F8098. A forced nonzero extra group can cause a read of a post-table attribute at $3D53; the machine fixture confirms the conditional read, not a field defect. Source review shows these six bytes are cleared by ClearFaultHistoryAndCurrentState/cold reset, retained by warm reset, included in NvChecksum, and outside all aligned real ReportFault history offsets. Their normal nonzero liveness and other computed writers remain unproven. Do not reserve them or treat them as calibration offsets.
 
 [Detailed pinned ReCore audit](https://github.com/DDex89/recore-sbec3/blob/e919251fdc800c2d0ca603ea68405af3888f0330/patches/spark/v2/INTEGRATION_GATE.md). No stock executable or XDF calibration changes.
+
+### Local exact-ROM follow-up
+
+On 05293013AC, seeded bytes $F8092–$F8097 contributed to NvChecksum. Isolated execution of the reset branch and clear loop preserved the seed with the warm marker and cleared it with the cold marker. Calling ClearFaultHistoryAndCurrentState also cleared the six bytes. The reset test isolates those instructions from peripheral initialization. It leaves the source of a nonzero value during normal operation open.
+
+FreezeFrameSelect on 05293013AC reads eight pointers from the Bank 1 list at $1F144 before its zero terminator. The final three pointers are $3BFC, $3C06 and $3C74. Isolated execution cleared a matching freeze frame for each of the eight IDs, preserved a nonmatching frame on that list path, and cleared a nonmatching frame for the direct row $F01A. On 04887050, three selected rows each cleared a matching frame and preserved a nonmatching one. These tests do not establish that a given row is reached from a stock drive cycle.
+
+The final ObdFaultAging row's first word is $0042, and the Bank 1 byte at $10042 is $17 in both exact ROMs. The effect on reachable fault history still depends on the caller state.
