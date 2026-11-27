@@ -24,7 +24,7 @@ Audited baselines are Original main at 7e23f987994b657d962ab1299e9139b1a55e0eb1 
 |---|---|---|---|---|
 | 04887050 / 04887051 | $1BB34 | — | — | — |
 | 05293013AC / 05293014AC | $1E450 | — | — | — |
-| 05007038 | $19C5A | $19CA4 | — | — |
+| 05007038 / 05293148AA | $19C5A | $19CA4 | — | — |
 | 05293190AC (phase 1) | $241E4 | $24210 | $009D/$009E/$009F | $065A |
 | 05269833AH / 05269833AI / 05269834AJ | $241E4 | $24210 | $009D/$009E/$009F | $065A |
 | 05032017AA | $241E6 | $24212 | $009E/$009F/$00A0 | $065A |
@@ -38,8 +38,16 @@ For the four 256 KB families in the original audit, the 22 two-trip rows read by
 | 04887051 | ROM hash matched. Compared the clear routine and nearby MIL flag clearing with 04887050. Generated ASM reassembled to the supplied ROM byte for byte. |
 | 05293014AC | ROM hash matched. Compared the clear routine and nearby MIL flag clearing with 05293013AC. Generated ASM reassembled to the supplied ROM byte for byte. |
 | 05269834AJ | ROM hash matched, including the duplicate supplied as 05269834AI.bin. Generated ASM reassembled to the supplied ROM byte for byte. |
-| 05293148AA | Only XDF was available locally. The existing comparison with 05007038 reports zero changed code bytes. Exact-ROM generation and validation remain pending until a dump matches SHA-256 1c39aaef1f4702d2c4aeb1c35612083495a25a243705c62e99df11ba4ecb3951. |
+| 05293148AA | Both 128 KB halves of the supplied 05293063AC.bin matched the expected ROM hash. The diagnostic code matched 05007038 and generated ASM reassembled to the supplied ROM byte for byte. |
 
 tools/gen_source.py uses the scoped aliases for bit keys and descriptions. tools/port.py applies the same hash-pinned list to carried labels and RAM names, then applies local hand annotations. For A/B, the generator describes MIL flag clearing in prose where the shared bit text used a function name from another family.
 
-In each repository, inverse substitutions recovered the original text on all 36 renamed ASM and annotation files. All seven tracked ASM sets assembled byte for byte against the hash-verified supplied ROMs. Generating ASM with python -X utf8 tools/gen_source.py and reassembling it with tools/asm16.py also reproduced all ten available ROMs byte for byte. The two supplied 05293013AC files each contain two identical copies of the expected 128 KB ROM. Local port regeneration checked the early RAM naming boundary on 05007038 and the canonical 256 KB names on 05269834AJ. Generated ASM for the three additional variants was kept in local verification folders. CI was not launched.
+In each repository, inverse substitutions recovered the original text on all 37 renamed ASM and annotation files. All seven tracked ASM sets assembled byte for byte against the hash-verified supplied ROMs. Generating ASM with python -X utf8 tools/gen_source.py and reassembling it with tools/asm16.py also reproduced all eleven available ROMs byte for byte. The two supplied 05293013AC files each contain two identical copies of the expected 128 KB ROM. Local port regeneration checked the early RAM naming boundary on 05007038 and the canonical 256 KB names on 05269834AJ. Generated ASM for the four additional variants was kept in local verification folders. CI was not launched.
+
+## Exact ROM follow-up for 05293148AA
+
+The supplied file was named 05293063AC.bin. Its header at $00302 identifies 05293148AA. Each identical 131,072-byte half has SHA-256 1c39aaef1f4702d2c4aeb1c35612083495a25a243705c62e99df11ba4ecb3951. The first half was used as the local input roms/05293148AA.bin.
+
+The two ROMs differ at 2,214 offsets. All 107,124 bytes identified as instructions in either ROM by tools/analyse.py match, including the entire interval $19C5A–$19CB5. The instruction at $19C5C calls $19CA4. The first routine clears the history and current state at Z+$014D–$0173 and Z+$021C–$023B, and clears MilFaultCount. The called routine clears MIL-related state. The early RAM labels MonFlags09D and MonFlags09E are still at Z+$00B5 and Z+$00B6.
+
+Both checked-in and freshly generated port annotations were tested locally. After running tools/port.py on the extracted ROM in a copy of the annotations, tools/gen_source.py preserved the two canonical routine labels and tools/asm16.py reproduced all 131,072 input bytes. The same assembly check passed using the checked-in annotations. The ROM and generated ASM stayed local.

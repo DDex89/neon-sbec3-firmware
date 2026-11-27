@@ -73,5 +73,12 @@
     "symbols": [
       "MilFaultIncrement"
     ]
+  },
+  "05293148AA": {
+    "sha256": "1c39aaef1f4702d2c4aeb1c35612083495a25a243705c62e99df11ba4ecb3951",
+    "symbols": [
+      "MilFaultIncrement",
+      "MilRequest"
+    ]
   }
 }
