@@ -35,7 +35,7 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/xref.py` | Cross-reference of RAM variables and calibration addresses: who reads and writes them |
 | `tools/port.py` | Carries the reference annotations over to another image (`annotations/ports/`) |
 | `tools/cpu16sim.py` | Instruction-level CPU16 simulator for running single routines of an image ([fuel-pulse.md](fuel-pulse.md)) |
-| `tools/simtest.py` | Checks the simulator against models of the stock `Lookup3D` and `CalcFuelPulse` |
+| `tools/simtest.py` | Checks signed `EDIVS` and compares stock `Lookup3D` and `CalcFuelPulse` with independent models |
 | `tools/revision.py` | Flash and RAM inventory of an image: free space, stubs, routines switched off by the calibration ([revision.md](revision.md)) |
 | `tools/caldiff.py` | Compares two images of one family table by table (`docs/diffs/`) |
 | `tools/xdf.py` | Writes the TunerPro definition of an image (`xdf/`) |
@@ -45,6 +45,13 @@ python3 tools/survey.py roms/*.bin  # header, checksum and families of all image
 | `tools/subsystems.py` | Subsystem groups shared by `autoname.py` and `constants.py` |
 | `tools/build.py` | Assembles and verifies against `tools/variants.json` |
 | `tools/survey.py` | Survey of images (stage 1) |
+
+`EDIVS` divides the signed E:D pair by signed IX. It puts the quotient in
+IX and the remainder in D and checks the carry rounding threshold. The
+instruction model stops at a zero divisor or a signed quotient overflow.
+Divide-exception delivery and overflow results remain outside this model.
+`simtest.py` checks 13 arithmetic cases and four stop controls.
+[CPU16 reference manual, EDIVS on p. 6-102](https://www.nxp.com/docs/en/reference-manual/CPU16RM.pdf)
 
 ## Opcode table
 

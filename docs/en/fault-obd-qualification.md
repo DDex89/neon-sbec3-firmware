@@ -180,11 +180,43 @@ ticks and ten modeled resets. Run
 `python patches/spark/v2/stock_warm_o2_audit.py` from ReCore with the five
 archived ROMs in `roms/`. [Local audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_warm_o2_audit.py)
 
-## Distinct monitor-data EEPROM path (reference)
+## Monitor-data EEPROM shadow
 
-MonEnableCheck clears MonEnableFlags2.7 when its fault/flag/mileage gates fail; when the gates allow and bit 7 was clear, it sets bit 7, clears bit 6, then calls MonDataReset. MonDataReset copies persistent shadow values to working monitor data, masks bits 7 of MonData646/647, clears MonData648 and sets bit 4.
+The stock MainLoop calls MonEnableTasks, EepromWriteService and
+EepromWriteQueue in that order. MonEnableCheck clears MonEnableFlags2.7
+when its enable gates fail. When the gates first admit it, it sets bit 7,
+clears bit 6 and calls MonDataReset. MonDataReset copies the persistent
+shadow values into the working bytes, masks MonData646 with $7F, clears
+MonData648 and sets bit 4. Its MonData647 mask is $7F on 05293190AC and
+$3F on 05269833AH, 05269833AI, 05269834AJ and 05032017AA.
 
-MonDataStore is gated by bit 4. It compares working values with their EEPROM shadows and queues at most one differing byte per call, subject to EepromFlags.7. It sets MonEnableFlags2.5 on a detected mismatch and clears it when no eligible mismatch exists. The EepromShadowMap in bank3 confirms EEPROM $CC-$D0 -> Z+$064C-$0650 and EEPROM $80 -> Z+$0634. The comparison for $CE ignores bit 6 and preserves the shadow's bit 6 when queuing a changed value. These EEPROM shadows have separate destinations from the first-failure and result bytes.
+MonDataStore checks the six entries in the order $CC, $CD, $CE, $CF, $D0,
+$80 when bit 4 is set. It sets bit 5 on a detected difference and clears
+it when there is none. It queues at most one byte, and it leaves a pending
+request in place. For $CE it ignores bit 6 during comparison. On a
+difference in any other bit, it merges bit 6 from the shadow into the
+working byte and writes Scratch0 even with a request pending elsewhere.
+The shadow addresses in RAM are Z+$064C–$0650 and Z+$0634.
+
+In the successful serial sequences, the shadow stayed unchanged during
+program setup, the busy poll and verified readback. EepromWriteQueue
+advanced the cursor and reread the matching byte into the shadow after
+the program request finished. Both modeled reset paths discarded the
+pending request and repopulated the shadow from the supplied read data.
+
+A verification mismatch or two supplied busy polls closed the failed
+request and scheduled rereading of the same record. When that read
+returned the original value, the discrepancy remained and MonDataStore
+issued a new request. In consecutive failures without pending-fault
+aging, the ninth attempt recorded P1696. Once current status was set,
+later attempts skipped another ReportFault call.
+
+The five ROMs passed 150 enable cases, 1,280 monitor-data resets, 6,400
+store cases, 30 serial successes, 100 failed attempts and ten modeled
+restarts. Actual EEPROM persistence and interruption timing remain open.
+
+Run `python patches/spark/v2/stock_obd_eeprom_shadow_audit.py` from ReCore
+with the five archived ROMs in `roms/`. [Exact-ROM EEPROM audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_eeprom_shadow_audit.py)
 
 ## Fault history and MIL state clearing (05293190AC)
 

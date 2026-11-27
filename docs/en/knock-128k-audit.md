@@ -75,11 +75,20 @@ and $0010 admitted the first phase.
 
 Each checked RTI restored registers, CCR, PC and SP. The writes, including
 the stack, remained outside $F85F2–$F85FF. The lowest observed SP in these
-scenarios was $87D0 from $87FE, a depth of 46 bytes. A longer exploratory
-sequence on 04887050 reached EDIVS, which the interpreter lacks, at $09908.
+scenarios was $87D0 from $87FE, a depth of 46 bytes.
 Physical IRQ recognition, peripheral timing and a global stack bound remain
 open. The completed phases exercised the stock handlers with supplied GPT
 and ADC inputs.
+
+With signed EDIVS now implemented, the regression continued through eight
+consecutive four-event cycles for each initial cam/cylinder pair. This added
+448 accepted IC1 entries and includes eight capture wraps from $F800 to
+$0000 per ROM with a supplied IC2-to-IC1 gap of $20. O2UpTrim ran three
+signed divisions during each repeat phase 4, totaling 336. The checked
+quotients, remainders and carry bits matched the expected values.
+RTI still restored the context, the lowest observed SP stayed at $87D0,
+and the checked writes stayed outside $F85F2–$F85FF.
+[CPU16 arithmetic semantics](tools.md#opcode-table)
 
 ## Follow-up: learned-retard recovery, reset and persistent aliases
 

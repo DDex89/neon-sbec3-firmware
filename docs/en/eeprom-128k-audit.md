@@ -1,6 +1,8 @@
 # EEPROM service and readback audit (128 KB A/B)
 
-2026-11-26. Source baseline 9487c2b6824d02828ec1d43fd88ece8300a50ef1. Static source review; no CPU16 ROM execution, QSPI device simulation, hardware power interruption or CI. Stock code/calibration unchanged.
+The source review started from 9487c2b6824d02828ec1d43fd88ece8300a50ef1 on
+2026-11-26. The service-mileage section adds stock CPU16 execution with
+supplied QSPI replies.
 
 ## Address and state contracts
 
@@ -29,11 +31,43 @@ CheckPowerDown calls EepromPowerDownWrite separately, after stopping QSPI. This 
 
 ## Follow-up regression gates
 
-- Model/trace actual two-byte write for addresses 0,2,4,6, boundary 0x1FF and invalid 0x200; aligned/unaligned branches, address after first verification and intervening queue calls.
-- Inject failed QSPI wait/status/readback, mismatched first/second byte, residual flags; verify carry propagation and table cursor scan. Test table miss (SRI).
-- SRI ring: interrupted first/second-byte updates, stale QSPI receive words and wrap through FFFF->0000; cold reset behavior and scratch-index PIT interference remain open.
+- Check split writes at $1FF, rejection at $200 and address and flag transitions on non-ring paths.
+- Check carry propagation and cursor behavior for non-ring failures.
+- Check interrupted SRI writes, stale QSPI words, cold reset behavior and scratch-index PIT interference.
 - Check controlled shutdown caller sequencing, actual EEPROM device/page program semantics, power hold-up and brownout; no modifications to stock before exact-ROM verification.
 - Sync symbol semantics and RAM dependencies to engineering docs, original SBEC3 and TurboNeon wiki when evidence complete. CI held.
+
+## Exact-ROM service-mileage transactions
+
+On 04887050 and 05293013AC the stock startup refreshed the four receive
+words, SriMileageStore queued one word and EepromWriteService programmed
+both bytes together at $00, $02, $04 or $06. A new mileage event stayed
+latched while a request was active. With matching device status and
+readback, the service cleared the request, activity and word flags and
+invalidated the address. The readback table missed the SRI slot. The
+subsequent ring refresh used the updated contents from the modeled device.
+
+At $FFFF to $0000, the refreshed ring still contained a valid pair with
+$FFFF as its numerically greatest word. The next event queued $0000 to
+the same slot again. This was reproduced with both images, from each of
+the four slot positions. Normal progression and the $FFFE boundary also
+ran through complete write and readback.
+
+Each image passed 12 two-write sequences, six isolated failures, three
+successes at the 255th QSPI poll and a sequence of ten failed requests.
+The failed paths included a busy status, sequence timeouts and mismatches
+in both verified bytes. They cleared the request and activity flags
+without rolling back the already published SriMileage. EepromFlags.6
+remained set on the checked failures except the low-byte mismatch.
+The ninth consecutive failed request recorded P1696 and the tenth
+skipped another ReportFault call. A new request was required to attempt
+another write. Neighboring RAM, the candidate RAM range and modeled device
+bytes outside $00–$07 were preserved in the checked cases.
+
+Run `python patches/spark/v2/stock_vss_eeprom_audit.py` from ReCore with
+both archived ROMs in `roms/`. The device model supplies QSPI replies
+and a byte store. Physical EEPROM persistence, interrupted writes and
+concurrent Scratch0/1 use remain open. [Exact-ROM mileage audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_vss_eeprom_audit.py)
 
 ## Initialization/readback map
 

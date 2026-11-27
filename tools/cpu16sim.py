@@ -535,6 +535,25 @@ class CPU:
         self.ix, self.d = q & 0xFFFF, r
         self.z = int(q & 0xFFFF == 0); self.c = 0
 
+    def op_EDIVS(self, ins, f, nxt):
+        # CPU16RM, EDIVS (6-102). The exception and overflow boundaries
+        # stop the instruction model before using unspecified results.
+        dividend = sext((self.e << 16) | self.d, 32)
+        divisor = sext(self.ix, 16)
+        if divisor == 0:
+            raise Halt(f"EDIVS divide-by-zero exception at ${ins.addr:05X}")
+
+        quotient, magnitude = divmod(abs(dividend), abs(divisor))
+        if (dividend < 0) != (divisor < 0):
+            quotient = -quotient
+        self.v = int(not -0x8000 <= quotient <= 0x7FFF)
+        if self.v:
+            raise Halt(f"EDIVS quotient overflow at ${ins.addr:05X}")
+
+        self.ix = self.nz(quotient, 16)
+        self.d = -magnitude if dividend < 0 else magnitude
+        self.c = int(2 * magnitude >= abs(divisor))
+
 
 def run_routine(image, entry, ram=None, regs=None, ram_size=0x1000):
     """Convenience: run one routine with RAM words/bytes set; returns the CPU after the run."""

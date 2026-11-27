@@ -384,8 +384,9 @@ unsigned word having a circular predecessor exactly one smaller modulo
 SriMileage is updated at request time, not after confirmed durable write.
 The latch can coalesce events; this ring is not a lossless trip-distance
 source. Physical distance per event remains uncalibrated. The CCD $84
-schedule and loss limitations above still apply. Exact-ROM ring fixtures
-are pending; stock code and calibration remain unchanged.
+schedule and loss limitations above still apply. Local tests observed a
+repeated zero request after the service ring wrapped from $FFFF.
+[Service-mileage transactions](eeprom-128k-audit.md#exact-rom-service-mileage-transactions)
 
 An exact-ROM check ran 80 complete IC3 handlers with already-accepted
 interrupt frames and supplied pin and capture values. A high pin left

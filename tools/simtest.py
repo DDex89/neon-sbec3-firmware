@@ -19,7 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 import gen_source as g
 from cpu16 import decode
-from cpu16sim import CPU
+from cpu16sim import CPU, Halt
 
 
 def table3d(d, a):
@@ -46,7 +46,66 @@ def model3d(t, pos, col):
     return lerp(lerp(cell(j, i), cell(j, i + 1), fc), lerp(cell(j + 1, i), cell(j + 1, i + 1), fc), fr)
 
 
+def check_edivs():
+    image = bytes.fromhex("37 29")
+    cpu = CPU(image)
+    cases = (
+        (0, 7, 0, 0, 0),
+        (7, 3, 2, 1, 0),
+        (8, 3, 2, 2, 1),
+        (7, -3, -2, 1, 0),
+        (8, -3, -2, 2, 1),
+        (-7, 3, -2, -1, 0),
+        (-8, 3, -2, -2, 1),
+        (-8, -3, 2, -2, 1),
+        (-1, 2, 0, -1, 1),
+        (0x7FFF * 0x7FFF + 0x3FFF, 0x7FFF, 0x7FFF, 0x3FFF, 0),
+        (0x7FFF * 0x7FFF + 0x4000, 0x7FFF, 0x7FFF, 0x4000, 1),
+        (-0x8000, 1, -0x8000, 0, 0),
+        (0x40000000, -0x8000, -0x8000, 0, 0),
+    )
+
+    def operands(dividend, divisor):
+        cpu.reset_regs()
+        cpu.set_ccr(0x20B0)
+        cpu.set_k(0xA12F)
+        cpu.e = (dividend >> 16) & 0xFFFF
+        cpu.d = dividend
+        cpu.ix = divisor & 0xFFFF
+
+    for dividend, divisor, quotient, remainder, carry in cases:
+        operands(dividend, divisor)
+        preserved = (cpu.e, cpu.k(), cpu.ccr() & 0x20FF)
+        cpu.step(0)
+        assert (cpu.e, cpu.k(), cpu.ccr() & 0x20FF) == preserved
+        assert cpu.ix == quotient & 0xFFFF and cpu.d == remainder & 0xFFFF
+        assert (cpu.n, cpu.z, cpu.v, cpu.c) == (quotient < 0, quotient == 0, 0, carry)
+        assert cpu.pc == 2 and not cpu.writes
+
+    boundaries = (
+        (0x8000, 1, "quotient overflow"),
+        (-0x8001, 1, "quotient overflow"),
+        (-0x80000000, -1, "quotient overflow"),
+        (0x12345678, 0, "divide-by-zero exception"),
+    )
+    for dividend, divisor, expected in boundaries:
+        operands(dividend, divisor)
+        saved = (cpu.e, cpu.d, cpu.ix, cpu.k())
+        try:
+            cpu.step(0)
+        except Halt as error:
+            assert expected in str(error)
+        else:
+            raise AssertionError(f"EDIVS did not stop on {expected}")
+        assert (cpu.e, cpu.d, cpu.ix, cpu.k()) == saved
+        assert not cpu.writes
+        if divisor:
+            assert cpu.v == 1
+    print(f"EDIVS: {len(cases)} signed cases and {len(boundaries)} stop controls passed")
+
+
 def main():
+    check_edivs()
     path = sys.argv[1]
     d = open(path, "rb").read()
     pn = os.path.splitext(os.path.basename(path))[0]
