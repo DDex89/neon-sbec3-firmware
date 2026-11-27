@@ -276,12 +276,37 @@ the scaling flag when the counters were exhausted. Sixteen IC4/OC5 cases on
 `05293013AC` and `05293014AC` used the stock handler through RTI. For the
 supplied second-edge state, the $05 option on 05293013AC blocked the setter.
 The $81 option on 05293014AC admitted it with the engine flag, elapsed-count
-and pending-edge guards satisfied. The tests model these states individually.
-Their order and overlap during ordinary operation remain open.
+and pending-edge guards satisfied. The follow-up below combines those paths
+with supplied capture inputs.
 [Exact-ROM fuel audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_fuel_distance_audit.py)
 
 From the ReCore checkout, run `python patches/spark/v2/stock_fuel_distance_audit.py`
 with `04887050.bin`, `05293013AC.bin` and `05293014AC.bin` in `roms/`.
+
+The follow-up used the same mutable model state for two stock IC4 capture
+handlers followed by two full synchronized IC1 handlers. On `05293014AC`,
+with the P/N bit supplied and first capture $0FA0, the first edge set the
+pending flag and reset the six history bytes to $FF. The second edge set
+FuelModeFlags.3 and initialized all four correction counters to $03.
+
+At RefPeriod $0134 or $0135, the next IC1 phase 4 cleared EngineStateFlags.7
+and kept the nonzero correction counters. Phase 1 then requested B=3,2,1,0
+with InjectorIndex unchanged in RAM. The one counter chosen by the fixed
+RAM index went from 3 to 0 while the three other counters stayed at 3.
+The pulse value in E after scaling was $016D, $01CF, $024B and $024B
+for the four requests, from initial CrankPulse $0120. The fourth request
+inherited the third output after the selected counter reached zero.
+With scaling disabled all four values stayed $0120. These are internal
+values before injector dead-time handling.
+At RefPeriod $0133, phase 4 kept the engine bit set and phase 1 made no
+direct group calls. Clearing the supplied P/N bit on 05293014AC, or running
+05293013AC, kept scaling off. Those controls still entered the group at the
+two qualifying reference periods.
+
+The follow-up passed 48 scenarios over both ROMs, three reference periods,
+both P/N values and four initial InjectorIndex values. It supplies cam,
+capture, synchronization and ADC state. The timing and reachability of this
+ordered sequence in an operating vehicle remain open. [Exact-ROM sequence](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_fuel_distance_audit.py)
 
 ### CCD $84 scheduler, local interrupt exclusion, and possible sample loss
 
@@ -328,6 +353,21 @@ these reviewed accumulator operations is excluded under their
 entry/mask invariants. IRQ7, exception behavior, computed aliases,
 foreground caller-mask contract, and actual bus timing are not
 established by this local proof.
+
+The full PIT/IC3 regression ran 1,552 stock PIT entries, twelve IC3 entries
+and eight foreground InjectorFuelAccount calls on `04887050` and
+`05293013AC`. Both variants scheduled consecutive $84 frames 384 active PIT
+ticks apart. Three PIT entries with O2HeaterSample set in each chain held
+the countdown and slot index. All 68 CCD calls entered at IPL 7 and returned
+to the PIT at IPL 3 after the mask instruction.
+
+The first scheduled frame was `84 02 FF 85` with a free buffer. With three
+occupied buffers it was dropped and the deltas were consumed. After a
+supplied release of buffer 1, both paths published `84 01 01 86` at the next
+$84 slot. This second frame carries only fresh fuel and distance counts.
+The model supplies the accepted interrupt frames, ADC-ready state and
+queue release, and holds the transmitter busy. Wire delivery and physical
+timing remain open. [Exact-ROM PIT/IC3 audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_bus_reference_audit.py)
 
 ### VSS distance delta versus service-mileage retention (128 KB)
 

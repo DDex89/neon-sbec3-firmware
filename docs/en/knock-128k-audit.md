@@ -64,6 +64,23 @@ remain open. [Exact-ROM knock audit](https://github.com/DDex89/recore-sbec3/blob
 From the ReCore checkout, run `python patches/spark/v2/stock_ic1_knock_audit.py`
 with `04887050.bin` and `05293013AC.bin` in `roms/`.
 
+The full IC1 audit added 74 accepted IRQ-to-RTI traces on the same two ROMs.
+It used the real GPT vector $41, both cam phases, four initial cylinder
+indices and all four dispatcher phases. Phase 1 called KnockSample and
+published $4A. Phase 3 called KnockCylinderRetard and updated the first
+noise cell from $20 to $35. Phase 4 advanced the cylinder index modulo four
+and toggled the cam phase. Cam-level mismatch and the unsynchronized
+control skipped the dispatch. The supplied $000F counter gap skipped it,
+and $0010 admitted the first phase.
+
+Each checked RTI restored registers, CCR, PC and SP. The writes, including
+the stack, remained outside $F85F2–$F85FF. The lowest observed SP in these
+scenarios was $87D0 from $87FE, a depth of 46 bytes. A longer exploratory
+sequence on 04887050 reached EDIVS, which the interpreter lacks, at $09908.
+Physical IRQ recognition, peripheral timing and a global stack bound remain
+open. The completed phases exercised the stock handlers with supplied GPT
+and ADC inputs.
+
 ## Follow-up: learned-retard recovery, reset and persistent aliases
 
 Source cross-reference pass (bank0, bank1 and equates of both exact target part numbers): 1996 KnockLearnUpdate 1D27E and 1997 Sub_153E0 have equivalent instruction structure and matching MainLoop scheduling branch (first seven low counter bits clear, bit 7 set). Candidate 1997 name KnockLearnUpdate; do not alter executable source. The unsigned byte F8373/F838D is a recovery counter. Coolant/MAP below gates or insufficient nonzero knock signal/count reset it; zero KnockSignalLearn under qualifying conditions increments it. At or above the calibrated threshold the counter clears and ten signed learned-retard cells F8067..F8070 / F8068..F8071 are conditionally stepped toward the limit. Proposed names KnockLearnRecoveryCounter, KnockLearnRecoveryDelay (1CD7/1CEF, stock 22 hex), KnockLearnRecoveryStep (1CD9/1CF1, stock 01), KnockLearnRecoveryLimit (1CDA/1CF2, stock 00; code negates it with saturation). No exact clock cadence established; verify scheduler and interrupt liveness. KnockLearnDecayFlag separately visits the same ten bytes once when SparkFlags.5 is set and ControlFlagsC33.7 is clear; negative cells are incremented by 1C62/1C7A, nonnegative results cleared. KnockLearn fault path clears all ten bytes. Learned-retard array is distinct from five learned-noise bytes.

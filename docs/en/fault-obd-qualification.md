@@ -153,6 +153,33 @@ From the ReCore checkout, with the five archived ROMs in `roms/`, run
 `python patches/spark/v2/stock_obd_o2_audit.py` and
 `python patches/spark/v2/stock_obd_switch_thermal_audit.py`.
 
+## Upstream warm oxygen activity (P0134)
+
+All five images armed the first-channel heater test with qualifying coolant,
+runtime and raw oxygen input. In the supplied startup cases the raw value
+had to be strictly between $12 and $1E and the counter above $13. The
+starting coolant threshold was $CD, with Count3s at least $2C. The heater
+wait took $6E calls. With the raw value at or above $4D, the counter below
+$2A advanced only at main-loop phases $00 and $80.
+
+The failure completion called ReportFault directly and set current and
+history on all five. The four CCD images also advanced the MIL count and
+called FreezeFrameCapture. The $83 descriptor on 05032017AA left both of
+those actions inactive. 05269833AH retained O2TestFlags.0 and count $2A on
+completion. The next observed call with a recovered sensor input cleared
+them. The other images clear the bit and count in the reporting call.
+
+A healthy sample ended the heater test and left recorded current/history
+intact. A modeled warm reset kept history and cleared current and the test
+state. A cold reset cleared both fault bits. A new healthy test after either
+reset left history in the state set by the reset. P0154 was disabled
+throughout the five images.
+
+The regression passed 3,400 monitor calls, 1,280 stock main-loop phase
+ticks and ten modeled resets. Run
+`python patches/spark/v2/stock_warm_o2_audit.py` from ReCore with the five
+archived ROMs in `roms/`. [Local audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_warm_o2_audit.py)
+
 ## Distinct monitor-data EEPROM path (reference)
 
 MonEnableCheck clears MonEnableFlags2.7 when its fault/flag/mileage gates fail; when the gates allow and bit 7 was clear, it sets bit 7, clears bit 6, then calls MonDataReset. MonDataReset copies persistent shadow values to working monitor data, masks bits 7 of MonData646/647, clears MonData648 and sets bit 4.
