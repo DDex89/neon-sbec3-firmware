@@ -47,9 +47,12 @@ def annotation_set(data, pn):
         return load, True
     d = os.path.join(ANN, "ports", pn)
     st = os.path.join(d, "stats.json")
-    if os.path.exists(st) and json.load(open(st)).get("sha256") == hashlib.sha256(data).hexdigest():
+    digest = hashlib.sha256(data).hexdigest()
+    if os.path.exists(st) and json.load(open(st)).get("sha256") == digest:
         f = lambda name: load(os.path.join("ports", pn, name))
         f.dir = d
+        f.part_number = pn
+        f.sha256 = digest
         return f, False
     return (lambda name: {}), False
 
@@ -62,6 +65,15 @@ def load(name, default=None):
     if isinstance(d, dict):
         d.pop("_comment", None)
     return d
+
+
+def port_symbol_renames(pn, sha256):
+    """Return the diagnostic symbols verified for this exact stock image."""
+    verified = load("port_symbol_renames.json").get(pn)
+    if not verified or verified["sha256"] != sha256:
+        return {}
+    aliases = load("reference_symbol_renames.json")
+    return {old: aliases[old] for old in verified["symbols"]}
 
 
 def load_routines(p=None):
@@ -118,19 +130,26 @@ class Names:
             self.labels.setdefault(a, r["name"])
         self.used = {}
         self.bits = {k: v for k, v in load("bits.json").items() if isinstance(v, dict)}
-        if ref:
-            # Reference-only canonical names; ported images keep their existing aliases
-            # until their source and annotations have been synchronized independently.
-            aliases = load("reference_symbol_renames.json")
-            if aliases:
-                pattern = re.compile(r"\b(?:" + "|".join(map(re.escape, aliases)) + r")\b")
-                self.bits = {aliases.get(k, k): {b: pattern.sub(lambda m: aliases[m.group(0)], v)
-                                              for b, v in bits.items()}
-                             for k, bits in self.bits.items()}
+        pn = getattr(own, "part_number", None)
+        aliases = (load("reference_symbol_renames.json") if ref else
+                   port_symbol_renames(pn, getattr(own, "sha256", None)))
+        descriptions = dict(aliases)
+        if aliases and "MilRequest" not in aliases:
+            descriptions["MilRequest"] = "the MIL status reset"
         if not ref:     # bit texts of a ported image (renamed option bytes, hand texts) replace
             for k, v in own("bits.json").items():
                 if isinstance(v, dict):
                     self.bits[k] = v
+        if descriptions:
+            pattern = re.compile(r"\b(?:" + "|".join(map(re.escape, descriptions)) + r")\b")
+            # Merge before renaming so port-specific texts also use this image's vocabulary.
+            bits = {}
+            for key, values in self.bits.items():
+                bits.setdefault(aliases.get(key, key), {}).update({
+                    b: pattern.sub(lambda m: descriptions[m.group(0)], value)
+                    for b, value in values.items()
+                })
+            self.bits = bits
         self.fault_table = fault_table_bounds(data, own("tables.json"))
         self.bits.update(fault_bits(data, self.fault_table))
 

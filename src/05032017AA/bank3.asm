@@ -4005,7 +4005,7 @@ L32908:
         LBNE    L32C56
         LDAA    #$44
         STAA    >SciObdState,Z
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         LDAA    #$04
@@ -5212,9 +5212,9 @@ L3399A:
 L3399E:
         TST     >FaultListLast,Z
         BNE     L339B0
-        TST     <MonFlags09D,Z
+        TST     <ObdPriorFailSwitch,Z
         BNE     L339B0
-        TST     <MonFlags09E,Z
+        TST     <ObdPriorFailO2,Z
         BNE     L339B0
         BCLR    >MonData646,Z,#$04
 L339B0:
@@ -5283,11 +5283,11 @@ L33A60:
 L33A6C:
         TST     >FaultListLast,Z
         BNE     L33A94
-        TST     <MonFlags09D,Z
+        TST     <ObdPriorFailSwitch,Z
         BNE     L33A94
-        TST     <MonFlags09E,Z
+        TST     <ObdPriorFailO2,Z
         BNE     L33A94
-        TST     <MonFlags09F,Z
+        TST     <ObdPriorFailMisc,Z
         BNE     L33A94
         TST     <MonTask0A0,Z
         BNE     L33A94
@@ -6634,7 +6634,7 @@ L35982:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         LBLS    SciSendByte
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         LDAA    #$E0
@@ -6887,7 +6887,7 @@ L35BFC:
         LDAA    #$02
         JMP     $35B8E,X
 L35C10:
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         BRA     L35C64

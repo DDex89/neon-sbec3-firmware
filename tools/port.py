@@ -525,6 +525,17 @@ def main():
         ramn = merge(ramn, r2)
         for part in ("tables", "scalars", "special"):
             tables_out[part] = merge(tables_out[part], t2[part], keyed=lambda v: v["name"])
+    # Matching carries reference names into other images. Convert unverified
+    # diagnostic names back to their legacy spelling before applying local evidence.
+    digest = hashlib.sha256(new.data).hexdigest()
+    reference_aliases = load("reference_symbol_renames.json")
+    aliases = (reference_aliases if gen_source.is_reference(new.data) else
+               gen_source.port_symbol_renames(pn, digest))
+    legacy = {new: old for old, new in reference_aliases.items()
+              if old not in aliases}
+    for symbols in (labels, ramn):
+        for address, name in symbols.items():
+            symbols[address] = aliases.get(name, legacy.get(name, name))
     hand, hand_files = apply_hand(pn, labels, ramn, tables_out)
     if hand:
         labels, ramn, tables_out = hand
@@ -560,7 +571,7 @@ def main():
     dump("bits.json", bits)
     nr = len(ref.body)
     stats = {
-        "sha256": hashlib.sha256(new.data).hexdigest(),
+        "sha256": digest,
         "routines_matched": len(m.pairs), "routines_ref": nr,
         "instructions_mapped": len(m.insn), "instructions_ref": len(ref.an.insn),
         "options_renamed": {o: n for o, n in sorted(alias.items()) if o != n},

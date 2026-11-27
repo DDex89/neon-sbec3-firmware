@@ -13669,7 +13669,7 @@ L19032:
         BSET    >MisfireRecFlags,Z,#$80
         BSET    >MisfireFlags2,Z,#$10                    ; bit 4: misfire count limit reached (MisfireCountLimit, MisfireCount); closed loop and fuel system status read it
         BSET    <MonStatusMisfire,Z,#$49
-        BSET    >DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BSET    >DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
         BSET    <MonRecordB7,Z,#$08
         LDAA    #$80
         STAA    <MonRecordB4,Z
@@ -13694,7 +13694,7 @@ L1908A:
         STAA    <MisfireRecordDD,Z
 L19090:
         BRSET   >MisfireRecFlags,Z,#$80,L1909A
-        BCLR    >DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BCLR    >DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
 L1909A:
         LDAA    $02B1,Z
         STAA    $02CD,Z
@@ -14737,7 +14737,7 @@ MilLampUpdate:
         BCS     L19BAA
         TST     <FreezeFrameFault,Z
         BNE     L19BD6
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         BRA     L19BD6
 L19BAA:
         LDD     >FaultListInfo3,Z
@@ -14831,12 +14831,12 @@ L19C58:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; MilFaultIncrement ($19C5A)
+; ClearFaultHistoryAndCurrentState ($19C5A)
 ; Called from: MilLampUpdate, SciSendByte, ObdRequest, MisfireFaultRecord (5 calls)
 ;---------------------------------------------------------------------------------------------------
-MilFaultIncrement:
+ClearFaultHistoryAndCurrentState:
         PSHM    X,K
-        JSR     MilRequest
+        JSR     ClearMilRequestState
         TZX
         LDX     #$814D
 L19C66:
@@ -14870,12 +14870,12 @@ MonitorFlagsClear:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; MilRequest ($19CA4)
-; Called from: MilFaultIncrement
+; ClearMilRequestState ($19CA4)
+; Called from: ClearFaultHistoryAndCurrentState
 ;---------------------------------------------------------------------------------------------------
-MilRequest:
-        BCLR    >DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
-        BCLR    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+ClearMilRequestState:
+        BCLR    >DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
+        BCLR    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BCLR    $030F,Z,#$08
         BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         RTS
@@ -15017,10 +15017,10 @@ L19DD4:
         BRA     L19DFC
 L19DDA:
         BCLR    >ControlFlagsC39,Z,#$90                  ; bit 7: PCI link variant: set at reset from the bus configuration, cleared when the link check fails; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
-        BRSET   >DiagStatusFlags,Z,#$08,L19E22           ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BRSET   >DiagStatusFlags,Z,#$08,L19E22           ; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
         TST     >FaultListLast,Z
         BEQ     L19DFC
-        BRSET   >DiagStatusFlags,Z,#$80,L19E02           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRSET   >DiagStatusFlags,Z,#$80,L19E02           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BRCLR   >EquipmentFlags,Z,#$20,L19DFC            ; bit 5: automatic transmission: set at reset with Options0324 bit 1, or by CcdReceive when the transmission module is seen on the bus
         BRSET   $030F,Z,#$08,L19E02
 L19DFC:
@@ -15205,7 +15205,7 @@ L19F84:
         LDAB    $00,Y
         CMPB    $3DB9
         BEQ     L19FAC
-        BSET    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 L19FAC:
         ORP     #$0100
         BRA     L19FB6
@@ -16781,7 +16781,7 @@ L1B018:
         CMPB    #$30
         LBLS    SciSendByte
         CLR     >DiagCommand,Z
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         LDAA    #$E0
@@ -17019,7 +17019,7 @@ L1B268:
         LDAA    #$02
         JMP     $1B21A,X
 L1B27C:
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         BRA     L1B2D0
@@ -19012,7 +19012,7 @@ L1C74C:
         LBNE    L1CDA4
         LDAA    #$44
         STAA    >SciObdState,Z
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         LDAA    #$05
@@ -22612,7 +22612,7 @@ L1EFCA:
         BCS     L1F072
 L1F010:
         BRSET   $030F,Z,#$08,L1F022
-        BRCLR   >DiagStatusFlags,Z,#$80,L1F03C           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   >DiagStatusFlags,Z,#$80,L1F03C           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         LDAA    <FreezeFrameCount,Z
         CMPA    #$03
         BCC     L1F03C
@@ -22729,7 +22729,7 @@ ObdFaultProcess:
         BRCLR   $0000,Y,#$08,L1F204
         BRSET   >MonEnableFlags2,Z,#$80,L1F176           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >ControlFlagsC39,Z,#$10,L1F116           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
-        BRCLR   >DiagStatusFlags,Z,#$80,L1F122           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   >DiagStatusFlags,Z,#$80,L1F122           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 L1F116:
         BRCLR   $0000,Y,#$20,L1F122
         BSET    >DiagStatusFlags,Z,#$04                  ; bit 2: freeze frame to be updated (ObdFaultProcess)
@@ -22787,7 +22787,7 @@ L1F18C:
         TBYK
         LDY     <Scratch8,Z
         BRCLR   $0003,Y,#$40,L1F1C0
-        BSET    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 L1F1C0:
         TST     <Scratch6,Z
         BNE     L1F18C
@@ -22876,11 +22876,11 @@ L1F280:
 ;---------------------------------------------------------------------------------------------------
 ObdMonitorRecords:
         BRCLR   >MonRecordB7,Z,#$02,L1F28E
-        BSET    >DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BSET    >DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
         BRA     L1F2DA
 L1F28E:
-        BCLR    >DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
-        BRCLR   >DiagStatusFlags,Z,#$80,L1F2DA           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BCLR    >DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
+        BRCLR   >DiagStatusFlags,Z,#$80,L1F2DA           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         LDAA    <FreezeFrameCount,Z
         CMPA    #$03
         BCS     L1F2D6
@@ -22897,7 +22897,7 @@ L1F2A8:
         AIX     #$14
         CPX     #$EF64
         BCS     L1F2A8
-        BCLR    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BCLR    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BCLR    <MonRecordBB,Z,#$08
         BCLR    <MonRecordBF,Z,#$08
         BCLR    <MonRecordC3,Z,#$08
@@ -22905,7 +22905,7 @@ L1F2A8:
         BCLR    <MonRecordB7,Z,#$08
         BRA     L1F2DA
 L1F2D6:
-        BSET    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    >DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 L1F2DA:
         RTS
 
@@ -22916,7 +22916,7 @@ L1F2DA:
 MisfireFaultRecord:
         TST     <FreezeFrameFault,Z
         LBEQ    L1F36C
-        BRSET   >DiagStatusFlags,Z,#$80,L1F2EE           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRSET   >DiagStatusFlags,Z,#$80,L1F2EE           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BRCLR   $030F,Z,#$08,L1F2F8
 L1F2EE:
         LDAB    #$80
@@ -22971,7 +22971,7 @@ L1F35E:
         AIX     #$14
         BRA     L1F33C
 L1F362:
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         CLR     <MisfireRecordDD,Z
         JSR     MonitorFlagsClear
 L1F36C:
@@ -23494,7 +23494,7 @@ ObdClearCodes:
         CLR     >PurgeFlow174,Z
         CLR     >PurgeResultFlags,Z
         CLR     >LdpResultFlags,Z
-        BCLR    >DiagStatusFlags,Z,#$90                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
+        BCLR    >DiagStatusFlags,Z,#$90                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         CLR     $0111,Z
         LDAA    #$FF
         STAA    <ReadinessIncomplete,Z

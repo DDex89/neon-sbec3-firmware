@@ -96,7 +96,7 @@ MonitorDisableFlags equ $009D        ; $F809D
 ;                 bit 2: battery voltage at or below MonEnableVoltsMin
 ;                 bit 1: barometric pressure below MonEnableBaroMin (altitude)
 ;                 bit 0: battery (ambient) temperature below MonEnableBattTempMin
-MonFlags09D      equ $009E        ; $F809E
+ObdPriorFailSwitch      equ $009E        ; $F809E
 ;                 bit 7: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 6: P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 5: P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
@@ -105,7 +105,7 @@ MonFlags09D      equ $009E        ; $F809E
 ;                 bit 2: P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 1: P1281 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 0: P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-MonFlags09E      equ $009F        ; $F809F
+ObdPriorFailO2      equ $009F        ; $F809F
 ;                 bit 7: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 6: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 5: P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
@@ -114,13 +114,13 @@ MonFlags09E      equ $009F        ; $F809F
 ;                 bit 2: P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 1: P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
 ;                 bit 0: P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-MonFlags09F      equ $00A0        ; $F80A0
-;                 bit 7: P0463 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
-;                 bit 6: P0462 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
-;                 bit 5: P0460 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
-;                 bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
-;                 bit 3: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
-;                 bit 2: P1698 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+ObdPriorFailMisc      equ $00A0        ; $F80A0
+;                 bit 7: P0463 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
+;                 bit 6: P0462 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
+;                 bit 5: P0460 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
+;                 bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
+;                 bit 3: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
+;                 bit 2: P1698 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
 MonTask0A0       equ $00A1        ; $F80A1
 MonStatusCatBank1 equ $00A2        ; $F80A2
 ;                 bit 7: monitor enabled and not complete: set from its option bit (ObdMonitorOptionBits row 0) by ObdRecordFlags at reset and on a code clear; ObdMonitorMain runs the row only while it is set
@@ -211,11 +211,11 @@ FreezeFrame0B    equ $00D4        ; $F80D4
 FreezeFrame0C    equ $00D5        ; $F80D5
 FreezeFrame0D    equ $00D6        ; $F80D6
 DiagStatusFlags  equ $00D9        ; $F80D9
-;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 ;                 bit 6: a fault aged out this pass, probably (ObdFaultAging)
 ;                 bit 5: readiness: every supported monitor complete (ObdReadiness)
 ;                 bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
-;                 bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+;                 bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
 ;                 bit 2: freeze frame to be updated (ObdFaultProcess)
 ;                 bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 ;                 bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
@@ -1162,15 +1162,15 @@ SwitchMonFlags   equ $0658        ; $F8658
 ;                 bit 1: P1281: thermostat monitor running (ThermostatMonitor)
 ;                 bit 0: P0551: power steering switch monitor: switch state for the report (PspSwitchMonitor)
 O2MonFlags       equ $0659        ; $F8659
-;                 bit 7: P0138 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 6: P0158 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 5: P0140 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 4: P0160 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 1: P0153 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-;                 bit 0: P0133 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-MonFlags65A      equ $065A        ; $F865A
+;                 bit 7: P0138 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+;                 bit 6: P0158 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+;                 bit 5: P0140 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+;                 bit 4: P0160 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+;                 bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+;                 bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+;                 bit 1: P0153 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+;                 bit 0: P0133 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+ObdResultMisc      equ $065A        ; $F865A
 ;                 bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
 ;                 bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
 ;                 bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)

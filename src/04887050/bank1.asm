@@ -4394,7 +4394,7 @@ L12FBA:
         CMPB    #$30
         LBLS    SciPutByte
         CLR     >DiagCommand,Z
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     MonitorFlagsClear
         LDAA    #$E0
         JMP     SciPutByte
@@ -4622,7 +4622,7 @@ L131EE:
         LDAA    #$02
         JMP     $131A0,X
 L13202:
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     MonitorFlagsClear
         BRA     L13252
 L1320C:
@@ -17102,7 +17102,7 @@ MilLampUpdate:
         BCS     L1BA90
         TST     <FreezeFrameFault,Z
         BNE     L1BAAE
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         BRA     L1BAAE
 L1BA90:
         LDD     $99,Z
@@ -17196,10 +17196,10 @@ L1BB32:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; MilFaultIncrement ($1BB34)
+; ClearFaultHistoryAndCurrentState ($1BB34)
 ; Called from: SciSendByte, MilLampUpdate, ObdRequest, MisfireFaultRecord (5 calls)
 ;---------------------------------------------------------------------------------------------------
-MilFaultIncrement:
+ClearFaultHistoryAndCurrentState:
         PSHM    X,K
         BCLR    >CamCrankFlags,Z,#$01
         BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
@@ -17377,8 +17377,8 @@ L1BCD0:
         BSET    >ControlFlags944,Z,#$02                  ; bit 1: toggled by ActuatorTestMain, not read
 L1BCD4:
         BRSET   >Options0325,#$40,L1BCE2                 ; bit 6: EGR monitor variant: EgrMonTest runs only with it, and EgrFlowReport, EgrSparkCalc and FuelCorrections add EGR fault checks (EgrFlowMonitor, ObdRequest and others); clear in 04887050/51
-        BRSET   <DiagStatusFlags,Z,#$80,L1BD32           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
-        BRSET   <DiagStatusFlags,Z,#$08,L1BCF2           ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BRSET   <DiagStatusFlags,Z,#$80,L1BD32           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
+        BRSET   <DiagStatusFlags,Z,#$08,L1BCF2           ; bit 3: misfire record taken (MisfireCount), cleared by the MIL status reset and DiagModeTimer
 L1BCE2:
         BRSET   $026A,Z,#$08,L1BCF2
         BRSET   >CamCrankFlags,Z,#$01,L1BCF2
@@ -17400,7 +17400,7 @@ EmptyHook1BCFA:
 
 ;---------------------------------------------------------------------------------------------------
 ; MilLampOutput ($1BCFE)
-; Called from: MilFaultIncrement
+; Called from: ClearFaultHistoryAndCurrentState
 ;---------------------------------------------------------------------------------------------------
 MilLampOutput:
         BITB    #$10
@@ -17504,7 +17504,7 @@ L1BDE6:
         CMPA    $3A5F
         BEQ     L1BE16
         BSET    >CamCrankFlags,Z,#$01
-        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
 L1BE16:
         ORP     #$0100
         BRA     L1BE20
@@ -20937,7 +20937,7 @@ L1E0F4:
         LBNE    L1E3E8
         LDAA    #$44
         STAA    >SciObdState,Z
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     MonitorFlagsClear
         JSR     EmptyHook1BCFA
         LDAA    #$05
@@ -21498,7 +21498,7 @@ L1F182:
         ANDB    >MainLoopCounter,Z
         LBNE    L1F220
         BRSET   >ControlFlagsC39,Z,#$10,L1F1B4           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
-        BRCLR   <DiagStatusFlags,Z,#$80,L1F1D0           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   <DiagStatusFlags,Z,#$80,L1F1D0           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
 L1F1B4:
         CLRB
         TBYK
@@ -21712,7 +21712,7 @@ L1F3A8:
 MisfireFaultRecord:
         TST     <FreezeFrameFault,Z
         LBEQ    L1F42C
-        BRSET   <DiagStatusFlags,Z,#$80,L1F3BA           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRSET   <DiagStatusFlags,Z,#$80,L1F3BA           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
         BRCLR   >ControlFlagsC39,Z,#$10,L1F3C2           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
 L1F3BA:
         LDAB    #$80
@@ -21767,7 +21767,7 @@ L1F424:
         AIX     #$14
         BRA     L1F402
 L1F428:
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
 L1F42C:
         RTS
 
@@ -21865,9 +21865,9 @@ L1F4E0:
         ORAB    >DiagModeFlags,Z
         STAB    >DiagModeFlags,Z
 L1F4EC:
-        BRCLR   <DiagStatusFlags,Z,#$80,L1F54E           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   <DiagStatusFlags,Z,#$80,L1F54E           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
         BRCLR   >DiagModeFlags,Z,#$80,L1F504
-        BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by the MIL status reset and DiagModeTimer
         BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         JSR     EmptyHook1BCFA
         BRA     L1F54E
@@ -21888,7 +21888,7 @@ L1F514:
         AIX     #$14
         CPX     #$F104
         BCS     L1F514
-        BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
         BCLR    <MonRecordBB,Z,#$08
         BCLR    <MonRecordBF,Z,#$08
         BCLR    <MonRecordC3,Z,#$08
@@ -21896,7 +21896,7 @@ L1F514:
         BCLR    <MonRecordB7,Z,#$08
         BRA     L1F54E
 L1F542:
-        BSET    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BSET    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by the MIL status reset and DiagModeTimer
         BSET    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         JSR     EmptyHook1BCFA
 L1F54E:
@@ -22428,7 +22428,7 @@ L1F9A4:
         PULM    K,Y
         BRCLR   $0000,Y,#$08,L1FA04
         BRSET   >ControlFlagsC39,Z,#$10,L1F9C0           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
-        BRCLR   <DiagStatusFlags,Z,#$80,L1F9CC           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   <DiagStatusFlags,Z,#$80,L1F9CC           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
 L1F9C0:
         BRCLR   $0000,Y,#$20,L1F9CC
         BSET    <DiagStatusFlags,Z,#$04                  ; bit 2: freeze frame to be updated (ObdFaultProcess)
@@ -22484,7 +22484,7 @@ L1FA3A:
         TBYK
         LDY     >Scratch8,Z
         BRCLR   $0003,Y,#$40,L1FA6C
-        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
 L1FA6C:
         TST     >Scratch6,Z
         BNE     L1FA3A
@@ -22636,7 +22636,7 @@ L1FBA6:
         LBRA    L1FB30
 L1FBAE:
         LBSR    ObdRecordFlags
-        BCLR    <DiagStatusFlags,Z,#$5F                  ; bit 6: a fault aged out this pass, probably (ObdFaultAging); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer; bit 2: freeze frame to be updated (ObdFaultProcess); bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain); bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
+        BCLR    <DiagStatusFlags,Z,#$5F                  ; bit 6: a fault aged out this pass, probably (ObdFaultAging); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by the MIL status reset and DiagModeTimer; bit 2: freeze frame to be updated (ObdFaultProcess); bit 1: current OBD monitor descriptor condition list at +$0C failed when evaluated (ObdMonitorMain); bit 0: current OBD monitor descriptor condition list at +$0A failed (ObdMonitorMain)
         BCLR    <MonRecordB4,Z,#$80
         BCLR    <MonRecordB8,Z,#$80
         BCLR    <MonRecordBC,Z,#$80
@@ -22693,7 +22693,7 @@ MonitorFlagsClear:
         CLR     <MonStatusFuelSysTooRich1,Z
         CLR     <MonStatusFuelSysTooRich2,Z
         LBSR    ObdRecordFlags
-        BCLR    <DiagStatusFlags,Z,#$98                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BCLR    <DiagStatusFlags,Z,#$98                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by the MIL status reset and DiagModeTimer
         CLR     <MisfireRecordD9,Z
         LBSR    ObdReadiness
         RTS

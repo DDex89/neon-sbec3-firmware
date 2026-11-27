@@ -156,11 +156,11 @@ FreezeFrame0A    equ $00E1        ; $F80E1
 FreezeFrame0C    equ $00E3        ; $F80E3
 FreezeFrame0D    equ $00E4        ; $F80E4
 DiagStatusFlags  equ $00E7        ; $F80E7
-;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by the MIL status reset)
 ;                 bit 6: a fault aged out this pass, probably (ObdFaultAging)
 ;                 bit 5: readiness: every supported monitor complete (ObdReadiness)
 ;                 bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
-;                 bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+;                 bit 3: misfire record taken (MisfireCount), cleared by the MIL status reset and DiagModeTimer
 ;                 bit 2: freeze frame to be updated (ObdFaultProcess)
 ;                 bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 ;                 bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it

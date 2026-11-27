@@ -325,7 +325,7 @@
  "1E388": "MilLampUpdate",
  "1E3CC": "ReportPass",
  "1E416": "LimpMapCalc",
- "1E450": "MilFaultIncrement",
+ "1E450": "ClearFaultHistoryAndCurrentState",
  "1E68C": "ReportFault",
  "1E76A": "FaultListAdd",
  "1E7A8": "FaultBitTest",

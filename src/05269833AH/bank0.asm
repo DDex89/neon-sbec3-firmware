@@ -8285,7 +8285,7 @@ CondList36B9:
 ;---------------------------------------------------------------------------------------------------
 CondList36F6:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9D,$00,$10                          ; ObdPriorFailSwitch needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8314,7 +8314,7 @@ CondList375C:
 ;---------------------------------------------------------------------------------------------------
 CondList3799:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9D,$00,$10                          ; ObdPriorFailSwitch needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8343,7 +8343,7 @@ CondList37FF:
 ;---------------------------------------------------------------------------------------------------
 CondList383C:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9D,$00,$10                          ; ObdPriorFailSwitch needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8372,7 +8372,7 @@ CondList38A2:
 ;---------------------------------------------------------------------------------------------------
 CondList38DF:
         dc.b    $01                                      ; entries
-        dc.b    $00,$9D,$00,$10                          ; MonFlags09D needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9D,$00,$10                          ; ObdPriorFailSwitch needs clear: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
@@ -8440,9 +8440,9 @@ CondList3BA4:
         dc.b    $00,$AE,$00,$10                          ; MonStatusFuelSysTooRich1 needs clear: P0172 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AD,$00,$10                          ; MonStatusFuelSysTooLean2 needs clear: P0174 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
         dc.b    $00,$AF,$00,$10                          ; MonStatusFuelSysTooRich2 needs clear: P0175 fault seen: SciDiagCommand lists the code while it is set (FaultStatusMap)
-        dc.b    $00,$9D,$00,$FC                          ; MonFlags09D needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
-        dc.b    $00,$9E,$00,$FF                          ; MonFlags09E needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
-        dc.b    $00,$9F,$00,$08                          ; MonFlags09F needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9D,$00,$FC                          ; ObdPriorFailSwitch needs clear: P0740 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1899 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0703 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P1294 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear; P0125 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9E,$00,$FF                          ; ObdPriorFailO2 needs clear: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0140 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0160 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0137 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0157 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0153 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear; P0133 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        dc.b    $00,$9F,$00,$08                          ; ObdPriorFailMisc needs clear: P0404 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
 
         dc.b    $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$14,$01,$23,$00
         dc.b    $06,$01,$25,$00,$3E,$01,$24,$00,$CE,$01,$27,$00,$B9,$01,$26,$00
@@ -10083,7 +10083,7 @@ BatteryVoltsDwellFilter:
 
 ;---------------------------------------------------------------------------------------------------
 ; FaultStatusMap ($758C): 44 rows of 10 bytes
-; Fault-to-status map, 44 rows: fault table row, status byte and mask, second status byte and mask. SciDiagCommand scans all rows (FaultStatusMapRows) and sends the codes whose status bit is set. Rows 11-32 ($75FA, FaultTwoTripRows) are the two-trip tests of ObdFaultReport: the first pair is the pending byte (MonFlags09D-09F), the second the test result the monitor sets before the call; a failure with the pending bit set reports the fault, a pass clears both
+; Fault-to-status map, 44 rows: fault table row, status byte and mask, second status byte and mask. SciDiagCommand scans all rows (FaultStatusMapRows) and sends the codes whose status bit is set. Rows 11-32 ($75FA, FaultTwoTripRows) are the two-trip tests of ObdFaultReport: the first pair is the pending byte (ObdPriorFailSwitch/ObdPriorFailO2/ObdPriorFailMisc), the second the test result the monitor sets before the call; a failure with the pending bit set reports the fault, a pass clears both
 ;---------------------------------------------------------------------------------------------------
 FaultStatusMap:
         dc.b    $45,$C8,$00,$B0,$00,$10,$00,$00,$00,$00  ; P0442: MonStatusLdp & $10
@@ -10097,28 +10097,28 @@ FaultStatusMap:
         dc.b    $43,$84,$00,$A3,$00,$10,$00,$00,$00,$00  ; P0133: MonStatusO2Resp1 & $10
         dc.b    $44,$4C,$00,$A4,$00,$10,$00,$00,$00,$00  ; P0153: MonStatusO2Resp2 & $10
         dc.b    $41,$54,$00,$AA,$00,$10,$00,$00,$00,$00  ; P0401: MonStatusEgrFlow & $10
-        dc.b    $47,$12,$00,$9E,$00,$02,$06,$59,$00,$02  ; P0153: MonFlags09E & $02, O2MonFlags & $02
-        dc.b    $47,$08,$00,$9E,$00,$01,$06,$59,$00,$01  ; P0133: MonFlags09E & $01, O2MonFlags & $01
-        dc.b    $45,$50,$00,$9D,$00,$80,$06,$58,$00,$80  ; P0740: MonFlags09D & $80, SwitchMonFlags & $80
-        dc.b    $43,$FC,$00,$9D,$00,$40,$06,$58,$00,$40  ; P1899: MonFlags09D & $40, SwitchMonFlags & $40
-        dc.b    $45,$78,$00,$9D,$00,$20,$06,$58,$00,$20  ; P0703: MonFlags09D & $20, SwitchMonFlags & $20
-        dc.b    $40,$E6,$00,$9D,$00,$10,$06,$58,$00,$10  ; P0500: MonFlags09D & $10, SwitchMonFlags & $10
-        dc.b    $44,$EC,$00,$9D,$00,$08,$06,$58,$00,$08  ; P1294: MonFlags09D & $08, SwitchMonFlags & $08
-        dc.b    $44,$88,$00,$9D,$00,$04,$06,$58,$00,$04  ; P0125: MonFlags09D & $04, SwitchMonFlags & $04
-        dc.b    $40,$D2,$00,$9D,$00,$02,$06,$58,$00,$02  ; P1281: MonFlags09D & $02, SwitchMonFlags & $02
-        dc.b    $44,$06,$00,$9D,$00,$01,$06,$58,$00,$01  ; P0551: MonFlags09D & $01, SwitchMonFlags & $01
-        dc.b    $44,$74,$00,$9E,$00,$80,$06,$59,$00,$80  ; P0138: MonFlags09E & $80, O2MonFlags & $80
-        dc.b    $44,$7E,$00,$9E,$00,$40,$06,$59,$00,$40  ; P0158: MonFlags09E & $40, O2MonFlags & $40
-        dc.b    $44,$92,$00,$9E,$00,$20,$06,$59,$00,$20  ; P0140: MonFlags09E & $20, O2MonFlags & $20
-        dc.b    $44,$9C,$00,$9E,$00,$10,$06,$59,$00,$10  ; P0160: MonFlags09E & $10, O2MonFlags & $10
-        dc.b    $45,$A0,$00,$9E,$00,$08,$06,$59,$00,$08  ; P0137: MonFlags09E & $08, O2MonFlags & $08
-        dc.b    $46,$A4,$00,$9E,$00,$04,$06,$59,$00,$04  ; P0157: MonFlags09E & $04, O2MonFlags & $04
-        dc.b    $45,$64,$00,$9F,$00,$80,$06,$5A,$00,$80  ; P0463: MonFlags09F & $80, MonFlags65A & $80
-        dc.b    $45,$5A,$00,$9F,$00,$40,$06,$5A,$00,$40  ; P0462: MonFlags09F & $40, MonFlags65A & $40
-        dc.b    $45,$6E,$00,$9F,$00,$20,$06,$5A,$00,$20  ; P0460: MonFlags09F & $20, MonFlags65A & $20
-        dc.b    $44,$E2,$00,$9F,$00,$10,$06,$5A,$00,$10  ; P0700: MonFlags09F & $10, MonFlags65A & $10
-        dc.b    $47,$EE,$00,$9F,$00,$08,$06,$5A,$00,$08  ; P0404: MonFlags09F & $08, MonFlags65A & $08
-        dc.b    $43,$48,$00,$9F,$00,$04,$06,$5A,$00,$04  ; P1698: MonFlags09F & $04, MonFlags65A & $04
+        dc.b    $47,$12,$00,$9E,$00,$02,$06,$59,$00,$02  ; P0153: ObdPriorFailO2 & $02, O2MonFlags & $02
+        dc.b    $47,$08,$00,$9E,$00,$01,$06,$59,$00,$01  ; P0133: ObdPriorFailO2 & $01, O2MonFlags & $01
+        dc.b    $45,$50,$00,$9D,$00,$80,$06,$58,$00,$80  ; P0740: ObdPriorFailSwitch & $80, SwitchMonFlags & $80
+        dc.b    $43,$FC,$00,$9D,$00,$40,$06,$58,$00,$40  ; P1899: ObdPriorFailSwitch & $40, SwitchMonFlags & $40
+        dc.b    $45,$78,$00,$9D,$00,$20,$06,$58,$00,$20  ; P0703: ObdPriorFailSwitch & $20, SwitchMonFlags & $20
+        dc.b    $40,$E6,$00,$9D,$00,$10,$06,$58,$00,$10  ; P0500: ObdPriorFailSwitch & $10, SwitchMonFlags & $10
+        dc.b    $44,$EC,$00,$9D,$00,$08,$06,$58,$00,$08  ; P1294: ObdPriorFailSwitch & $08, SwitchMonFlags & $08
+        dc.b    $44,$88,$00,$9D,$00,$04,$06,$58,$00,$04  ; P0125: ObdPriorFailSwitch & $04, SwitchMonFlags & $04
+        dc.b    $40,$D2,$00,$9D,$00,$02,$06,$58,$00,$02  ; P1281: ObdPriorFailSwitch & $02, SwitchMonFlags & $02
+        dc.b    $44,$06,$00,$9D,$00,$01,$06,$58,$00,$01  ; P0551: ObdPriorFailSwitch & $01, SwitchMonFlags & $01
+        dc.b    $44,$74,$00,$9E,$00,$80,$06,$59,$00,$80  ; P0138: ObdPriorFailO2 & $80, O2MonFlags & $80
+        dc.b    $44,$7E,$00,$9E,$00,$40,$06,$59,$00,$40  ; P0158: ObdPriorFailO2 & $40, O2MonFlags & $40
+        dc.b    $44,$92,$00,$9E,$00,$20,$06,$59,$00,$20  ; P0140: ObdPriorFailO2 & $20, O2MonFlags & $20
+        dc.b    $44,$9C,$00,$9E,$00,$10,$06,$59,$00,$10  ; P0160: ObdPriorFailO2 & $10, O2MonFlags & $10
+        dc.b    $45,$A0,$00,$9E,$00,$08,$06,$59,$00,$08  ; P0137: ObdPriorFailO2 & $08, O2MonFlags & $08
+        dc.b    $46,$A4,$00,$9E,$00,$04,$06,$59,$00,$04  ; P0157: ObdPriorFailO2 & $04, O2MonFlags & $04
+        dc.b    $45,$64,$00,$9F,$00,$80,$06,$5A,$00,$80  ; P0463: ObdPriorFailMisc & $80, ObdResultMisc & $80
+        dc.b    $45,$5A,$00,$9F,$00,$40,$06,$5A,$00,$40  ; P0462: ObdPriorFailMisc & $40, ObdResultMisc & $40
+        dc.b    $45,$6E,$00,$9F,$00,$20,$06,$5A,$00,$20  ; P0460: ObdPriorFailMisc & $20, ObdResultMisc & $20
+        dc.b    $44,$E2,$00,$9F,$00,$10,$06,$5A,$00,$10  ; P0700: ObdPriorFailMisc & $10, ObdResultMisc & $10
+        dc.b    $47,$EE,$00,$9F,$00,$08,$06,$5A,$00,$08  ; P0404: ObdPriorFailMisc & $08, ObdResultMisc & $08
+        dc.b    $43,$48,$00,$9F,$00,$04,$06,$5A,$00,$04  ; P1698: ObdPriorFailMisc & $04, ObdResultMisc & $04
         dc.b    $44,$24,$00,$AE,$00,$10,$00,$00,$00,$00  ; P0172: MonStatusFuelSysTooRich1 & $10
         dc.b    $44,$2E,$00,$AC,$00,$10,$00,$00,$00,$00  ; P0171: MonStatusFuelSysTooLean1 & $10
         dc.b    $44,$38,$00,$AF,$00,$10,$00,$00,$00,$00  ; P0175: MonStatusFuelSysTooRich2 & $10

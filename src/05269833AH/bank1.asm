@@ -14999,7 +14999,7 @@ SpeedDampControl:
         BRCLR   >Options0337,#$40,L1DE30                 ; bit 6: speed damping spark on (SpeedDampOn)
         BRSET   >EventSparkFlags,Z,#$08,L1DCC0           ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BRSET   >EventSparkFlags,Z,#$04,L1DCC0           ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BRSET   >MonFlags09D,Z,#$10,L1DC9C               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >ObdPriorFailSwitch,Z,#$10,L1DC9C               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
         BRCLR   >EquipmentFlags,Z,#$20,L1DC4A            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$02,L1DC4A            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRSET   >BusFlags9CE,Z,#$01,L1DC9C

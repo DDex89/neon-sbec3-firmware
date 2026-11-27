@@ -325,7 +325,7 @@
  "1BA6C": "MilLampUpdate",
  "1BAB0": "ReportPass",
  "1BAFA": "LimpMapCalc",
- "1BB34": "MilFaultIncrement",
+ "1BB34": "ClearFaultHistoryAndCurrentState",
  "1BC52": "MilRequestControl",
  "1BCFA": "EmptyHook1BCFA",
  "1BCFE": "MilLampOutput",

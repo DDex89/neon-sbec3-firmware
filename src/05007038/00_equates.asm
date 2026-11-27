@@ -347,11 +347,11 @@ ScratchD         equ $00FD        ; $F80FD
 ScratchE         equ $00FE        ; $F80FE
 ScratchF         equ $00FF        ; $F80FF
 DiagStatusFlags  equ $0110        ; $F8110
-;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+;                 bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 ;                 bit 6: a fault aged out this pass, probably (ObdFaultAging)
 ;                 bit 5: readiness: every supported monitor complete (ObdReadiness)
 ;                 bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
-;                 bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+;                 bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
 ;                 bit 2: freeze frame to be updated (ObdFaultProcess)
 ;                 bit 1: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
 ;                 bit 0: cleared by ObdMonitorMain and at reset, set by byte writes; monitors read it
