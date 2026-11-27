@@ -30,6 +30,8 @@ Run `python tools/obd_enablement.py` with the eleven archived ROMs or supply par
 
 The 12/16 count on 05269833AI and 05269834AJ describes primary monitor arming. In the separate 22-row qualification table, AJ enables P0700, P0703, P1698 and P1899 through FaultTable attributes $C3 where AI has $03. Local tests found 12 enabled qualification rows on AI and 16 on AJ. [Reset and qualification checks](fault-obd-qualification.md#reset-retention-on-the-five-stock-256-kib-images)
 
+For P0703, AJ enables the descriptor, and the brake-monitor option blocks the examined failure branch. The tested P1899 startup branch reaches qualification only on AJ, although 05032017AA also enables its descriptor. [Caller checks](fault-obd-qualification.md#body-bus-brake-and-parkneutral-callers)
+
 ## Family C EVAP fault attributes
 
 The two images have identical primary OBD descriptors, ObdFaultProcess and ObdFaultCondition. Seven FaultTable attributes differ. The values below are the raw bytes in the two exact ROMs.

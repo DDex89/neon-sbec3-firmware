@@ -8,7 +8,7 @@ ReportFault increments its pending count toward the descriptor threshold. FaultP
 
 ## Independent OBD qualification mechanism (05293190AC)
 
-ObdFaultReport searches 22 ten-byte FaultTwoTripRows starting at $75FA. The count is read from $7746. A separate cross-family audit verified the prior-failure and result offsets across the corresponding table on the 256 KiB images. [Diagnostic symbol canonicalization](diagnostic-symbol-canonicalization.md)
+ObdFaultReport searches 22 ten-byte descriptors starting at $75FA within FaultStatusMap ($758C). FaultTwoTripRows is the count byte ($16) at $7746. A separate cross-family audit verified the prior-failure and result offsets across the corresponding table on the 256 KiB images. [Diagnostic symbol canonicalization](diagnostic-symbol-canonicalization.md)
 
 For a matching fault index, the descriptor comprises a fault row pointer (+0), first RAM offset (+2), first mask (+5), second RAM offset (+6) and second mask (+9). The first pair holds the previous-failure state; the second pair holds the current test result. The code checks the referenced fault row attribute bit 7 and the current result bit.
 
@@ -35,6 +35,38 @@ SwitchMonitors selects VssMonitor at counter phases $1F, $3F, $5F, $7F, $9F, $BF
 The 25 isolated TransMilRequest calls checked its guards and two P0700 paths. The direct branch reached ReportFault without a prior-failure flag when a newly received transmission status satisfied its guards. The exact 05269834AJ and 05032017AA descriptors accepted it and recorded P0700. The other three descriptors rejected it. A separate transmission-status branch entered ObdFaultReport for first-failure qualification.
 
 Run `python patches/spark/v2/stock_obd_reset_retention_audit.py` from ReCore with the five 256 KiB ROMs in `roms/`. [Exact-ROM regression script](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_reset_retention_audit.py)
+
+## Downstream oxygen and warm activity callers
+
+The first downstream high/low failure for an enabled DTC sets the prior and current-result bits through O2DownCircuitCheck. The current-result bit blocks an immediate repeat. After a modeled warm reset, a fresh qualified failure records P0137 or P0138 on 05293190AC, 05269833AH, 05269833AI and 05269834AJ. P0157 and P0158 are disabled on all five images. On 05032017AA all four downstream circuit fault descriptors are disabled.
+
+The tested high fault starts above raw $42 and the low fault starts below $04. Counting uses MainLoopPhaseMask $08 for high and $80 for low. The 1,280 phase checks confirm one selected high phase per 16 passes and one low phase per 256 passes. The fault-count thresholds are $96 high and $1C low, with a low threshold of $13 on 05032017AA. The pass thresholds are $4B high and $0A low. These are firmware counts. [Reference bank 2 source](../../src/05293190AC/bank2.asm)
+
+A qualifying healthy sample with a retained prior failure sets a completion bit in MonFlags101 and its matching hold bit in O2DownFlags. O2DownResult waits while the hold bit is set. Warm reset preserves the completion and clears the hold. The next O2DownResult call clears the prior failure through ObdFaultReport without writing history. The cold controls cleared both the completion and prior flags.
+
+In O2ActivityWarm, a running downstream P0140 test below speed threshold $50 takes a distinct branch on 05269833AH. At $4F, AH calls ObdFaultReport with a clear result and clears the supplied prior-failure flag. The other four ROMs cancel the test at that speed and leave the supplied flags intact. At speed $50 with raw below the bias threshold, all five take the clear path under the tested states. [AH bank 2 source](../../src/05269833AH/bank2.asm)
+
+## Body bus, brake and park/neutral callers
+
+BodyBusTimeout starts P1698 qualification at timeout count $C8. Only 05269834AJ and 05032017AA set the paired flags and accept a new qualified timeout after warm reset. On those two images, a supplied heard-module state below the timeout threshold sets MonFlags101.7 and O2DownFlags.7. The next warm reset keeps the former and clears the latter. BodyBusTimeout then clears the retained first failure through ObdFaultReport.
+
+For P0703, the checked BrakeSwitchMonitor failure branch needs Options0340.5 and an enabled FaultTable descriptor. Only 05032017AA passes the option and its P0703 descriptor is disabled. 05269834AJ enables the descriptor and blocks the examined fault branch at the option. The successful-result path clears the paired bits. For P1899, the tested startup state reaches PnSwitchMonitor qualification only on 05269834AJ. A retained prior failure then records P1899. On 05032017AA the descriptor is enabled, Options0333.2 blocks the startup check, and Options0340.6 is clear, disabling the running check.
+
+The local script ran 232 isolated caller invocations, 28 modeled resets and 1,280 phase selections on the five hash-verified ROMs. The model used stock checksum publication, supplied peripheral-ready states, and supplied sensor and bus inputs. [Exact-ROM caller script](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_caller_audit.py)
+
+## Direct call inventory
+
+The five exact ROMs contain 37 direct calls to ObdFaultReport each, with 34 on 05269833AH. All are in bank 2. The reference source maps them to 16 routines. The AH difference comes from EgrPositionMonitor, which has a single shared qualification call in that ROM.
+
+| 05293190AC callers | Calls | Descriptor coverage |
+|---|---:|---|
+| O2ActivityWarm, O2DownCircuitCheck, O2DownResult, CatMonSwitchRatio | 9 | P0133, P0137, P0138, P0140, P0153, P0157, P0158, P0160 |
+| EgrPositionMonitor | 4 | P0404 |
+| TransMilRequest, BodyBusTimeout | 5 | P0700, P1698 |
+| FuelSenderMonitor, ThermostatMonitor, ThermostatWarmCheck | 9 | P0460, P0462, P0463, P1281, P0125 |
+| BrakeSwitchMonitor, PnSwitchMonitor, TccMonitor, IdleRpmMonitor, PspSwitchMonitor, VssMonitor | 10 | P0703, P1899, P0740, P1294, P0551, P0500 |
+
+The inventory covers direct call sites. Full monitor traces for the remaining paths and physical timing remain open.
 
 ## Distinct monitor-data EEPROM path (reference)
 
