@@ -7,17 +7,19 @@ named outside source, **[inferred]** a conclusion that still needs confirming.
 
 ## Images
 
+See [emissions applications and ROM evidence](emissions-calibrations.md) for the FCA and Mopar sources and the per-ROM comparison.
+
 | File | Flash | RAM (stack top) | Header | Reset entry | Family | Build stamp | Vehicle |
 |---|---|---|---|---|---|---|---|
-| `04887050` | 128 KB | 2 KB ($F87FE) | $03DDD | $0C760 | A | | unknown; copyright 1995, so 1996 model year [inferred] |
-| `04887051` | 128 KB | 2 KB | $03DDD | $0C760 | A | | unknown, as above |
+| `04887050` | 128 KB | 2 KB ($F87FE) | $03DDD | $0C760 | A | | 1996 FJ 2.0 DOHC automatic, FED/Taiwan/CAL [FCA] |
+| `04887051` | 128 KB | 2 KB | $03DDD | $0C760 | A | | 1996 FJ 2.0 DOHC manual, FED/CAL [FCA] |
 | `05293013AC` | 128 KB | 2 KB | $03E08 | $0C860 | B | 960716 | 1997 Eagle Talon, manual [source: 2GNT forum] |
 | `05293014AC` | 128 KB | 2 KB | $03E08 | $0C860 | B | 961211 | 1997 Mitsubishi Eclipse (VIN 4A3AK44Y0VE097567 in the SBECBootLoader README) [source] |
-| `05007038` | 128 KB | 2 KB | $00302 | $06A00 | C | | unknown; probably a Mopar Performance calibration [inferred] |
-| `05293148AA` | 128 KB | 2 KB | $00302 | $06A00 | C | | unknown; probably the factory counterpart of 05007038 [inferred] |
-| `05269833AH` | 256 KB | 4 KB ($F8FFE) | $00302 | $0D132 | D | 970804 | unknown; probably Neon [inferred] |
-| `05269833AI` | 256 KB | 4 KB | $00302 | $0D08C | E | | unknown; probably Neon [inferred] |
-| `05269834AJ` | 256 KB | 4 KB | $00302 | $0D08C | E | | unknown; probably Neon [inferred] |
+| `05007038` | 128 KB | 2 KB | $00302 | $06A00 | C | | Mopar Performance P5007038 match, 1997–99 Neon DOHC manual [catalog] |
+| `05293148AA` | 128 KB | 2 KB | $00302 | $06A00 | C | | 1998–99 PL Neon 2.0 SOHC manual, FED [FCA] |
+| `05269833AH` | 256 KB | 4 KB ($F8FFE) | $00302 | $0D132 | D | 970804 | 1998 FJ 2.0 manual, FED/CAL [FCA] |
+| `05269833AI` | 256 KB | 4 KB | $00302 | $0D08C | E | | 1998 FJ 2.0 manual, FED/CAL [FCA] |
+| `05269834AJ` | 256 KB | 4 KB | $00302 | $0D08C | E | | 1998 FJ 2.0 automatic, FED/CAL [FCA] |
 | `05293190AC` | 256 KB | 4 KB | $00302 | $0D08C | F | 980929 | 1999 Mitsubishi Eclipse, manual [source: 2GNT forum and calibration page] |
 | `05032017AA` | 256 KB | 4 KB | $00302 | $0D08C | G | | unknown; copyright 1998 |
 
@@ -31,10 +33,7 @@ named outside source, **[inferred]** a conclusion that still needs confirming.
   and 1998. [code] [source]
 - **Build stamp.** Four images contain a 12-digit string whose last six digits read as a date
   (960716 = 16 July 1996 and so on). [inferred]
-- **Vehicle hints.** Part numbers 05269xxx are in the block of the 1995 Neon revisions (5269646,
-  5269709, 5269712, 5269718, 5269738), and 5007xxx in the Mopar Performance block (P5007033 and
-  P5007034 are the Mopar 1995 Neon calibrations). 05007038 also has $98 where the other headers
-  have the first revision letter. These are hints only. [inferred]
+- **Family C header.** 05007038 has $98 in the first revision-byte position; 05293148AA stores ASCII AA. These bytes identify the images in the archive. [code]
 
 ### Notes on the files received
 

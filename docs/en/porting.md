@@ -78,11 +78,11 @@ One image per family has its source in `src/` and is checked by the build:
 
 | Family | Image | Note |
 |---|---|---|
-| A | 04887050 | copyright 1995, probably 1996 model year |
+| A | 04887050 | 1996 FJ 2.0 DOHC automatic (FCA) |
 | B | 05293013AC | 1997 Eagle Talon, manual |
-| C | 05007038 | probably a Mopar Performance calibration |
-| D | 05269833AH | probably Neon |
-| E | 05269833AI | probably Neon |
+| C | 05007038 | part-number match to Mopar Performance P5007038 |
+| D | 05269833AH | 1998 FJ 2.0 manual, FED/CAL (FCA) |
+| E | 05269833AI | 1998 FJ 2.0 manual, FED/CAL (FCA) |
 | F | 05293190AC | reference, 1999 Mitsubishi Eclipse, manual |
 | G | 05032017AA | copyright 1998 |
 
