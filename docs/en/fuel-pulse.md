@@ -197,8 +197,7 @@ distinct: $4800 = 08 02 01 04 (IoStatus3 masks); $4804 = 20 08 04 10
 Both images share these bytes. The stock $02 option remaps the incoming index
 as (B-1) & 3. This cannot independently address six channels.
 
-The ported FuelEventOffset description retains a reference-image table address
-$ABC3, not the actual 128 KB destination. For 04887050 the lookup curve at
+FuelEventCalc uses a per-image table address. For 04887050 the lookup curve at
 $51F3 feeds the table at $51E7; for 05293013AC the curve at $51FF feeds $51F3.
 Both curves contain pairs (6,0), (36,1), (66,2); FuelEventCylFactor = 3 at
 $51FB/$5207. Both 12-byte tables are
@@ -284,13 +283,16 @@ Each fuel payload count represents 2048 raw accumulator counts
 counts in the accumulator, not in the payload. Frame layout is
 ID $84, fuel byte, distance byte, additive checksum modulo 256.
 
-Important: CcdTransmit invokes the builder BEFORE checking whether
-any of the three queue buffers is free (CcdRxFlags bits 4,3,2).
-If all are busy, no new frame is stored, although the builder has
-already deducted fuel and cleared distance. No rollback is seen in
-this branch. This is a conditional source-level loss mechanism, not
-a measured normal bus loss rate. An external trip computer cannot
-recover those increments merely from the next $84 frame.
+CcdTransmit invokes the builder before checking whether any of the
+three queue buffers is free (CcdRxFlags bits 4,3,2).
+
+The local CPU16 audit executed 512 cases on each ROM across all eight $84
+schedule slots, all eight queue occupancy masks and eight accumulator boundary
+values. It verified the first free buffer, the frame and checksum, the fuel
+remainder, and the cleared distance byte. With all three buffers occupied,
+the queue stayed byte-identical after the builder deducted fuel and cleared
+distance. The test kept the transmitter busy to stop before BusTxStart.
+[Exact-ROM queue audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_bus_reference_audit.py)
 
 Local mask evidence: CCD builder runs with IPL7; the foreground
 InjectorFuelAccount raises IPL7 before its timer/accumulator RMW;
@@ -299,7 +301,7 @@ distance with IPL7. Ordinary maskable interrupt preemption between
 these reviewed accumulator operations is excluded under their
 entry/mask invariants. IRQ7, exception behavior, computed aliases,
 foreground caller-mask contract, and actual bus timing are not
-established by this local proof. No CPU16 execution or bench capture.
+established by this local proof.
 
 ### VSS distance delta versus service-mileage retention (128 KB)
 
