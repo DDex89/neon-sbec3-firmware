@@ -1,0 +1,8 @@
+{
+  "MonFlags09D": "ObdPriorFailSwitch",
+  "MonFlags09E": "ObdPriorFailO2",
+  "MonFlags09F": "ObdPriorFailMisc",
+  "MonFlags65A": "ObdResultMisc",
+  "MilFaultIncrement": "ClearFaultHistoryAndCurrentState",
+  "MilRequest": "ClearMilRequestState"
+}

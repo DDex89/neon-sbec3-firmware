@@ -3998,7 +3998,7 @@ L32874:
         LBNE    L32BC2
         LDAA    #$44
         STAA    >SciObdState,Z
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         LDAA    #$04
@@ -5255,9 +5255,9 @@ L339F0:
 L339F4:
         TST     >FaultListLast,Z
         BNE     L33A06
-        TST     <MonFlags09D,Z
+        TST     <ObdPriorFailSwitch,Z
         BNE     L33A06
-        TST     <MonFlags09E,Z
+        TST     <ObdPriorFailO2,Z
         BNE     L33A06
         BCLR    >MonData646,Z,#$04
 L33A06:
@@ -5326,11 +5326,11 @@ L33AB6:
 L33AC2:
         TST     >FaultListLast,Z
         BNE     L33AEA
-        TST     <MonFlags09D,Z
+        TST     <ObdPriorFailSwitch,Z
         BNE     L33AEA
-        TST     <MonFlags09E,Z
+        TST     <ObdPriorFailO2,Z
         BNE     L33AEA
-        TST     <MonFlags09F,Z
+        TST     <ObdPriorFailMisc,Z
         BNE     L33AEA
         TST     <MonTask0A0,Z
         BNE     L33AEA
@@ -6706,7 +6706,7 @@ L359A0:
         LDAB    >RefPeriod,Z
         CMPB    #$30
         LBLS    SciSendByte
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         LDAA    #$E0
@@ -6974,7 +6974,7 @@ L35C1A:
         LDAA    #$02
         JMP     $35BAC,X
 L35C2E:
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         JSR     ObdClearCodes
         JSR     MonitorFlagsClear
         BRA     L35C82
@@ -8700,8 +8700,8 @@ DiagDataList1:
         dc.b    $06,$65,$06,$5D,$06,$6E,$06,$6F          ; PnSwitch665, Vss65D, RpmSpeedRatioFiltered, $066F
         dc.b    $06,$70,$06,$71,$06,$72,$06,$73          ; TccMonTimer, $0671, TccThrottleAvg, $0673
         dc.b    $06,$74,$06,$75,$06,$76,$06,$77          ; Tcc674, $0675, TccStableTimer, TccTestTimer
-        dc.b    $06,$78,$00,$9D,$06,$58,$00,$9E          ; TccFailCount, MonFlags09D, SwitchMonFlags, MonFlags09E
-        dc.b    $06,$59,$06,$5C,$00,$9F,$06,$5A          ; O2MonFlags, Tcc65C, MonFlags09F, MonFlags65A
+        dc.b    $06,$78,$00,$9D,$06,$58,$00,$9E          ; TccFailCount, ObdPriorFailSwitch, SwitchMonFlags, ObdPriorFailO2
+        dc.b    $06,$59,$06,$5C,$00,$9F,$06,$5A          ; O2MonFlags, Tcc65C, ObdPriorFailMisc, ObdResultMisc
         dc.b    $10,$1F,$09,$50,$0A,$94,$01,$20          ; IoCfg1FL, CamCrank950, FuelSenderFiltered, FuelSenderShutdown
         dc.b    $00,$55,$0A,$93,$01,$9C,$0A,$96          ; EquipmentFlags, FuelSenderScaled, FuelLevelScaled, FuelLevelA96
         dc.b    $03,$1C,$0D,$00,$05,$30,$0B,$30          ; IacStepper31C, SparkFlags, LoadValue, EgrFlags

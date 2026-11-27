@@ -10562,7 +10562,7 @@ L188F6:
         BRSET   >MonStatusMisfire,Z,#$10,L18A5E
         BRSET   >MonStatusMisfire,Z,#$20,L18A5E
 L1890A:
-        BRCLR   >DiagStatusFlags,Z,#$80,L18952           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   >DiagStatusFlags,Z,#$80,L18952           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BRSET   >FaultMem03,Z,#$20,L18A5E                ; bit 5: P0201
         BRSET   >FaultMem03,Z,#$10,L18A5E                ; bit 4: P0202
         BRSET   >FaultMem03,Z,#$08,L18A5E                ; bit 3: P0203
@@ -16416,7 +16416,7 @@ SpeedDampControl:
         BRCLR   >Options0337,#$40,L1DE38                 ; bit 6: speed damping spark on (SpeedDampOn)
         BRSET   >EventSparkFlags,Z,#$08,L1DCC8           ; bit 3: pairs with bit 7 (EventCorrections, EventSparkControl, SpeedDampControl)
         BRSET   >EventSparkFlags,Z,#$04,L1DCC8           ; bit 2: pairs with bit 6 (EventCorrections, EventSparkControl, SpeedDampControl)
-        BRSET   >MonFlags09D,Z,#$10,L1DCA4               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >ObdPriorFailSwitch,Z,#$10,L1DCA4               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
         BRCLR   >EquipmentFlags,Z,#$20,L1DC52            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$02,L1DC52            ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
         BRSET   >BusFlags9CE,Z,#$01,L1DCA4

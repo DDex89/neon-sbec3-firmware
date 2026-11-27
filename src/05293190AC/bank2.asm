@@ -98,7 +98,7 @@ L201DA:
         BCS     L20252
 L201F6:
         BRSET   >BusModuleFlags,Z,#$01,L20206            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
-        BRCLR   <DiagStatusFlags,Z,#$80,L20220           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   <DiagStatusFlags,Z,#$80,L20220           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         LDAA    <FreezeFrameCount,Z
         CMPA    #$03
         BCC     L20220
@@ -215,7 +215,7 @@ ObdFaultProcess:
         BRCLR   $0000,Y,#$08,L20400
         BRSET   >MonEnableFlags2,Z,#$80,L20354           ; bit 7: monitor data valid for this drive cycle (MonEnableCheck); read by many monitors
         BRSET   >ControlFlagsC39,Z,#$10,L202F4           ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
-        BRCLR   <DiagStatusFlags,Z,#$80,L20300           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   <DiagStatusFlags,Z,#$80,L20300           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 L202F4:
         BRCLR   $0000,Y,#$20,L20300
         BSET    <DiagStatusFlags,Z,#$04                  ; bit 2: freeze frame to be updated (ObdFaultProcess)
@@ -280,7 +280,7 @@ L2037C:
         TBYK
         LDY     <Scratch8,Z
         BRCLR   $0003,Y,#$40,L203B0
-        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 L203B0:
         TST     <Scratch6,Z
         BNE     L2037C
@@ -373,7 +373,7 @@ ObdMonitorRecords:
         BRCLR   >MonRecordB7,Z,#$02,L2047E
         BRA     L204C6
 L2047E:
-        BRCLR   >DiagStatusFlags,Z,#$80,L204C6           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   >DiagStatusFlags,Z,#$80,L204C6           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         LDAA    <FreezeFrameCount,Z
         CMPA    #$03
         BCS     L204C2
@@ -390,7 +390,7 @@ L20494:
         AIX     #$14
         CPX     #$0140
         BCS     L20494
-        BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BCLR    <MonRecordBB,Z,#$08
         BCLR    <MonRecordBF,Z,#$08
         BCLR    <MonRecordC3,Z,#$08
@@ -398,7 +398,7 @@ L20494:
         BCLR    <MonRecordB7,Z,#$08
         BRA     L204C6
 L204C2:
-        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
 L204C6:
         RTS
 
@@ -415,7 +415,7 @@ MisfireFaultRecord:
         CMPA    #$01
         LBEQ    L205B2
 L204DE:
-        BRCLR   <DiagStatusFlags,Z,#$80,L204EA           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRCLR   <DiagStatusFlags,Z,#$80,L204EA           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         LDAB    #$80
         STAB    <MisfireRecordD9,Z
         LBRA    L205B2
@@ -476,7 +476,7 @@ L20554:
         JSR     MisfireFaultLookup
 L20570:
         CLR     <FreezeFrameFault,Z
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         LDAA    <FreezeFrame01,Z
         CMPA    $45AC
         BEQ     L20582
@@ -975,7 +975,7 @@ ObdClearCodes:
         CLR     >PurgeFlow174,Z
         CLR     >PurgeResultFlags,Z
         CLR     >LdpResultFlags,Z
-        BCLR    <DiagStatusFlags,Z,#$90                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
+        BCLR    <DiagStatusFlags,Z,#$90                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState); bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer
         CLR     <MisfireRecordD9,Z
         LDAA    #$FF
         STAA    <ReadinessIncomplete,Z
@@ -2726,7 +2726,7 @@ L2214C:
         INCA
         BRA     L22192
 L22160:
-        LDAA    <MonFlags09E,Z
+        LDAA    <ObdPriorFailO2,Z
         BITA    $14,X
         BEQ     L22184
         LDE     $000E,X
@@ -2818,7 +2818,7 @@ L22256:
         LDAA    E,Z
         CMPA    >O2InactiveBiasRaw
         BCC     L2227E
-        LDAA    <MonFlags09E,Z
+        LDAA    <ObdPriorFailO2,Z
         BITA    $14,X
         BEQ     L2227C
         LDAA    $15,X
@@ -3117,7 +3117,7 @@ O2DownLowCount2:
         COMB
         ANDB    >O2DownState,Z
         STAB    >O2DownState,Z
-        LDAA    <MonFlags09E,Z
+        LDAA    <ObdPriorFailO2,Z
         BITA    $0B,X
         BEQ     L22590
         LDAA    >O2DownState,Z
@@ -3174,7 +3174,7 @@ O2DownHighCount2:
         COMB
         ANDB    >O2DownState,Z
         STAB    >O2DownState,Z
-        LDAA    <MonFlags09E,Z
+        LDAA    <ObdPriorFailO2,Z
         BITA    $10,X
         BEQ     L22602
         LDAA    >O2DownState,Z
@@ -3205,7 +3205,7 @@ O2DownResult:
         TBXK
         LDX     #$239C
 L2260C:
-        LDAA    <MonFlags09E,Z
+        LDAA    <ObdPriorFailO2,Z
         BITA    $0B,X
         BEQ     L22644
         LDAA    $0D,X
@@ -3227,7 +3227,7 @@ L2260C:
         LDAA    $00,Y
         JSR     ObdFaultReport
 L22644:
-        LDAA    <MonFlags09E,Z
+        LDAA    <ObdPriorFailO2,Z
         BITA    $10,X
         BEQ     L2267C
         LDAA    $12,X
@@ -3293,9 +3293,9 @@ L226DE:
 L226E2:
         BRCLR   >Options032F,#$20,L2270C                 ; bit 5: downstream O2 sensor 1 fitted
         BRSET   >FaultSet12,Z,#$10,L22706                ; bit 4: P0137
-        BRSET   >O2MonFlags,Z,#$08,L22706                ; bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-        BRSET   >O2MonFlags,Z,#$20,L22706                ; bit 5: P0140 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-        BRCLR   >MonFlags09E,Z,#$80,L2270C               ; bit 7: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >O2MonFlags,Z,#$08,L22706                ; bit 3: P0137 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+        BRSET   >O2MonFlags,Z,#$20,L22706                ; bit 5: P0140 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+        BRCLR   >ObdPriorFailO2,Z,#$80,L2270C               ; bit 7: P0138 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
         BRSET   >O2DownFlags,Z,#$08,L2270C               ; bit 3: downstream O2 sensor 1 check state, read by O2CheckEnable
 L22706:
         BSET    >SensorFaultFlags2,Z,#$02                ; bit 1: downstream O2 sensor 1 failed (O2CheckEnable)
@@ -3315,9 +3315,9 @@ L2272E:
 L22732:
         BRCLR   >Options032F,#$10,L2275C                 ; bit 4: downstream O2 sensor 2 fitted
         BRSET   >FaultSet17,Z,#$40,L22756                ; bit 6: P0157
-        BRSET   >O2MonFlags,Z,#$04,L22756                ; bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-        BRSET   >O2MonFlags,Z,#$10,L22756                ; bit 4: P0160 test result handed to ObdFaultReport: set = failed (pending bit in MonFlags09E)
-        BRCLR   >MonFlags09E,Z,#$40,L2275C               ; bit 6: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
+        BRSET   >O2MonFlags,Z,#$04,L22756                ; bit 2: P0157 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+        BRSET   >O2MonFlags,Z,#$10,L22756                ; bit 4: P0160 test result handed to ObdFaultReport: set = failed (pending bit in ObdPriorFailO2)
+        BRCLR   >ObdPriorFailO2,Z,#$40,L2275C               ; bit 6: P0158 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in O2MonFlags); cleared by a pass and by MonitorFlagsClear
         BRSET   >O2DownFlags,Z,#$04,L2275C               ; bit 2: downstream O2 sensor 2 check state, read by O2CheckEnable
 L22756:
         BSET    >SensorFaultFlags2,Z,#$01                ; bit 0: downstream O2 sensor 2 failed (O2CheckEnable)
@@ -3433,7 +3433,7 @@ L22850:
         CLR     >EgrResultPasses,Z
         BRSET   >EgrMonFlags2,Z,#$01,L2289C
         LDAA    $48B8
-        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
+        BCLR    >ObdResultMisc,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         JSR     ObdFaultReport
 L2289C:
         BRSET   >EgrPosMonFlags2,Z,#$01,L228D4
@@ -3446,7 +3446,7 @@ L2289C:
         CLR     >EgrTrackFails,Z
         CLR     >EgrTrackPasses,Z
         LDAA    $48B8
-        BCLR    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
+        BCLR    >ObdResultMisc,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         JSR     ObdFaultReport
 L228D4:
         LDAA    >Count3s,Z
@@ -3503,7 +3503,7 @@ L22972:
         BRSET   >EgrMonFlags2,Z,#$02,L2299A
         BRSET   >EgrMonFlags2,Z,#$01,L229A6
 L2299A:
-        BSET    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
+        BSET    >ObdResultMisc,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         LDAA    $48B8
         JSR     ObdFaultReport
 L229A6:
@@ -3516,7 +3516,7 @@ L229AC:
 L229B6:
         BCLR    >EgrFlags2,Z,#$40                        ; bit 6: EGR position monitor: closed-throttle zero check done (EgrPositionMonitor)
 L229BA:
-        BRSET   >MonFlags65A,Z,#$08,L22B14               ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
+        BRSET   >ObdResultMisc,Z,#$08,L22B14               ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         BRCLR   >ThrottleState,Z,#$80,L22AF2             ; bit 7: throttle open: above the learned closed position plus a margin (hysteresis when set)
         BRSET   >EgrFlags2,Z,#$80,L22B14                 ; bit 7: EGR position tracking result being counted (EgrPositionMonitor)
         LDAA    >EgrTargetPos,Z
@@ -3602,7 +3602,7 @@ L22AAE:
         BRSET   >EgrMonFlags2,Z,#$01,L22AD6
         BRSET   >EgrMonFlags2,Z,#$02,L22AE2
 L22AD6:
-        BSET    >MonFlags65A,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
+        BSET    >ObdResultMisc,Z,#$08                      ; bit 3: P0404: EGR position monitor result reported (EgrPositionMonitor)
         LDAA    $48B8
         JSR     ObdFaultReport
 L22AE2:
@@ -3819,24 +3819,24 @@ TransMilRequest:
         BRCLR   >TransBusStatus,Z,#$02,L22D8E
         BRSET   >TransBusStatus,Z,#$01,L22D62
         BCLR    >BusModuleFlags,Z,#$01                   ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
-        BRCLR   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >ObdPriorFailMisc,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
         LDAA    $45AC
-        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
+        BCLR    >ObdResultMisc,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D8E
 L22D30:
         BRCLR   >FaultMem10,Z,#$02,L22D3A                ; bit 1: P0700
         JSR     TransFaultStore
 L22D3A:
-        BRCLR   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >ObdPriorFailMisc,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
         LDAA    $45AC
-        BCLR    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
+        BCLR    >ObdResultMisc,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D8E
 L22D4E:
-        BRSET   >MonFlags09F,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+        BRSET   >ObdPriorFailMisc,Z,#$10,L22D8E               ; bit 4: P0700 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
         LDAA    $45AC
-        BSET    >MonFlags65A,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
+        BSET    >ObdResultMisc,Z,#$10                      ; bit 4: P0700: transmission fault reported to the OBD records (TransMilRequest)
         JSR     ObdFaultReport
         BRA     L22D8E
 L22D62:
@@ -3859,22 +3859,22 @@ L22D8E:
 ; Called from: BusTimeoutCheck
 ;---------------------------------------------------------------------------------------------------
 BodyBusTimeout:
-        BRCLR   >MonFlags09F,Z,#$04,L22DB2               ; bit 2: P1698 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in MonFlags65A); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >ObdPriorFailMisc,Z,#$04,L22DB2               ; bit 2: P1698 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in ObdResultMisc); cleared by a pass and by MonitorFlagsClear
         BRSET   >O2DownFlags,Z,#$80,L22DB2               ; bit 7: body bus message seen after start (BodyBusTimeout)
         BRCLR   >MonFlags101,Z,#$80,L22DB2               ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
-        BCLR    >MonFlags65A,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
+        BCLR    >ObdResultMisc,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $4412
         JSR     ObdFaultReport
 L22DB2:
-        BRSET   >MonFlags65A,Z,#$04,L22E04               ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
+        BRSET   >ObdResultMisc,Z,#$04,L22E04               ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    >BodyMsgTimeout,Z
         CMPA    #$C8
         BCS     L22DEC
         BCLR    >O2DownFlags,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout)
         BCLR    >MonFlags101,Z,#$80                      ; bit 7: body bus message seen after start (BodyBusTimeout; with O2DownFlags bit 7)
         BSET    >BusModuleFlags,Z,#$02                   ; bit 1: body/transmission bus message timed out (BodyBusTimeout); cleared by each received message
-        BSET    >MonFlags65A,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
+        BSET    >ObdResultMisc,Z,#$04                      ; bit 2: P1698: body bus timeout fault reported (BodyBusTimeout)
         LDAA    $4412
         JSR     ObdFaultReport
         BSET    >BusReqFlags,Z,#$03                      ; bit 1: bus message bit 6 (CcdReceive); set on a body bus timeout; bit 0: bus message status bits = $80 (CcdReceive); set on a body bus timeout
@@ -3964,20 +3964,20 @@ L22EB2:
         LBCC    L2309E
         BRCLR   >MonFlags101,Z,#$20,L22EE4               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$20,L22EE4               ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BCLR    >MonFlags65A,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
+        BCLR    >ObdResultMisc,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $462E
         JSR     ObdFaultReport
         BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
 L22EE4:
         BRCLR   >MonFlags101,Z,#$10,L22F00               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BRSET   >O2DownFlags,Z,#$10,L22F00               ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BCLR    >MonFlags65A,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
+        BCLR    >ObdResultMisc,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $4624
         JSR     ObdFaultReport
         BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
 L22F00:
         BRSET   >FaultSet13,Z,#$80,L2309E                ; bit 7: P0460
-        BRSET   >MonFlags65A,Z,#$80,L22F60               ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
+        BRSET   >ObdResultMisc,Z,#$80,L22F60               ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderHigh
         BLS     L22F42
@@ -3991,7 +3991,7 @@ L22F00:
 L22F2C:
         BCLR    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
-        BSET    >MonFlags65A,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
+        BSET    >ObdResultMisc,Z,#$80                      ; bit 7: P0463: fuel sender fault reported, first kind (FuelSenderMonitor)
         LDAA    $462E
         JSR     ObdFaultReport
         BRA     L22F60
@@ -4007,7 +4007,7 @@ L22F58:
         BSET    >MonFlags101,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor)
         BSET    >O2DownFlags,Z,#$20                      ; bit 5: fuel sender check result, first kind (FuelSenderMonitor; mirrored in MonFlags101 bit 5)
 L22F60:
-        BRSET   >MonFlags65A,Z,#$40,L22FBA               ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
+        BRSET   >ObdResultMisc,Z,#$40,L22FBA               ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    >FuelSenderFiltered,Z
         CMPA    >FuelSenderLow
         BHI     L22F9C
@@ -4021,7 +4021,7 @@ L22F60:
 L22F86:
         BCLR    >MonFlags101,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor)
         BCLR    >O2DownFlags,Z,#$10                      ; bit 4: fuel sender check result, second kind (FuelSenderMonitor; mirrored in MonFlags101 bit 4)
-        BSET    >MonFlags65A,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
+        BSET    >ObdResultMisc,Z,#$40                      ; bit 6: P0462: fuel sender fault reported, second kind (FuelSenderMonitor)
         LDAA    $4624
         JSR     ObdFaultReport
         BRA     L22FBA
@@ -4094,13 +4094,13 @@ L2305A:
         BCS     L2309E
         BRA     L23080
 L2306E:
-        BCLR    >MonFlags65A,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
+        BCLR    >ObdResultMisc,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
         LDAA    $4638
         JSR     ObdFaultReport
         BCLR    >FaultSet13,Z,#$80                       ; bit 7: P0460
         BRA     L2308C
 L23080:
-        BSET    >MonFlags65A,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
+        BSET    >ObdResultMisc,Z,#$20                      ; bit 5: fuel sender fault (P0460) reported (FuelSenderMonitor)
         LDAA    $4638
         JSR     ObdFaultReport
 L2308C:
@@ -4115,7 +4115,7 @@ L2309E:
         LDAA    >FaultSet13,Z
         BITA    #$E0
         BNE     L230B2
-        LDAA    <MonFlags09F,Z
+        LDAA    <ObdPriorFailMisc,Z
         BITA    #$E0
         BNE     L230B2
         BCLR    >SensorFaultFlags2,Z,#$80                ; bit 7: fuel level sender fault (FuelSenderMonitor)
@@ -4829,7 +4829,7 @@ PspSwitchMonitor:
         TST     >MonStartDelay,Z
         BNE     L2396A
         BRSET   >SwitchInputs2,Z,#$40,L23934             ; bit 6: power steering pressure switch: P0551 in PspSwitchMonitor, idle air and idle rpm adders (with EquipmentFlags bit 2)
-        BRCLR   >MonFlags09D,Z,#$01,L2396E               ; bit 0: P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >ObdPriorFailSwitch,Z,#$01,L2396E               ; bit 0: P0551 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
         CLR     >PspSwitch667,Z
         LDAB    >PspSwitch668,Z
         INCB
@@ -4871,7 +4871,7 @@ L2396E:
 ;---------------------------------------------------------------------------------------------------
 VssMonitor:
         BRCLR   >EngineStateFlags,Z,#$80,L23A40          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
-        BRCLR   >MonFlags09D,Z,#$10,L23982               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
+        BRCLR   >ObdPriorFailSwitch,Z,#$10,L23982               ; bit 4: P0500 failed once, fault not reported yet: a second failure reports it (two-trip logic in ObdFaultReport, result bit in SwitchMonFlags); cleared by a pass and by MonitorFlagsClear
         BRSET   >MonitorDisableFlags,Z,#$08,L23A40       ; bit 3: fuel level outside the monitor window (MonEnableFuelLow)
 L23982:
         BRSET   >MonitorDisableFlags,Z,#$02,L23A40       ; bit 1: barometric pressure below MonEnableBaroMin (altitude)
@@ -5481,7 +5481,7 @@ MilLampUpdate:
         BCS     L24132
         TST     <FreezeFrameFault,Z
         BNE     L2415E
-        JSR     MilFaultIncrement
+        JSR     ClearFaultHistoryAndCurrentState
         BRA     L2415E
 L24132:
         LDD     >FaultListInfo3,Z
@@ -5575,12 +5575,12 @@ L241E2:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; MilFaultIncrement ($241E4)
+; ClearFaultHistoryAndCurrentState ($241E4)
 ; Called from: MisfireFaultRecord, MilLampUpdate, ObdRequest, SciSendByte, DiagRunRamCode
 ;---------------------------------------------------------------------------------------------------
-MilFaultIncrement:
+ClearFaultHistoryAndCurrentState:
         PSHM    X,K
-        JSR     MilRequest
+        JSR     ClearMilRequestState
         TZX
         LDX     #$8122
 L241F0:
@@ -5599,13 +5599,13 @@ L241FE:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; MilRequest ($24210)
-; Called from: MilFaultIncrement
+; ClearMilRequestState ($24210)
+; Called from: ClearFaultHistoryAndCurrentState
 ;---------------------------------------------------------------------------------------------------
-MilRequest:
+ClearMilRequestState:
         BCLR    >MilRequestFlags,Z,#$03
-        BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
-        BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
+        BCLR    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BCLR    >ControlFlagsC39,Z,#$10                  ; bit 4: transmission MIL request (BusModuleFlags bit 0, DiagModeUpdate); EGR and OBD code read it
         RTS
 
@@ -5763,10 +5763,10 @@ DiagModeUpdate:
         LBEQ    DiagModeTimer
         BRA     L2437C
 L2435E:
-        BRSET   >DiagStatusFlags,Z,#$08,L24390           ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BRSET   >DiagStatusFlags,Z,#$08,L24390           ; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
         TST     >FaultListLast,Z
         BEQ     L2437C
-        BRSET   >DiagStatusFlags,Z,#$80,L24386           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BRSET   >DiagStatusFlags,Z,#$80,L24386           ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         BRCLR   >EquipmentFlags,Z,#$20,L2437C            ; bit 5: automatic transmission: calibration bit $032E.5, or the transmission module seen on the bus
         BRSET   >BusModuleFlags,Z,#$01,L24386            ; bit 0: transmission fault with a MIL request pending (TransMilRequest, TransFaultStore)
 L2437C:
@@ -5846,7 +5846,7 @@ L2442C:
         BRA     L2444A
         dc.b    $17,$25,$05,$26,$17,$25,$05,$27,$B0,$2A
 L24442:
-        BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BCLR    <DiagStatusFlags,Z,#$08                  ; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
 L24446:
         CLRB
         BRA     L2444C
@@ -6000,12 +6000,12 @@ L24576:
 MonitorFlagsClear:
         CLR     >SwitchMonFlags,Z
         CLR     >O2MonFlags,Z
-        CLR     >MonFlags65A,Z
+        CLR     >ObdResultMisc,Z
         CLR     >ObdRec65B,Z
         CLR     >EgrPosMonFlags2,Z
-        CLR     <MonFlags09D,Z
-        CLR     <MonFlags09E,Z
-        CLR     <MonFlags09F,Z
+        CLR     <ObdPriorFailSwitch,Z
+        CLR     <ObdPriorFailO2,Z
+        CLR     <ObdPriorFailMisc,Z
         CLR     <MonTask0A0,Z
         CLR     >EgrMonFlags2,Z
         CLR     >O2NoActivityFlags,Z
@@ -6092,7 +6092,7 @@ L2466A:
         LDAB    $00,Y
         CMPB    $45AC
         BEQ     L24692
-        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by MilRequest)
+        BSET    <DiagStatusFlags,Z,#$80                  ; bit 7: fault with a MIL request being processed, probably (ObdFaultProcess, cleared by ClearMilRequestState)
         CLR     <FreezeFrameCount,Z
 L24692:
         ORP     #$0100
@@ -11974,7 +11974,7 @@ L2AE72:
         LDAA    >RunTime,Z
         STAA    <MisfireRecordE7,Z
 L2AEB8:
-        BSET    <DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BSET    <DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
         BRSET   >MisfireOptions,#$02,L2AEE6              ; bit 1: selects a branch in MisfireCount
         BRSET   >MisfireFlags3,Z,#$10,L2AF32
         BRSET   >MisfireFlags3,Z,#$20,L2AF32
@@ -12010,7 +12010,7 @@ L2AF22:
         STAA    <MisfireRecordDD,Z
 L2AF28:
         BRSET   >MisfireRecFlags,Z,#$80,L2AF32
-        BCLR    <DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by MilRequest and DiagModeTimer
+        BCLR    <DiagStatusFlags,Z,#$18                  ; bit 4: misfire record taken (MisfireCount), cleared by DiagModeTimer; bit 3: misfire record taken (MisfireCount), cleared by ClearMilRequestState and DiagModeTimer
 L2AF32:
         LDD     >MisfireTotal1,Z
         STD     >Misfire62D,Z

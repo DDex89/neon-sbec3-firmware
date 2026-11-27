@@ -118,6 +118,15 @@ class Names:
             self.labels.setdefault(a, r["name"])
         self.used = {}
         self.bits = {k: v for k, v in load("bits.json").items() if isinstance(v, dict)}
+        if ref:
+            # Reference-only canonical names; ported images keep their existing aliases
+            # until their source and annotations have been synchronized independently.
+            aliases = load("reference_symbol_renames.json")
+            if aliases:
+                pattern = re.compile(r"\b(?:" + "|".join(map(re.escape, aliases)) + r")\b")
+                self.bits = {aliases.get(k, k): {b: pattern.sub(lambda m: aliases[m.group(0)], v)
+                                              for b, v in bits.items()}
+                             for k, bits in self.bits.items()}
         if not ref:     # bit texts of a ported image (renamed option bytes, hand texts) replace
             for k, v in own("bits.json").items():
                 if isinstance(v, dict):
