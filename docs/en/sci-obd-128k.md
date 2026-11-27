@@ -78,3 +78,5 @@ F01A is the second-bank catalyst row for 05293013AC. Selector $0006 dispatches t
 ReportFault was run for all 208 aligned descriptors in each of 04887050 and 05293013AC with empty and primed pending states, for 832 calls. The history bit was set in 122 and 114 cases respectively. No tested 05293013AC call wrote $F8092–$F8097. The 80-byte EepromReadInit restore loop for 05293013AC also completed in the simulator with a successful mocked byte service. It left those six bytes intact. Other computed writers and asynchronous state remain open.
 
 The earlier match in 04887050 uses bit 1 of PurgeVaporEstimate at $F85E0 to decide whether to advance the freeze-frame counter. Two isolated calls seeded that byte and the descriptor-selected status byte with opposite bit values. The counter followed PurgeVaporEstimate in both cases. This confirms the effect on the isolated 1996 path. The corresponding 1997 trace remains bounded before the computed read and its physical effect is unknown.
+
+See [stock bench validation](sbec3-bench-validation.md) for the verified reset configuration, local exception coverage and evidence to collect on the available boards.
