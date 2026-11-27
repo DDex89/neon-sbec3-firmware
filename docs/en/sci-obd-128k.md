@@ -97,7 +97,7 @@ ObdResetInit preserved the applicable protected domain in 364 isolated cases per
 
 On each of four exact ROMs, all 256 values were supplied to each of 13 primary status rows one at a time. The A/B routines at $1F63E/$1F646/$1F6CE and $1F6A6/$1F6AE/$1F778 gave 9,984 calls per ROM. The family C routines at $1FC8A/$1FD34 gave 6,656 per ROM. Excluding the stack window, observed writes stayed within ReadinessIncomplete, DiagStatusFlags, the three MonStatusBits bytes and, where used in A/B, Scratch2. The 33,280 calls preserved the relevant 1997 history padding, family C latch bytes or A/B candidate RAM.
 
-For ObdFaultProcess, all 13 stock descriptors were also tested with an intact primary X/Y pointer pair and completed pass-side status $40/$50/$60/$70. Across 208 calls the primary record was written and the protected bytes were preserved. Reporting/failure paths, concurrent interrupts and combinations beyond the checked states remain separate work.
+For ObdFaultProcess, all 13 stock descriptors were also tested with an intact primary X/Y pointer pair and completed pass-side status $40/$50/$60/$70. Across 208 calls the primary record was written and the protected bytes were preserved.
 
 ### Freeze-frame capture and misfire aging
 
@@ -106,3 +106,11 @@ On 04887050, 05293013AC, 05007038 and 05293148AA, 2,188 isolated FreezeFrameCapt
 ObdMonitorMain calls MisfireFaultRecord before ObdFaultAging on all four images. In 44 isolated calls, the threshold path took effect with a pending freeze-frame fault, both MIL guards clear, and the low seven age bits at $28. It cleared the frame and ran ClearFaultHistoryAndCurrentState, which zeroed $F8092–$F8097 on 05293013AC. Its descriptor loop cleared bit 5 in 13 primary status bytes and bit 3 in six secondary bytes per ROM. On family C the subsequent MonitorFlagsClear also zeroed $F80B6 and $F82CF. Other tested misfire branches preserved the watched bytes, and all 44 calls preserved the ReCore candidate on A/B. The simulator used supplied inputs and intact descriptors. It leaves full drive-cycle reachability, untested producers and interrupt timing open.
 
 Run `python patches/spark/v2/stock_freeze_frame_audit.py` from a ReCore checkout with the four stock ROMs in `roms/`. [Regression script](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_freeze_frame_audit.py)
+
+### Failure-side writes with stock descriptors
+
+ObdFaultProcess was executed with a pending test failure, the aligned primary row in X and its RAM status pointer in Y. The 15,568 isolated cases cover all 13 rows on each ROM, combinations of status bits, MIL and condition gates, and the drive-valid gate where present. They include empty and occupied pending slots, a count one short of its threshold, an already-current fault, and selector inputs that exercise multiple reports in one call.
+
+The 13,568 calls to ReportFault in that grid selected aligned rows in the stock FaultTable. Outside the call stack, writes stayed in the row-selected primary and secondary status bytes, selected fault-bit bytes, pending/list state, diagnostic and freeze-frame state, and the documented working bytes. The 05293013AC row $F056 sets bit 7 at $F870E through ObdFaultCondition. The trace counted this as a data write, separately from stack pushes. On all applicable ROMs the cases preserved the 1997 history padding $F8092–$F8097, the A/B candidate RAM $F85F2–$F85FF, and family C latches $F80B6/$F82CF. These checks use seeded routine entry states and leave caller reachability, other routine families and asynchronous timing open.
+
+Run `python patches/spark/v2/stock_obd_failure_audit.py` from ReCore with the four stock 128 KiB ROMs in `roms/`. [Regression script](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_failure_audit.py)

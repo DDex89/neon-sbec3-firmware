@@ -27,3 +27,19 @@ Run `python tools/obd_enablement.py` with the eleven archived ROMs or supply par
 | 05269833AH / 05269833AI / 05269834AJ | 12/16 each | Same row enablement across the revision and transmission variants tested |
 | 05293190AC | 12/16 | Reference |
 | 05032017AA | 0/16 | All rows unarmed by ObdRecordFlags in this exact ROM. Other diagnostic paths were outside this check. |
+
+## Family C EVAP fault attributes
+
+The two images have identical primary OBD descriptors, ObdFaultProcess and ObdFaultCondition. Seven FaultTable attributes differ. The values below are the raw bytes in the two exact ROMs.
+
+| DTC | Fault row ID | 05007038 | 05293148AA |
+|---|---:|---:|---:|
+| P0601 | $02 | $03 | $C3 |
+| P0441 | $71 | $CB | $0B |
+| P1299 | $91 | $03 | $C3 |
+| P0442 | $A0 | $CB | $0B |
+| P0455 | $A1 | $CB | $0B |
+| P1494 | $B8 | $03 | $0B |
+| P1486 | $BB | $C3 | $03 |
+
+In 24 isolated selector cases, the purge row $EEB0 on 05007038 could report P1486 or P0441, and the leak-detection row $EED8 could report P0442 or P0455. Each selected fault set its history bit. The switch branch for P1494 produced no report on either ROM. When both reportable inputs were set, P1486 took precedence over P0441 and P0442 over P0455. No case on 05293148AA reached ReportFault from those two OBD rows. The tests supplied the row status and result flags directly. Monitor enablement is covered by the separate option check. [Exact-ROM failure-side checks](sci-obd-128k.md#failure-side-writes-with-stock-descriptors)
