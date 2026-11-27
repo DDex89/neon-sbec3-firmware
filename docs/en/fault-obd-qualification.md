@@ -68,6 +68,30 @@ The five exact ROMs contain 37 direct calls to ObdFaultReport each, with 34 on 0
 
 The inventory covers direct call sites. Full monitor traces for the remaining paths and physical timing remain open.
 
+## EGR position, fuel sender and torque converter clutch
+
+### EGR position
+
+The stock bank 3 EGR dispatcher bypasses EgrControl on all five 256 KiB ROMs because Options0335.2 is clear. In isolated EgrPositionMonitor tests, the tracking comparison accepts a target only from a calibrated minimum through a maximum. The minimum is $66 on four images and $26 on 05032017AA. The maximum is $00 on all five. Sweeping all 256 targets confirmed that none passes.
+
+The raw-position branch hands P0405 to ReportFault below $08 on all five images. The high branch hands it P0406 above $F0 on 05269833AH and above $FA on the other four. Those calls require phase mask $04. The P0404, P0405 and P0406 descriptors all have attributes $03, with reporting disabled. The raw-position sweep made 23 calls on AH and 13 per other ROM, with no current or history writes for those codes. P0404 cleanup was checked under supplied states. The AH shared call was isolated after the target gate, and the other four ROMs also exercised their separate zero-check branch. P0403 and physical solenoid response remain outside these checks.
+
+On 05269833AH, MainLoop at call site $0DE3C enters EgrMain at $39686. The IRQ2 call at $088B0 enters Irq2Dispatch at $0890C. The corrected names are recorded in the port map and tracked ASM. In both repositories the substitution reverses exactly, and the tracked and freshly generated ASM assemble to the archived ROM byte for byte.
+
+### Fuel sender
+
+MainLoop selects FuelSenderMonitor at $20, $60, $A0 and $E0. The electrical checks use raw above $E6 for P0463 and at or below $05 for P0462. The fault count must exceed $07 on 05293190AC, 05269833AH, 05269833AI and 05269834AJ, or $08 on 05032017AA. The recovery count must exceed $07 on the first four or $04 on 05032017AA.
+
+On the first four images, a qualified electrical fault sets the prior and result bits. The same result is skipped. A new qualified failure after warm reset records history. A healthy sample can instead set the corresponding MonFlags101.5/.4 completion and O2DownFlags hold bits. After another warm reset, FuelSenderMonitor uses the retained completion to clear the first-failure bit. These paths were executed with 24 modeled warm resets.
+
+For P0460, a fresh baseline captures $6D through $FF on the four enabled ROMs under the supplied gates. None of the 256 input values enters the low band because capture requires at least $6D and the low band requires below $6D. The low-band comparison was exercised separately with a supplied flag. For both tested bands, movement equality clears the prior flag. With movement one below its threshold, reaching the mileage accumulator threshold selects a failure. SriMileageStore increments that accumulator. On 05032017AA, the option blocks the P0460 path and all three fuel-sender descriptors are disabled.
+
+### Torque converter clutch
+
+SwitchMonitors selects TccMonitor on odd counter phases. On four ROMs the unsigned ratio gate requires a filtered ratio byte below $00. All 256 byte values were exercised, and none reached the P0740 qualification branch. 05269833AH also omits the A/C-request guard at the start of the routine. On 05032017AA the numerical gates admit the supplied states. The branch qualifies a failure after count $03, or marks completion when ratio drop reaches $0403. The P0740 fault descriptor has attributes $03 in all five ROMs, and neither branch recorded P0740. With stock EquipmentInit state, AcRequestUpdate cleared the A/C-request bit on all five.
+
+The local audit ran 8,926 cases across the five exact ROMs. It includes 3,865 EGR cases, 1,040 TCC caller cases, five A/C-request controls, 152 fuel-sender threshold and transition cases, 1,280 fuel baseline samples, 2,560 scheduler phase selections, and 24 modeled warm resets. The tests supply sensor values and intermediate monitor state. [Exact-ROM monitor script](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_obd_monitor_audit.py)
+
 ## Distinct monitor-data EEPROM path (reference)
 
 MonEnableCheck clears MonEnableFlags2.7 when its fault/flag/mileage gates fail; when the gates allow and bit 7 was clear, it sets bit 7, clears bit 6, then calls MonDataReset. MonDataReset copies persistent shadow values to working monitor data, masks bits 7 of MonData646/647, clears MonData648 and sets bit 4.

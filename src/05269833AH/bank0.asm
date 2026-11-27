@@ -11111,7 +11111,7 @@ Isr_IRQ2:
         BSET    >Irq2HandledFlags,Z,#$02
 L088AA:
         BRCLR   $100F,Z,#$08,L088C0
-        JSR     EgrMain
+        JSR     Irq2Dispatch
         LDD     #$0108
         STD     >IoIrqStatus,Z
         BSET    >Irq2HandledFlags,Z,#$02
@@ -11152,10 +11152,10 @@ Isr_SCI:
         RTI
 
 ;---------------------------------------------------------------------------------------------------
-; EgrMain ($0890C)
+; Irq2Dispatch ($0890C)
 ; Called from: Isr_IRQ2
 ;---------------------------------------------------------------------------------------------------
-EgrMain:
+Irq2Dispatch:
         BRSET   >Options032E,#$04,L08918                 ; bit 2: PCI bus (SAE J1850 VPW) instead of CCD: PciReceive / PciPitTick run instead of CcdReceive / CcdTransmit
         JSR     Irq2BusHandler
         BRA     L0891C
@@ -16294,7 +16294,7 @@ L0DE14:
         JSR     IdleEnrichment
         JSR     AcControl
         JSR     SpareHook3F000
-        JSR     Irq2Dispatch
+        JSR     EgrMain
         BRCLR   >Options0337,#$80,L0DE4E                 ; bit 7: per-event spark on (EventSparkOn); also the cam signal handling (Isr_GPT_IC4OC5, CamSignalCheck)
         JSR     CamSignalCheck
         JSR     EventSparkControl

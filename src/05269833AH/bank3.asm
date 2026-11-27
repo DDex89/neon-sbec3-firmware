@@ -1270,7 +1270,7 @@ L30CD2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Irq2BusHandler ($30CD6)
-; Called from: EgrMain
+; Called from: Irq2Dispatch
 ;---------------------------------------------------------------------------------------------------
 Irq2BusHandler:
         BSET    >CcdBusFlags,Z,#$80                      ; bit 7: bus ready for the next message (CcdReceive, Irq4BusHandler, Irq2BusHandler)
@@ -2763,7 +2763,7 @@ L31DB2:
 
 ;---------------------------------------------------------------------------------------------------
 ; Sub_31DB4 ($31DB4)
-; Called from: EgrMain
+; Called from: Irq2Dispatch
 ;---------------------------------------------------------------------------------------------------
 Sub_31DB4:
         BCLRW   $100C,Z,#$0800
@@ -9940,10 +9940,10 @@ L39684:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Irq2Dispatch ($39686)
+; EgrMain ($39686)
 ; Called from: EquipmentInit
 ;---------------------------------------------------------------------------------------------------
-Irq2Dispatch:
+EgrMain:
         BRSET   >Options0335,#$04,L39692                 ; bit 2: EGR spark scaled (EgrSparkScaled); also used by PartThrottleFuelCalc
         JSR     EgrEnable
         BRA     L39696
@@ -9954,7 +9954,7 @@ L39696:
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrEnable ($39698)
-; Called from: Irq2Dispatch
+; Called from: EgrMain
 ;---------------------------------------------------------------------------------------------------
 EgrEnable:
         BRSET   >EngineStateFlags,Z,#$80,L396D6          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
@@ -10093,7 +10093,7 @@ L3985E:
 
 ;---------------------------------------------------------------------------------------------------
 ; EgrControl ($39860)
-; Called from: Irq2Dispatch
+; Called from: EgrMain
 ;---------------------------------------------------------------------------------------------------
 EgrControl:
         BRSET   >EngineStateFlags,Z,#$80,L3989E          ; bit 7: engine turning: set at the first reference pulse, cleared when the engine stalls (CalcEngineRpm)
