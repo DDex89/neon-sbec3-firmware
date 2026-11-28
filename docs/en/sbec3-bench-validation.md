@@ -83,3 +83,21 @@ BusFlags9CE at $F8469/$F8483 and preserved both timeout bytes in both
 families. The exact-ROM test establishes storage and scaling. Physical
 interpretation of the $02 payload remains open.
 [Exact-ROM receive audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ccd_receive_audit.py)
+
+## Spark compare and force-output boundaries
+
+On 04887050 and 05293013AC, the first IC1 phase checks the lead compare
+against TCNT after subtracting $007F at $04A30. On its late path the
+firmware loads the event timer word into the output compare and checks
+it against TCNT again at $04A58. This second decision can request a
+further CFORC write. Later IC1 phases also have separate signed TCNT
+checks. Supplied counter sweeps exercised $04C76, $04E86 and $04ED0.
+
+For a matched stock ECU, capture the relation between the crank
+reference and the actual coil compare/force-output transitions, and
+record elapsed time on the same clock reference. Use the exact ROM to
+identify the branch and timer operands if they are observable. The
+model controls use supplied counter values and give conditional
+branch evidence. The dwell time and interval between a software
+decision and the hardware compare remain bench measurements.
+[Exact-ROM timer boundary regression](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_spark_q4_adapter_audit.py)
