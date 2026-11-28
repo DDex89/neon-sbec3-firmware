@@ -103,6 +103,16 @@ the replacement decision. These slices use a supplied TCNT value and
 start after the compare-channel selection.
 [Compare replacement and force regression](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/timer_window_guard.py)
 
+Phase one also programs the other output compare at $04AA0 using the
+event timer word, the low reference period and the other channel's lead.
+On the route that reaches $04AF8, the firmware subtracts $007F and TCNT
+from that compare word. The sign controls the additional CFORC write.
+Four directed exact-ROM cases changed this decision while preserving the
+earlier phase-one branch trace. Capture both channels when measuring the
+phase-one comparison and force sequence. The audit exercised both outputs
+in all three phases with supplied port, compare and timer states.
+[Stock scheduling slices](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_spark_prewrite_audit.py)
+
 For a matched stock ECU, capture the relation between the crank
 reference and the actual coil compare/force-output transitions, and
 record elapsed time on the same clock reference. Use the exact ROM to
