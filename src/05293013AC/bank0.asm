@@ -13764,7 +13764,7 @@ L098A6:
         TBZK
         LDD     E,Y
         XGDZ
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $16,X
         ADDE    #$02
         BRSET   $001D,X,#$08,L098D0
@@ -13775,16 +13775,16 @@ L098D0:
         TBYK
         CLR     $15,X
         LDZ     $00,Y
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $17,X
         LDZ     $02,Y
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $18,X
         LDZ     $04,Y
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $19,X
         LDZ     $06,Y
-        LDAB    <UnexpectedIrqFlags,Z
+        LDAB    $00,Z
         STAB    $14,X
         PULM    K,Z,Y
         ANDP    #$FF7F
@@ -19035,7 +19035,7 @@ MainLoop:
         JSR     Sub_1B596
         JSR     Sub_120DC
         JSR     FaultPendingAge
-        JSR     Sub_153E0
+        JSR     KnockLearnUpdate
         JSR     Sub_16EDC
         LBRA    L0D378
 L0D2C0:

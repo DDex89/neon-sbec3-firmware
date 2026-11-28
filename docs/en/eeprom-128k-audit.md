@@ -31,8 +31,7 @@ CheckPowerDown calls EepromPowerDownWrite separately, after stopping QSPI. This 
 
 ## Follow-up regression gates
 
-- Check split writes at $1FF, rejection at $200 and address and flag transitions on non-ring paths.
-- Check carry propagation and cursor behavior for non-ring failures.
+- Extend non-ring checks to callers and readback table entries beyond the tested limits.
 - Check interrupted SRI writes, stale QSPI words, cold reset behavior and scratch-index PIT interference.
 - Check controlled shutdown caller sequencing, actual EEPROM device/page program semantics, power hold-up and brownout; no modifications to stock before exact-ROM verification.
 - Sync symbol semantics and RAM dependencies to engineering docs, original SBEC3 and TurboNeon wiki when evidence complete. CI held.
@@ -68,6 +67,30 @@ Run `python patches/spark/v2/stock_vss_eeprom_audit.py` from ReCore with
 both archived ROMs in `roms/`. The device model supplies QSPI replies
 and a byte store. Physical EEPROM persistence, interrupted writes and
 concurrent Scratch0/1 use remain open. [Exact-ROM mileage audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_vss_eeprom_audit.py)
+
+## Exact-ROM address limits and controlled power-down write
+
+On the two 128 KiB ROMs, word requests at $1FC, $1FD and $1FE programmed
+both bytes. At $1FF the split branch programmed and checked the high byte.
+The low byte was outside that verification. Cleanup set EepromAddr to
+$FFFF and left flags $12. The next EepromWriteService made no further
+program request. EepromWriteQueue still refreshed the ring on a readback
+table miss, leaving flags $10. At $200 the service sent write enable,
+skipped programming and readback and left flags $40 with address $FFFF.
+
+For the tested word request at $1E0, the service pointed the readback
+cursor one word before the match. Successive EepromWriteQueue calls
+published $1E0 and $1E1 into Z+$0339/$033A on 04887050 and
+Z+$0353/$0354 on 05293013AC. Supplied busy and verification-timeout
+controls left those RAM bytes unchanged.
+
+EepromPowerDownWrite submitted the high byte at $00C and $1FF through
+the actual watchdog/delay path, cleared the pending flags and invalidated
+the address. A successful readback returned carry clear. A timeout,
+high-byte mismatch or invalid address returned carry set. The new
+regression covered 34 cases across both ROMs. The cases supply QSPI
+responses and do not model power hold-up or actual write durability.
+[Exact-ROM boundary audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_vss_eeprom_audit.py)
 
 ## Initialization/readback map
 

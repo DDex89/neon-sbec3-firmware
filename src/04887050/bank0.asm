@@ -13593,7 +13593,7 @@ L097AA:
         TBZK
         LDD     E,Y
         XGDZ
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $16,X
         ADDE    #$02
         BRSET   $001D,X,#$08,L097D4
@@ -13604,16 +13604,16 @@ L097D4:
         TBYK
         CLR     $15,X
         LDZ     $00,Y
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $17,X
         LDZ     $02,Y
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $18,X
         LDZ     $04,Y
-        LDAA    <UnexpectedIrqFlags,Z
+        LDAA    $00,Z
         STAA    $19,X
         LDZ     $06,Y
-        LDAB    <UnexpectedIrqFlags,Z
+        LDAB    $00,Z
         STAB    $14,X
         PULM    K,Z,Y
         ANDP    #$FF7F

@@ -7803,10 +7803,10 @@ L153DC:
         RTS
 
 ;---------------------------------------------------------------------------------------------------
-; Sub_153E0 ($153E0)
-; Called from: Reset
+; KnockLearnUpdate ($153E0)
+; Called from: MainLoop
 ;---------------------------------------------------------------------------------------------------
-Sub_153E0:
+KnockLearnUpdate:
         LDAA    >CoolantTemp,Z
         CMPA    >KnockLearnCoolantMin
         BCS     L1540A

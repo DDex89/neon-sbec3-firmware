@@ -1,4 +1,10 @@
 {
  "_comment": "Carried over from 05293190AC (gaps filled through 05293013AC) by tools/port.py; do not edit by hand, edit the reference annotations and re-run.",
- "z_not_base": []
+ "z_not_base": [
+  [
+   "097C0",
+   "097F6",
+   "O2SwitchState selects bank-0 calibration bytes until PULM restores Z and ZK"
+  ]
+ ]
 }

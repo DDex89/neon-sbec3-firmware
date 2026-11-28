@@ -185,6 +185,7 @@
  "15168": "SparkEventCalc",
  "1526E": "KnockLearn",
  "153A2": "KnockEventDecayStep",
+ "153E0": "KnockLearnUpdate",
  "15456": "KnockRetardMaxCalc",
  "15496": "KnockRpmBand",
  "154EE": "KnockLearnDecayFlag",

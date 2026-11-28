@@ -359,7 +359,7 @@ def apply_hand(pn, labels, ramn, tables_out):
             cur[k] = dict(base, **v)          # a hand entry may only rename or describe
         tables_out[part] = cur
     extra = {}
-    for f in ("routines.md", "bits.json"):
+    for f in ("routines.md", "bits.json", "analysis.json"):
         if os.path.exists(os.path.join(hdir, f)):
             extra[f] = open(os.path.join(hdir, f), encoding="utf-8").read()
     return (labels, ramn, tables_out), extra
@@ -539,6 +539,9 @@ def main():
     hand, hand_files = apply_hand(pn, labels, ramn, tables_out)
     if hand:
         labels, ramn, tables_out = hand
+    local_context = json.loads(hand_files.pop("analysis.json", "{}"))
+    ranges = analysis["z_not_base"] + local_context.get("z_not_base", [])
+    analysis["z_not_base"] = list({tuple(region[:2]): region for region in ranges}.values())
     clamp(new, tables_out)
     hand_bits = json.loads(hand_files.pop("bits.json", "{}"))
     hand_bits.pop("_comment", None)

@@ -180,6 +180,35 @@ ticks and ten modeled resets. Run
 `python patches/spark/v2/stock_warm_o2_audit.py` from ReCore with the five
 archived ROMs in `roms/`. [Local audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_warm_o2_audit.py)
 
+## Downstream warm oxygen activity (P0140 and P0160)
+
+The four CCD ROMs armed P0140 at speed $50 or higher when raw oxygen was
+strictly between $12 and $1E and the baseline count exceeded $13. The
+baseline counts at MainLoopCounter $7F and $FF. After $6E heater calls,
+raw at or above $4D advances the failure count at $00 and $80. The
+next qualifying call after count $2A completes the failure.
+
+The first failure set prior/result and captured priority $01 freeze
+frame without current or history writes. The same-cycle repeat could
+not re-arm. A modeled warm reset kept the prior bit and frame and
+cleared the result. A second failure after that reset logged current
+and history, incremented the MIL count and promoted the frame to $03.
+A cold reset restarted qualification.
+
+A healthy completion after the first-failure warm reset cleared the
+prior/result bits and matching priority-$01 frame. After a logged
+failure and warm reset, a healthy test kept the history and priority-$03
+frame. The pre-heater healthy path also cleared pending state unless the
+descriptor sensor-state byte Z+$071D had bit $10 or $20 set. AH kept
+its channel bit and count until the next observed cleanup call.
+
+P0160 is disabled in all five images, and 05032017AA also disables P0140.
+The disabled descriptors rejected supplied active test states. The
+regression ran 5,704 monitor calls, 2,048 stock counter steps and 12
+modeled resets. Run `python patches/spark/v2/stock_warm_downstream_o2_audit.py`
+from ReCore with the five exact ROMs in `roms/`. Real sensor waveforms and
+drive-cycle timing remain open. [Exact-ROM downstream audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_warm_downstream_o2_audit.py)
+
 ## Monitor-data EEPROM shadow
 
 The stock MainLoop calls MonEnableTasks, EepromWriteService and

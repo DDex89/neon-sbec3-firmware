@@ -38,7 +38,7 @@ KnockCylinderRetard 1D5FC/1575E: five RPM words 2000,3700,3700,3700,3700 (hex), 
 
 - [ ] Correct KnockRetardMaxMap descriptions in per-ROM annotations/catalogues/XDF; stale 24A5/24A6 reference in both target XDFs. Exact thresholds: RPM minimum 1CAF/1CC7, throttle 1CB0/1CC8, second RPM 1CB1/1CC9. Code: return zero if coolant or RPM below minimum; otherwise use MAP lookup if throttle below threshold OR RPM at/above second threshold; else use KnockRetardMaxLow. Note actual comparisons and stock threshold values before renaming. Preserve all addresses of editable data, formulas and stock values unless separately verified metadata error.
 - [ ] Review misleading table names KnockSensorCheckRpm (1C63/1C7B, produces MAP threshold), KnockNoiseLearnWeight (1C8B/1CA3, lower clamp), KnockRetardMaxRpm (3DAD/3DD8, lower diagnostic threshold), and KnockWindowRpm coefficient description. Trace lookup input/output encoding and other family consumers before rename; sync EN/RU, hand/ported metadata, XDF and Turbonator Wiki.
-- [ ] Compare 1996 KnockLearnUpdate (1D27E) with unnamed 1997 Sub_153E0; matching source structure and countdown at F8373/F838D support a candidate ported routine name and variable description. Verify exact ROM and all references before renaming.
+- [x] Verify learned-retard recovery and name the routine KnockLearnUpdate in both family B images. See the exact-ROM results below.
 - [ ] Verify indirect/overlapping accesses, reset initialization, diagnostics, IRQ and shared scratch lifecycle, per-cylinder mapping, calibration units, RPM-cell reachability, exact-ROM CPU16 fixtures and physical timing. CI held due to quota; no new machine test claim.
 
 ## Exact-ROM IC1 knock writes
@@ -92,7 +92,28 @@ and the checked writes stayed outside $F85F2–$F85FF.
 
 ## Follow-up: learned-retard recovery, reset and persistent aliases
 
-Source cross-reference pass (bank0, bank1 and equates of both exact target part numbers): 1996 KnockLearnUpdate 1D27E and 1997 Sub_153E0 have equivalent instruction structure and matching MainLoop scheduling branch (first seven low counter bits clear, bit 7 set). Candidate 1997 name KnockLearnUpdate; do not alter executable source. The unsigned byte F8373/F838D is a recovery counter. Coolant/MAP below gates or insufficient nonzero knock signal/count reset it; zero KnockSignalLearn under qualifying conditions increments it. At or above the calibrated threshold the counter clears and ten signed learned-retard cells F8067..F8070 / F8068..F8071 are conditionally stepped toward the limit. Proposed names KnockLearnRecoveryCounter, KnockLearnRecoveryDelay (1CD7/1CEF, stock 22 hex), KnockLearnRecoveryStep (1CD9/1CF1, stock 01), KnockLearnRecoveryLimit (1CDA/1CF2, stock 00; code negates it with saturation). No exact clock cadence established; verify scheduler and interrupt liveness. KnockLearnDecayFlag separately visits the same ten bytes once when SparkFlags.5 is set and ControlFlagsC33.7 is clear; negative cells are incremented by 1C62/1C7A, nonnegative results cleared. KnockLearn fault path clears all ten bytes. Learned-retard array is distinct from five learned-noise bytes.
+The matching MainLoop call sites target KnockLearnUpdate at $1D27E and
+$153E0. The unsigned byte $F8373/$F838D is a recovery counter. In 126
+checks on 04887050, 05293013AC and 05293014AC, coolant and MAP at their
+thresholds admitted recovery. A low value reset the counter. With
+nonzero signal below $08 or event count below $06 it was preserved,
+and at $08/$06 it cleared. With zero signal and both gates satisfied,
+the 34th call cleared the counter and moved each negative learned-retard
+value one step toward zero. The zero cells were preserved. The tested
+writes stayed in the counter, retard cells and stack.
+
+Family B now uses KnockLearnUpdate at $153E0. Its unmodified machine code
+and caller were identical in the sibling 05293014AC. The recovery bytes
+and calibration values retain their addresses and names. The local
+source guard resolves Z offsets and ignores the entry label for
+instruction fingerprints. Physical cadence and overlap with IC1 remain
+open. [Exact-ROM recovery audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/ram_knock_alias_audit.py)
+
+KnockLearnDecayFlag separately visits the same ten bytes once when
+SparkFlags.5 is set and ControlFlagsC33.7 is clear. It increments the
+negative cells by 1C62/1C7A and clears nonnegative results. The KnockLearn
+fault path clears all ten bytes. The learned-retard array is separate from
+the five learned-noise bytes.
 
 Reset directly initializes learned-noise bytes F8011..F8015 / F8013..F8017 from EgrZeroPositionInit plus four adjacent ROM bytes (1996 1CF9..1CFD / 1997 1D11..1D15), stock 1C,1C,1C,3A,3A. First byte is currently named EgrZeroPos in both equate files: explicit alias, not free RAM; check EGR/knock configuration gates and all indirect consumers before changing names. Stock ROM 031F=B0 in both, knock gate C0 nonzero, bit 6 clear; Options0325 bit 6 clear in both. Reset checksum covers F8008..F8109 / F8008..F8139 inclusive, including both learned arrays. Valid checksum path clears from F810A/F813A; checksum-failure path sets X=8032/8034 and clears from there to F86FF/F8725. Thus five noise bytes retain state on valid checksum and are explicitly initialized on failed checksum; ten retard bytes retain on valid checksum and clear on failed checksum (conditional on normal bank/register state). Recovery counter cleared by both reset bulk paths. Need verify actual checksum update call sites, EGR feature coexistence, diagnostic writes and asynchronous state.
 
@@ -102,7 +123,10 @@ Remaining: exact-ROM fixtures for recovery counter boundary, signed learned cell
 
 ## Follow-up: recovery, two separate learning arrays, reset initialization
 
-Source comparison confirms matching MainLoop call sites and control structure for KnockLearnUpdate (1996 1D27E) and Sub_153E0 (1997 153E0); proposed port label KnockLearnUpdate. Existing caller comment "Reset" is imprecise: explicit JSR in MainLoop. The byte F8373/F838D is a recovery delay counter (candidate KnockLearnRecoveryCounter). It is cleared on coolant/MAP gate failure or sufficient nonzero knock signal/event count; insufficient nonzero signal/events leave it unchanged. When KnockSignalLearn is zero with gates satisfied, increment and compare unsigned with ROM 1CD7/1CEF; on reaching threshold clear and visit ten signed learned-retard cells F8067..F8070 / F8068..F8071. Cells more negative than saturated negation of ROM 1CDA/1CF2 are advanced by ROM 1CD9/1CF1 with signed target clamp. Exact machine arithmetic, including pathological calibration values, remains pending.
+The recovery delay calibration is at $1CD7/$1CEF. Cells below the
+saturated negation of $1CDA/$1CF2 are advanced by $1CD9/$1CF1 with a
+signed target clamp. The nominal stock path is covered above. Separate
+calibration changes remain outside the verified domain.
 
 KnockRpmBand producer: Scratch6 starts zero; two increments per iteration, with X moving from 1CCB to 1CCF / 1CE3 to 1CE7. Final one or two decrements select 0..9. Prior KnockLearnCellIndex influences RPM/MAP hysteresis; even/odd low/high MAP selection depends on comparison. Under normal registers this bounds KnockLearn indexed access to the same ten-byte learned-retard array. KnockLearnDecayFlag also visits all ten bytes once when its flags allow, moving negative cells toward zero. CalcSpark calls KnockLearn and stores the returned byte in KnockRetard (F8604/F8612); this is distinct from the per-cylinder slots and the five background-noise bytes. Confirm all producer paths and async Scratch6/index integrity; no global allocation conclusion.
 

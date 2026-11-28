@@ -47,6 +47,10 @@ routine notes. `tools/port.py` lays them over the carried-over names (a hand nam
 same name elsewhere is dropped), and the chain takes the names of C on to B. In C and A every
 routine now has a name; B still has 56 `Sub_` routines.
 
+A family hand `analysis.json` can add verified `z_not_base` ranges to
+the ported analysis. The generator uses raw Z offsets within those ranges.
+[A/B example](reset-128k-context.md#o2switchstate-address-context)
+
 The result is written to `annotations/ports/<part number>/` (labels, RAM, tables, analysis) with
 `stats.json`, which also holds the SHA-256 of the image so that the set is never applied to the
 wrong file. These files are generated: change the reference annotations and re-run the port
