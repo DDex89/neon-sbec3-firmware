@@ -71,3 +71,15 @@ and shift delay also depend on the local in-gear bit in DriveFlags. The
 test supplied both local states on each ROM. Frame cadence, equipment
 availability and gear-state timing are still bench observations.
 [Exact-ROM receive audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ccd_receive_audit.py)
+
+### Single-byte messages $02 and $DC
+
+The four A/B ROMs passed all 256 payload values for each of $02 and $DC
+through IRQ4, IRQ2 and CcdReceive. In the 2,048 cases, $02 stored
+`(payload & 7) * $24` at $F8467 in family A and $F8481 in family B.
+Family B also cleared the transmission timeout at $F847B. The family A
+timeout stayed at its starting value. $DC copied the complete byte to
+BusFlags9CE at $F8469/$F8483 and preserved both timeout bytes in both
+families. The exact-ROM test establishes storage and scaling. Physical
+interpretation of the $02 payload remains open.
+[Exact-ROM receive audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ccd_receive_audit.py)

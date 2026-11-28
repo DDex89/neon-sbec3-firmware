@@ -3093,7 +3093,7 @@ L121B2:
 ; SriMileageStore ($121B8)
 ; Called from: Reset
 ;
-; Service reminder mileage to the EEPROM; P1697 when the write fails.
+; Queues service reminder mileage. P1697 records an unusable EEPROM ring.
 ;---------------------------------------------------------------------------------------------------
 SriMileageStore:
         BRSET   >EepromFlags,Z,#$80,L1226A               ; bit 7: EEPROM write requested: EepromData to EepromAddr (callers wait while it is set)

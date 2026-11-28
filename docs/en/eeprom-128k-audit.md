@@ -62,8 +62,8 @@ both primary 128 KiB ROMs in `roms/`.
 
 ## Follow-up regression gates
 
-- Extend non-ring checks to callers and readback table entries beyond the tested limits.
-- Check the device behavior of interrupted SRI writes, stale QSPI words and scratch-index PIT interference.
+- Extend non-ring checks to additional callers and request lifecycles.
+- Check the device behavior of interrupted SRI writes, stale QSPI words and other PIT states.
 - Check controlled shutdown caller sequencing, actual EEPROM device/page program semantics, power hold-up and brownout; no modifications to stock before exact-ROM verification.
 - Sync symbol semantics and RAM dependencies to engineering docs, original SBEC3 and TurboNeon wiki when evidence complete. CI held.
 
@@ -119,8 +119,29 @@ unsigned word with a predecessor exactly one less modulo 65536. In these
 fixtures, unchanged and mixed words repeated the intended write to the same
 slot. A completed $0300 advanced the next request to $0301 in the next slot.
 A completed $0000 after $FFFF still caused another write of $0000 to the
-same slot. Physical persistence and concurrent Scratch0/1 use remain open.
+same slot. Physical persistence remains a bench check.
 [Reset context](reset-128k-context.md)
+
+### PIT during SRI ring selection
+
+The real MainLoop calls at $0D16C/$0D2AC were interrupted at four
+live-index boundaries from the first scan to the final read of Scratch0.
+All four A/B ROMs passed 768 supplied PIT interleavings. Six ordinary
+PIT states covered the heater shortcut, the countdown and all four
+tick phases with CCD scheduling due. PIT preserved Scratch0/1 at
+$F81F0/$F81F1, the receive words, the live return frame and the selected
+EEPROM request. The deepest supplied case reached SP $87DE from $87FE.
+Other PIT states and physical interrupt recognition remain open.
+
+### P1697 and unusable ring records
+
+The four ROMs recorded P1697 on the first mileage request in 28
+unusable-ring cases. No programming request was queued. The tested
+rings included erased, zeroed, gapped and zero-only successor records.
+The fault flag prevented another report on the next event. All 16
+controls with one valid nonzero successor queued the expected write
+and left P1697 clear, even with unrelated values in the other slots.
+The separate write-service failure counter is P1696.
 
 ## Exact-ROM address limits and controlled power-down write
 
@@ -147,6 +168,17 @@ responses and do not model power hold-up or actual write durability.
 [Exact-ROM boundary audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_vss_eeprom_audit.py)
 
 ## Initialization/readback map
+
+All 51 family A and 80 family B table rows were exercised via the
+ordinary EepromWriteQueue cursor on both variants of each family.
+Across 786 supplied device outcomes, successful reads updated the
+one selected destination. Busy status and verification timeout left it
+intact. The EEPROM contents were held throughout these readback tests.
+Family B successfully wrote 19 stock mirror bytes in $F870F–$F8720
+and at $F8723. These destinations lie below the active stack in the
+checked queue calls and reinforce the upper-page allocation exclusion.
+No destination intersects $F85F2–$F85FF.
+[Exact-ROM readback audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_vss_eeprom_audit.py)
 
 ### 04887050: 51 entries
 

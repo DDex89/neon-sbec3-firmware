@@ -38,3 +38,9 @@ this copy. On the next mileage event the foreground applies the separate
 circular predecessor rule. The exact-ROM audit covers four slot positions
 and supplied whole-word and mixed-byte outcomes. Actual persistence after
 power loss remains a bench check. [EEPROM and SRI results](eeprom-128k-audit.md#sri-restart-at-a-write-boundary)
+
+The SRI scan's live Scratch0/1 pair survived 768 supplied ordinary PIT
+interleavings across the four ROMs. The separate ordinary EEPROM queue
+test confirmed 19 readback destinations in the family B upper RAM page.
+Include these bytes in the global stack and reset ownership review.
+[PIT and readback results](eeprom-128k-audit.md#pit-during-sri-ring-selection)

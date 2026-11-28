@@ -53,7 +53,7 @@ Closed-loop temperature not reached in time (P0125).
 Generator field output circuit check (row without a P-code).
 
 ## 121B8 SriMileageStore
-Service reminder mileage to the EEPROM; P1697 when the write fails.
+Queues service reminder mileage. P1697 records an unusable EEPROM ring.
 
 ## 1C92E CheckedSparkTrim
 A spark trim byte kept with its complement ($62/$63): used only when the two agree, limited to
