@@ -29,3 +29,12 @@ published their expected values and restored the saved context. $F8000
 remained outside the access footprint. The hand analysis entries flow through
 port.py to both images of each family. Existing IRQ and reset references retain
 UnexpectedIrqFlags. [Context regression](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_o2_context_audit.py) · [CPU16 reference manual](https://www.nxp.com/docs/en/reference-manual/CPU16RM.pdf)
+
+## Service-mileage restore
+
+On the four family A/B images, the cold path refreshes the EEPROM ring
+and publishes its first word to SriMileage. The $4AB5 branch bypasses
+this copy. On the next mileage event the foreground applies the separate
+circular predecessor rule. The exact-ROM audit covers four slot positions
+and supplied whole-word and mixed-byte outcomes. Actual persistence after
+power loss remains a bench check. [EEPROM and SRI results](eeprom-128k-audit.md#sri-restart-at-a-write-boundary)

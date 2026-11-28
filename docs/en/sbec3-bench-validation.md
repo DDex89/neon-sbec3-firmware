@@ -53,3 +53,21 @@ delivery, frame spacing and arbitration remain bench items.
 Run `python patches/spark/v2/stock_ccd_receive_audit.py` from ReCore with
 `04887050.bin`, `04887051.bin`, `05293013AC.bin` and `05293014AC.bin`
 in `roms/`. [Exact-ROM receive audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ccd_receive_audit.py)
+
+### Engine-off time and transmission status
+
+The same four ROMs passed 192 engine-off time cases for CCD $A9 and
+64 transmission status cases for $A1. For $A9, CcdReceive clears the body
+timeout and stores the received byte. It updates the separate accumulator
+once while EngineOffTimeStart is below the stock $32 threshold and
+FuelModeFlags2.0 is clear. It adds EngineOffTimeStart to that accumulator
+with saturation at $FF. With two queued $A9 frames the older frame supplied
+the final received byte and the accumulator updated once.
+
+For $A1, CcdReceive clears the transmission timeout and BusModuleFlags.0,
+then stores the first payload byte in BusIdleByte. The second byte's $08
+branch takes priority over $10 when both are set. The resulting gear flags
+and shift delay also depend on the local in-gear bit in DriveFlags. The
+test supplied both local states on each ROM. Frame cadence, equipment
+availability and gear-state timing are still bench observations.
+[Exact-ROM receive audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ccd_receive_audit.py)

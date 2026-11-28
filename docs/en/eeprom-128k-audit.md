@@ -63,7 +63,7 @@ both primary 128 KiB ROMs in `roms/`.
 ## Follow-up regression gates
 
 - Extend non-ring checks to callers and readback table entries beyond the tested limits.
-- Check interrupted SRI writes, stale QSPI words, cold reset behavior and scratch-index PIT interference.
+- Check the device behavior of interrupted SRI writes, stale QSPI words and scratch-index PIT interference.
 - Check controlled shutdown caller sequencing, actual EEPROM device/page program semantics, power hold-up and brownout; no modifications to stock before exact-ROM verification.
 - Sync symbol semantics and RAM dependencies to engineering docs, original SBEC3 and TurboNeon wiki when evidence complete. CI held.
 
@@ -95,9 +95,32 @@ another write. Neighboring RAM, the candidate RAM range and modeled device
 bytes outside $00–$07 were preserved in the checked cases.
 
 Run `python patches/spark/v2/stock_vss_eeprom_audit.py` from ReCore with
-both archived ROMs in `roms/`. The device model supplies QSPI replies
-and a byte store. Physical EEPROM persistence, interrupted writes and
-concurrent Scratch0/1 use remain open. [Exact-ROM mileage audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_vss_eeprom_audit.py)
+the four archived A/B ROMs in `roms/`. The device model supplies QSPI
+replies and a byte store. [Exact-ROM mileage audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_vss_eeprom_audit.py)
+
+### SRI restart at a write boundary
+
+04887050, 04887051, 05293013AC and 05293014AC passed 256 paired cold/warm
+checks. Per ROM the fixture crossed the four write positions, starting
+values $02FF and $FFFF, and eight supplied persistence states from request
+through refresh. The two mixed-byte states retain either the old high
+or the old low byte. The reported stage describes where the software ran
+before the snapshot. The byte outcomes are inputs to the device model.
+
+The cold reset sequence at $0CA90/$0CB90 calls QspiStartupConfig, then
+copies the first QSPI word at $FFD18 into SriMileage at $F801E/$F8020.
+This path reads offset $00 of the refreshed EEPROM ring directly. In
+192 of 256 cases this value differed from the newest eligible ring word.
+The matching-marker branch for $4AB5 skips this copy. The fixture seeds
+retained RAM to check that branch.
+
+At the next service-mileage event, SriMileageStore selects the greatest
+unsigned word with a predecessor exactly one less modulo 65536. In these
+fixtures, unchanged and mixed words repeated the intended write to the same
+slot. A completed $0300 advanced the next request to $0301 in the next slot.
+A completed $0000 after $FFFF still caused another write of $0000 to the
+same slot. Physical persistence and concurrent Scratch0/1 use remain open.
+[Reset context](reset-128k-context.md)
 
 ## Exact-ROM address limits and controlled power-down write
 
