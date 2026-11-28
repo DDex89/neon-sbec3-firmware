@@ -93,6 +93,16 @@ it against TCNT again at $04A58. This second decision can request a
 further CFORC write. Later IC1 phases also have separate signed TCNT
 checks. Supplied counter sweeps exercised $04C76, $04E86 and $04ED0.
 
+At $04CE2 and $04EC4 the two ROMs keep the already programmed compare
+if `(new word - programmed word) & $FFFF` is below $0040 and $0010,
+respectively. The signed checks at $04CEE and $04ED0 then use the word
+actually in the compare register to decide whether to write CFORC.
+Tests of both output channels captured the compare, CFORC and TFLG1
+writes. A correction could change the force decision while preserving
+the replacement decision. These slices use a supplied TCNT value and
+start after the compare-channel selection.
+[Compare replacement and force regression](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/timer_window_guard.py)
+
 For a matched stock ECU, capture the relation between the crank
 reference and the actual coil compare/force-output transitions, and
 record elapsed time on the same clock reference. Use the exact ROM to

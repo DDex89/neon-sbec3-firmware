@@ -44,3 +44,21 @@ interleavings across the four ROMs. The separate ordinary EEPROM queue
 test confirmed 19 readback destinations in the family B upper RAM page.
 Include these bytes in the global stack and reset ownership review.
 [PIT and readback results](eeprom-128k-audit.md#pit-during-sri-ring-selection)
+
+## RAM clear boundaries
+
+Executed the stock marker check and the complete zeroing loop from four
+exact ROMs. Marker $4AB5 enters the warm path. The audit verified the
+$4AB4 and $4AB6 fall-through and resumed at the final cold setup after
+the intervening initialization. Both paths clear consecutive words.
+
+| ROMs | Warm clear, inclusive | Cold clear, inclusive |
+|---|---|---|
+| 04887050, 04887051 | $F810A–$F86FF | $F8032–$F86FF |
+| 05293013AC, 05293014AC | $F813A–$F8725 | $F8034–$F8725 |
+
+All 16 slices cleared $F85F2–$F85FF and preserved the bytes immediately
+outside the corresponding clear range. The test supplies the marker and
+bank context, and ends before the following reset actions. It establishes
+initialization coverage. Runtime ownership of the range remains open.
+[Exact-ROM reset regression](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/reset_validity_audit.py)
