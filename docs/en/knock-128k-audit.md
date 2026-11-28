@@ -184,6 +184,73 @@ KnockThresholdCalc similarly reads noise cells multiple times during interpolati
 
 - [ ] Resolve remaining ConditionTable/PIT dispatches, computed aliases and actual caller/ISR IPL/stack timing. Add pending exact-ROM normal and forced-interleave controls for foreground slot decay and noise interpolation, and compare masked KnockEnrichment behavior. Preserve stock scheduling and behavior, document differences only. CI held.
 
+### Threshold calculation during an accepted IC1 update
+
+The exact-ROM test executed the stock MainLoop call to KnockThresholdCalc
+on 04887050 and 05293013AC. In 96 ordinary cases, rpm below $2000 read cell
+0, $2000 through $36FF used cells 0 and 1, and $3700 or higher read cell 4
+because the last four table steps coincide. The resulting noise value
+was added to the stock Lookup2D output with saturation at $FF.
+
+The test also ran 28 paired controls, 24 with an accepted IC1 third-phase
+interrupt. The interrupt used the stock vector and the stock
+KnockCylinderRetard writer. At two supplied rpm values it updated one
+learned-noise byte. All checked frames restored processor context. IC1
+preserved Scratch6 and Scratch7, including controls after the foreground
+store to Scratch6 and before its use.
+
+The expected threshold at supplied rpm $2300 was $33 before the update
+or $46 if IC1 finished before the reads. When IC1 was accepted between
+the two reads of cell 0, the foreground used the old difference and
+new starting value and published $48. This is a modeled ordering of
+normal firmware writes. The physical timing and how often this ordering
+occurs are open. [Exact-ROM threshold audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_knock_threshold_audit.py)
+
+### Nested CCD IRQ4 during IC1 phase 4
+
+The A/B regression ran 96 accepted IRQ4 interleavings and 16 matched
+controls on the full stock IC1 phase 4. It used both CCD receive buffers
+and ordinary body-status intake. The six instruction boundaries included
+phase entry, the bank-1 ADC call, signed divide boundaries in O2UpTrim and
+Blend16 at the deepest checked point. IC1 was at IPL 3. The supplied
+IRQ4 entered at level 4 and the stock handler raised IPL to 7.
+
+The nested frame and all bytes of the live outer stack were checked.
+RTI restored D/E, X/Y/Z, banks, CCR, PC and SP. Outside the stack, the
+additional writes were bounded to the received byte, the byte index and
+start-of-frame flags. IC1's ordered stores, arithmetic results and final
+outputs matched the controls. The minimum SP was $87BE from $87FE,
+a depth of 64 bytes. The checked writes excluded $F85F2–$F85FF.
+The test covers byte intake, with interrupt arrival and full-frame
+completion outside its scope. [Exact-ROM IC1/IRQ4 audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ic1_knock_audit.py)
+
+### Foreground RPM band and retard publication
+
+The stock call to KnockRpmBand passed 20,480 cases on the two primary
+A/B ROMs. It published cell indices 0–9. The only write destinations
+outside the stack were Scratch6 and the index byte. Scratch7 held
+its original value. In 1,292 CalcSpark/KnockLearn cases, the eligible
+path read the selected learned-retard cell. The tested learning step
+required event count at least 6, slot sum at least 8, coolant at least
+$9B and MAP at or above the threshold. Slot decay used phase mask $1F.
+The zero-signal path cleared event count and the SCI logging bit.
+A supplied preexisting fault made the stock routine clear all ten cells.
+
+Six accepted IC1 cases and four matched controls tested the whole-sum
+boundaries and the live Scratch6 consumer in the RPM band path. Scratch6,
+Scratch7, the selected index and the learned-retard cells survived the
+supplied sample. A sample before summing changed the calculated sum from
+8 to 16. A sample after summing updated the slots while the already
+calculated sum stayed 8. The writes excluded the candidate RAM range.
+This covers the selected boundaries around the sum. Interruption inside
+a slot update and physical sampling time remain open.
+[Exact-ROM foreground audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_knock_foreground_audit.py)
+
+Run `python patches/spark/v2/stock_knock_threshold_audit.py`,
+`python patches/spark/v2/stock_knock_foreground_audit.py` and
+`python patches/spark/v2/stock_ic1_knock_audit.py` from ReCore with both
+primary 128 KiB ROMs in `roms/`.
+
 ## Follow-up: ConditionTable raw decode and expanded ISR graph (2026-11-26)
 
 The fourth ConditionTable case is executable code emitted as dc.b, not a data record. Using repository tools/cpu16_isa.json, FA is JSR EXT20, 58 is CMPA IND8,Y, B4 is BCC REL8 (branch base instruction address+6). 1996 dispatch 1F94A raw FA 01 F9 76 calls 1F976; 1997 dispatch 1FA18 raw FA 01 FA 44 calls 1FA44. Both return to the ordinary BNE test. At 1F976/1FA44, bytes 58 03 B4 00 mean CMPA $03,Y; BCC failure (1F97E/1FA4C), otherwise fall through to CLRA. Proposed label ConditionBelow. Do not globally rename or reassemble during this documentation pass.

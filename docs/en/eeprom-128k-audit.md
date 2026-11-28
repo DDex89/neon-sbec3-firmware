@@ -29,6 +29,37 @@ Readback table: paired source words and destination offsets, A at $13F84/$13FEA 
 
 CheckPowerDown calls EepromPowerDownWrite separately, after stopping QSPI. This routine clears all EEPROM flags, submits a single byte, performs watchdog service and DelayLoop($1388), reads back and compares; success/failure both invalidate address. It is not a generic pending-word flush. In both variants one caller conditionally stores FlexEthanol to EEPROM $00C if absolute difference from RAM PowerDownCount is >= $18, option enabled and EEPROM fault clear; the RAM byte is now named StoredFlexEthanol. Direct zero-test consumers are traced below. Sudden power loss is not equivalent to this controlled path. No atomicity or data-retention guarantee established.
 
+### CheckPowerDown gates and stored ethanol
+
+The low bit of Options0324 is clear on all four archived family A/B
+images. On 04887050 and 05293013AC the stock key-off tests entered from
+the actual MainLoop call site, checked the key and reference-period
+guards, and reached Reset with the checksum for marker $4AB5 on the
+completed paths. The stock option kept the StoredFlexEthanol write path
+inactive.
+
+Ten stock entry checks included four completed key-off traces. With
+the key held off, the supplied A and B cases executed 81,366 and 179,299
+PowerInputHold iterations including the terminal heater-monitor hold.
+The early key-on controls completed after one hold iteration. Those
+are instruction-loop counts. The model supplies key and ADC states.
+In these stock traces the already queued EEPROM address, data and flags
+were preserved at the reset boundary.
+
+Forty conditional checks entered the existing instruction stream after
+the option gate with unchanged ROMs. Differences $17, $18 and $19 were
+tested in both directions. With the EEPROM fault gate clear, an absolute
+difference of at least $18 requested a single-byte write to $00C. A
+matching readback updated StoredFlexEthanol. Enable, program and verify
+timeouts and a readback mismatch preserved the previous RAM value. The
+conditional paths continued through the stock NvChecksum publication
+and Reset check. Real power hold, device timing and persistence on loss
+of power remain open.
+[Exact-ROM power-down audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_power_down_audit.py)
+
+Run `python patches/spark/v2/stock_power_down_audit.py` from ReCore with
+both primary 128 KiB ROMs in `roms/`.
+
 ## Follow-up regression gates
 
 - Extend non-ring checks to callers and readback table entries beyond the tested limits.
