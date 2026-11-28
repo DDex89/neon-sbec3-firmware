@@ -31,3 +31,25 @@ A compact capture record should include ECU/PCB/MCU identification, ROM hash, st
 - **SCI scanner log.** The high-speed SCI example contains millisecond timestamps added by the scanner and shows how it presents returned values. Use it for offline log parsing. Capture the PCM line directly for wire timing and use the exact ROM to identify its addresses. [High-speed SCI log](https://chryslerccdsci.wordpress.com/2019/09/27/sneak-peek-into-the-high-speed-realm-of-the-sci-bus/)
 - **PCI/J1850 VPW.** The stock `Options032E.2` selector chooses PCI on `05032017AA` and CCD on `05293190AC`, `05269833AH`, `05269833AI` and `05269834AJ`. The two 128 KiB bench targets above use CCD and diagnostic SCI. For the PCI bench target, J1850VPWCore offers a receive-only initialization and implements the wire CRC-8/SAE-J1850. The PCM's internal QSPI receive buffer has its own additive checksum. Identify the bench board before choosing the physical interface. [Local ROM check](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_bus_reference_audit.py) · [J1850VPWCore source](https://github.com/laszlodaniel/J1850VPWCore/blob/main/src/J1850VPWCore.cpp)
 - **DRB III metadata.** DRBDBReader can inspect an external `database.mem` offline and obtain field offsets, scales and units from a matching module profile. The reader repository does not provide that database. Verification against the exact PCM profile is pending. [DRBDBReader](https://github.com/MWisBest/DRBDBReader) · [Conversion record format](https://github.com/MWisBest/DRBDBReader/blob/master/DRBDBReader/DB/Records/DADRecord.cs)
+
+## CCD receive and completion in the CPU16 model
+
+The four family A/B ROMs passed 56 ordinary body-status sequences,
+224 supplied IRQ4 byte entries and 80 supplied IRQ2 completion entries.
+The test followed the stock vectors and the real foreground call to
+CcdReceive. IRQ4 set CcdBusFlags.5 during ordinary reception and staged
+each byte. IRQ2 cleared the in-progress state and published a receive
+buffer only when length and additive checksum matched. Short or
+bad-checksum frames left the foreground timeout and body state intact.
+
+When both accepted buffers were ready, CcdReceive emptied buffer 2
+before buffer 1. In the two-message cases this let the earlier message
+in buffer 1 supply the final body-status value. A third message with
+both buffers occupied preserved the two queued frames. The A-family
+buffers start at $F844C/$F8452 and the B-family buffers at $F8466/$F846C.
+The tests supply already-accepted interrupts and bytes. Physical
+delivery, frame spacing and arbitration remain bench items.
+
+Run `python patches/spark/v2/stock_ccd_receive_audit.py` from ReCore with
+`04887050.bin`, `04887051.bin`, `05293013AC.bin` and `05293014AC.bin`
+in `roms/`. [Exact-ROM receive audit](https://github.com/DDex89/recore-sbec3/blob/dinofuel-128k/patches/spark/v2/stock_ccd_receive_audit.py)
